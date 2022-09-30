@@ -29,4 +29,13 @@ trait ApiResponser
         ], $code);
     }
 
+    protected function unauthorizedResponse($message = null)
+    {
+        return response()->json([
+            'status' => 'Unauthorized',
+            'message' => $message,
+            'data' => null
+        ], 401);
+    }
+
 }

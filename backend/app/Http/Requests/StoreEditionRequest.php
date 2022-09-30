@@ -13,7 +13,7 @@ class StoreEditionRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return $this->user()->role == "admin";
     }
 
     /**
@@ -24,7 +24,8 @@ class StoreEditionRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'year' => 'required|integer',
+            'name' => 'required'
         ];
     }
 }

@@ -13,7 +13,7 @@ class UpdateEditionRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return $this->user()->role == "admin";
     }
 
     /**
@@ -24,7 +24,9 @@ class UpdateEditionRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'year' => 'required|integer',
+            'name' => 'required',
+            'is_active' => 'required|boolean'
         ];
     }
 }

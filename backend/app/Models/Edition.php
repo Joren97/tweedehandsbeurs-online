@@ -8,4 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class Edition extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'year',
+        'name',
+        'is_active'
+    ];
+
+    protected $casts = [
+        'is_active' => 'boolean',
+    ];
 }

@@ -7,7 +7,7 @@ use App\Http\Requests\StoreEditionRequest;
 use App\Http\Requests\UpdateEditionRequest;
 use App\Http\Controllers\Controller;
 
-class EditionController extends Controller
+class EditionController extends ApiController
 {
     /**
      * Display a listing of the resource.
@@ -16,28 +16,21 @@ class EditionController extends Controller
      */
     public function index()
     {
-    //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-    //
+        $edition = Edition::all();
+        return $this->successResponse($edition);
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreEditionRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(StoreEditionRequest $request)
     {
-    //
+        $input = $request->all();
+        $edition = Edition::create($input);
+        return $this->successResponse($edition, "Edition created successfully", 201);
     }
 
     /**
@@ -71,17 +64,30 @@ class EditionController extends Controller
      */
     public function update(UpdateEditionRequest $request, Edition $edition)
     {
-    //
+        $input = $request->all();
+
+        $edition->year = $input['year'];
+        $edition->name = $input['name'];
+        $edition->is_active = $input['is_active'];
+        $edition->save();
+
+        return $this->successResponse($edition, "Edition updated successfully", 200);
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Edition  $edition
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(Edition $edition)
     {
-    //
+        if (auth()->user()->role == "admin") {
+            $edition->delete();
+            return $this->successResponse($edition, "Edition deleted successfully", 200);
+        }
+        else {
+            return $this->unauthorizedResponse();
+        }
     }
 }
