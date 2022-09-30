@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
-use App\Models\Edition;
-use App\Http\Requests\StoreEditionRequest;
-use App\Http\Requests\UpdateEditionRequest;
+use App\Models\Price;
+use App\Http\Requests\StorePriceRequest;
+use App\Http\Requests\UpdatePriceRequest;
+use App\Http\Controllers\Controller;
 
-class EditionController extends Controller
+class PriceController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,7 +16,7 @@ class EditionController extends Controller
      */
     public function index()
     {
-        //
+    //
     }
 
     /**
@@ -25,62 +26,62 @@ class EditionController extends Controller
      */
     public function create()
     {
-        //
+    //
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StoreEditionRequest  $request
+     * @param  \App\Http\Requests\StorePriceRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreEditionRequest $request)
+    public function store(StorePriceRequest $request)
     {
-        //
+    //
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Edition  $edition
+     * @param  \App\Models\Price  $price
      * @return \Illuminate\Http\Response
      */
-    public function show(Edition $edition)
+    public function show(Price $price)
     {
-        //
+    //
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Edition  $edition
+     * @param  \App\Models\Price  $price
      * @return \Illuminate\Http\Response
      */
-    public function edit(Edition $edition)
+    public function edit(Price $price)
     {
-        //
+    //
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdateEditionRequest  $request
-     * @param  \App\Models\Edition  $edition
+     * @param  \App\Http\Requests\UpdatePriceRequest  $request
+     * @param  \App\Models\Price  $price
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateEditionRequest $request, Edition $edition)
+    public function update(UpdatePriceRequest $request, Price $price)
     {
-        //
+    //
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Edition  $edition
+     * @param  \App\Models\Price  $price
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Edition $edition)
+    public function destroy(Price $price)
     {
-        //
+    //
     }
 }

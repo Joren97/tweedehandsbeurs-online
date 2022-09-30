@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
-use App\Models\Productlist;
-use App\Http\Requests\StoreProductlistRequest;
-use App\Http\Requests\UpdateProductlistRequest;
+use App\Models\Edition;
+use App\Http\Requests\StoreEditionRequest;
+use App\Http\Requests\UpdateEditionRequest;
+use App\Http\Controllers\Controller;
 
-class ProductlistController extends Controller
+class EditionController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,7 +16,7 @@ class ProductlistController extends Controller
      */
     public function index()
     {
-        //
+    //
     }
 
     /**
@@ -25,62 +26,62 @@ class ProductlistController extends Controller
      */
     public function create()
     {
-        //
+    //
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StoreProductlistRequest  $request
+     * @param  \App\Http\Requests\StoreEditionRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreProductlistRequest $request)
+    public function store(StoreEditionRequest $request)
     {
-        //
+    //
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Productlist  $productlist
+     * @param  \App\Models\Edition  $edition
      * @return \Illuminate\Http\Response
      */
-    public function show(Productlist $productlist)
+    public function show(Edition $edition)
     {
-        //
+    //
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Productlist  $productlist
+     * @param  \App\Models\Edition  $edition
      * @return \Illuminate\Http\Response
      */
-    public function edit(Productlist $productlist)
+    public function edit(Edition $edition)
     {
-        //
+    //
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdateProductlistRequest  $request
-     * @param  \App\Models\Productlist  $productlist
+     * @param  \App\Http\Requests\UpdateEditionRequest  $request
+     * @param  \App\Models\Edition  $edition
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateProductlistRequest $request, Productlist $productlist)
+    public function update(UpdateEditionRequest $request, Edition $edition)
     {
-        //
+    //
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Productlist  $productlist
+     * @param  \App\Models\Edition  $edition
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Productlist $productlist)
+    public function destroy(Edition $edition)
     {
-        //
+    //
     }
 }
