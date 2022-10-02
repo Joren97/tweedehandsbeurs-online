@@ -9,4 +9,9 @@ use App\Http\Controllers\Controller;
 class ApiController extends Controller
 {
     use ApiResponser;
+
+    function role()
+    {
+        return auth()->user()->role;
+    }
 }
