@@ -29,6 +29,7 @@ class AuthController extends ApiController
             'city' => $request->city,
             'postal_code' => $request->postal_code,
         ]);
+        $user['token'] = $user->createToken('apiToken')->plainTextToken;
         return $this->successResponse($user, "User created successfully", 201);
     }
 
@@ -60,15 +61,13 @@ class AuthController extends ApiController
                     'message' => 'Email & Password does not match with our record.',
                 ], 401);
             }
-
             $user = User::where('email', $request->email)->first();
 
-            return response()->json([
-                'status' => true,
-                'message' => 'User Logged In Successfully',
-                'token' => $user->createToken("API TOKEN")->plainTextToken
-            ], 200);
+            // Delete all old tokens
+            $user->tokens()->delete();
+            $user['token'] = $user->createToken("apiToken")->plainTextToken;
 
+            return $this->successResponse($user, "User Logged In Successfully", 200);
         }
         catch (\Throwable $th) {
             return response()->json([
