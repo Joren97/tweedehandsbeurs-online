@@ -21,6 +21,7 @@
                         id="exampleInputEmail"
                         aria-describedby="emailHelp"
                         placeholder="Jouw email"
+                        v-model="user.email"
                       />
                     </div>
                     <div class="form-group">
@@ -29,6 +30,7 @@
                         class="form-control custom-form-control"
                         id="exampleInputPassword"
                         placeholder="Jouw wachtwoord"
+                        v-model="user.password"
                       />
                     </div>
                     <div class="form-group">
@@ -43,9 +45,9 @@
                         >
                       </div>
                     </div>
-                    <a href="index.html" class="btn btn-primary custom-btm btn-block">
+                    <button class="btn btn-primary custom-btm btn-block" @click="login">
                       Login
-                    </a>
+                    </button>
                   </div>
                   <hr />
                   <div class="text-center">
@@ -63,3 +65,18 @@
     </div>
   </div>
 </template>
+<script setup>
+const user = ref({
+  email: "",
+  password: "",
+});
+
+const login = async () => {
+  console.log("login");
+  const res = await $fetch("/api/login", {
+    method: "POST",
+    body: user.value,
+  });
+  console.log(res);
+};
+</script>
