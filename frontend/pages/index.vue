@@ -386,5 +386,6 @@
 <script setup>
 definePageMeta({
   layout: "authorized",
+  middleware: ["auth"],
 });
 </script>

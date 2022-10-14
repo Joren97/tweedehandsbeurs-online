@@ -38,4 +38,13 @@ trait ApiResponser
         ], 401);
     }
 
+    protected function fieldErrorResponse($json = null, $code = 400)
+    {
+        return response()->json([
+            'status' => 'FieldError',
+            'message' => 'Some fields were incorrect',
+            'errors' => $json
+        ], $code);
+    }
+
 }

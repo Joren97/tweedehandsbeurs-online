@@ -23,6 +23,7 @@
                         placeholder="Jouw email"
                         v-model="user.email"
                       />
+                      <p v-if="fieldErrors.email">{{ fieldErrors.email }}</p>
                     </div>
                     <div class="form-group">
                       <input
@@ -32,6 +33,7 @@
                         placeholder="Jouw wachtwoord"
                         v-model="user.password"
                       />
+                      <p v-if="fieldErrors.password">{{ fieldErrors.password }}</p>
                     </div>
                     <div class="form-group">
                       <div class="custom-control custom-checkbox small">
@@ -39,6 +41,7 @@
                           type="checkbox"
                           class="custom-control-input"
                           id="customCheck"
+                          v-model="user.remember"
                         />
                         <label class="custom-control-label" for="customCheck"
                           >Remember Me</label
@@ -65,18 +68,35 @@
     </div>
   </div>
 </template>
-<script setup>
+<script setup lang="ts">
 const user = ref({
   email: "",
   password: "",
+  remember: false,
 });
+
+const fieldErrors = ref({});
 
 const login = async () => {
   console.log("login");
-  const res = await $fetch("/api/login", {
-    method: "POST",
-    body: user.value,
-  });
-  console.log(res);
+
+  try {
+    const { data } = await useCustomFetch("http://localhost:8000/api/auth/login", {
+      method: "POST",
+      body: user.value,
+    });
+
+    let maxAge: number | null = null;
+    if (data.remember) maxAge = 604800;
+    const token = useCookie("apiToken", { maxAge });
+    token.value = data.token;
+    navigateTo("/");
+  } catch (error) {
+    const {
+      data: { status, errors },
+    } = error;
+
+    fieldErrors.value = errors;
+  }
 };
 </script>

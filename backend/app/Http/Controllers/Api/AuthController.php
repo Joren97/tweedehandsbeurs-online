@@ -44,7 +44,8 @@ class AuthController extends ApiController
             $validateUser = Validator::make($request->all(),
             [
                 'email' => 'required|email',
-                'password' => 'required'
+                'password' => 'required',
+                'remember' => 'boolean'
             ]);
 
             if ($validateUser->fails()) {
@@ -55,19 +56,31 @@ class AuthController extends ApiController
                 ], 401);
             }
 
-            if (!Auth::attempt($request->only(['email', 'password']))) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Email & Password does not match with our record.',
-                ], 401);
+            // Check if email exists
+            $user = User::where('email', $request->email)->first();
+            if (!$user) {
+                $error = [
+                    'email' => 'Emailadres bestaat niet'
+                ];
+                return $this->fieldErrorResponse($error);
             }
+
+            // Check combination of email and password
+            if (!Auth::attempt($request->only(['email', 'password']))) {
+                $error = [
+                    'email' => 'Wachtwoord is onjuist'
+                ];
+                return $this->fieldErrorResponse($error);
+            }
+
             $user = User::where('email', $request->email)->first();
 
             // Delete all old tokens
             $user->tokens()->delete();
             $user['token'] = $user->createToken("apiToken")->plainTextToken;
+            $user['remember'] = $request->remember;
 
-            return $this->successResponse($user, "User Logged In Successfully", 200);
+            return $this->successResponse($user, "Gebruiker werd aangemeld", 200);
         }
         catch (\Throwable $th) {
             return response()->json([
