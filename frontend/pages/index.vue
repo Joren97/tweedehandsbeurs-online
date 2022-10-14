@@ -387,5 +387,8 @@
 definePageMeta({
   layout: "authorized",
   middleware: ["auth"],
+  meta: {
+    authLevel: "admin",
+  },
 });
 </script>

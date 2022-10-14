@@ -89,4 +89,10 @@ class AuthController extends ApiController
             ], 500);
         }
     }
+
+    public function userinfo()
+    {
+        $user = auth()->user();
+        return $this->successResponse($user, "User info", 200);
+    }
 }

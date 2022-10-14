@@ -215,7 +215,9 @@
           aria-haspopup="true"
           aria-expanded="false"
         >
-          <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
+          <span class="mr-2 d-none d-lg-inline text-gray-600 small"
+            >{{ user.firstname }} {{ user.lastname }}</span
+          >
           <img class="img-profile rounded-circle" src="~/assets/img/undraw_profile.svg" />
         </a>
         <!-- Dropdown - User Information -->
@@ -251,3 +253,9 @@
   </nav>
   <!-- End of Topbar -->
 </template>
+<script setup>
+import { useAuthStore } from "~~/store/auth";
+
+const authStore = useAuthStore();
+const user = computed(() => authStore.user);
+</script>

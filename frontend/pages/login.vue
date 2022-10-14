@@ -68,7 +68,7 @@
     </div>
   </div>
 </template>
-<script setup lang="ts">
+<script setup>
 const user = ref({
   email: "",
   password: "",
@@ -86,7 +86,7 @@ const login = async () => {
       body: user.value,
     });
 
-    let maxAge: number | null = null;
+    let maxAge = null;
     if (data.remember) maxAge = 604800;
     const token = useCookie("apiToken", { maxAge });
     token.value = data.token;
