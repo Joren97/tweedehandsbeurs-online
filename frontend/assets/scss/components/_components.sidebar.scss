@@ -1,0 +1,21 @@
+.c-sidebar {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 15rem;
+  height: 100%;
+  background-color: lightblue;
+  z-index: 999;
+
+  .sidebar__top {
+    font-size: 2rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 4.375rem;
+    background-color: #f8f9fc;
+  }
+}
