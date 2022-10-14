@@ -4,10 +4,6 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     const cookie = useCookie('apiToken');
     const authLevel = to.meta.authLevel;
 
-    console.log("meta", to.meta);
-
-    console.log("authLevel: " + authLevel);
-
 
     // Check if user is logged in, else redirect to login page
     if (!cookie.value) {
@@ -28,11 +24,11 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     if (authLevel) {
         // If authlevel is 'employee' only admin and employee can enter
         if (authLevel === 'employee' && authStore.user.role !== 'admin' && authStore.user.role !== 'employee') {
-            abortNavigation();
+            return abortNavigation("You don't have permission to access this page");
         }
         // If authlevel is 'admin' only admin can enter
         else if (authLevel === 'admin' && authStore.user.role !== 'admin') {
-            abortNavigation();
+            return abortNavigation("You don't have permission to access this page");
         }
     }
 
