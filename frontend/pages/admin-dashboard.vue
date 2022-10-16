@@ -1,9 +1,9 @@
 <template>
   <div>
     <LayoutPageHeading>
-      <template v-slot:title>Verkopen</template>
+      <template v-slot:title>Beursoverzicht</template>
     </LayoutPageHeading>
-    <p>This is the sell page</p>
+    <p>This is the admin dashboard page</p>
   </div>
 </template>
 <script setup>
@@ -11,7 +11,7 @@ definePageMeta({
   layout: "authorized",
   middleware: ["auth"],
   meta: {
-    authLevel: "employee",
+    authLevel: "admin",
   },
 });
 </script>

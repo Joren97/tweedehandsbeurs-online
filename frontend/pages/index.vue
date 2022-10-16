@@ -11,7 +11,7 @@ definePageMeta({
   layout: "authorized",
   middleware: ["auth"],
   meta: {
-    authLevel: "admin",
+    authLevel: "user",
   },
 });
 </script>

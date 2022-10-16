@@ -1,9 +1,9 @@
 <template>
   <div>
     <LayoutPageHeading>
-      <template v-slot:title>Verkopen</template>
+      <template v-slot:title>Lijstenbeheer</template>
     </LayoutPageHeading>
-    <p>This is the sell page</p>
+    <p>This is the list management page</p>
   </div>
 </template>
 <script setup>
