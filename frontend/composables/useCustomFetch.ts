@@ -11,6 +11,15 @@ export const useCustomFetch = (url: string, options?: FetchOptions) => {
         },
 
         async onRequest({ request, options }) {
+            const token = useCookie('apiToken')
+
+            if (token.value) {
+                options.headers = {
+                    ...options.headers,
+                    Authorization: `Bearer ${token.value}`,
+                }
+            }
+
             console.log("[fetch request]");
         },
         async onRequestError({ request, options, error }) {

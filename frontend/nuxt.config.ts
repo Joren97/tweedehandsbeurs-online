@@ -20,4 +20,17 @@ export default defineNuxtConfig({
     css: [
         '~/assets/scss/sb-admin-2.scss'
     ],
+    modules: [
+        [
+            '@pinia/nuxt',
+            {
+                autoImports: [
+                    // automatically imports `defineStore`
+                    'defineStore', // import { defineStore } from 'pinia'
+                    // automatically imports `defineStore` as `definePiniaStore`
+                    ['defineStore', 'definePiniaStore'], // import { defineStore as definePiniaStore } from 'pinia'
+                ],
+            },
+        ],
+    ]
 })

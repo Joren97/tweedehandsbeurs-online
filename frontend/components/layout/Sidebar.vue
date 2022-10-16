@@ -65,10 +65,10 @@
     </li>
 
     <li class="nav-item">
-      <a class="nav-link" href="charts.html">
+      <NuxtLink to="/sell" class="nav-link">
         <i class="fas fa-fw fa-chart-area"></i>
         <span>Verkopen</span>
-      </a>
+      </NuxtLink>
     </li>
     <li class="nav-item">
       <a class="nav-link" href="charts.html">
@@ -84,10 +84,10 @@
     <div class="sidebar-heading">Administrator</div>
 
     <li class="nav-item">
-      <a class="nav-link" href="charts.html">
+      <NuxtLink to="/editions" class="nav-link">
         <i class="fas fa-fw fa-chart-area"></i>
         <span>Edities</span>
-      </a>
+      </NuxtLink>
     </li>
 
     <li class="nav-item">
