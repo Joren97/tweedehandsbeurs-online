@@ -11,6 +11,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        
+      - run: cd frontend
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v2.2.4
