@@ -23,8 +23,12 @@
       <div v-if="sidebarItem.type == 'heading'" class="sidebar-heading">
         {{ sidebarItem.text }}
       </div>
-      <li class="nav-item" v-if="sidebarItem.type == 'link'">
-        <NuxtLink to="/sell" class="nav-link">
+      <li
+        class="nav-item"
+        v-if="sidebarItem.type == 'link'"
+        :class="{ active: route == sidebarItem.link }"
+      >
+        <NuxtLink :to="sidebarItem.link" class="nav-link">
           <i :class="sidebarItem.icon"></i>
           <span>{{ sidebarItem.text }}</span>
         </NuxtLink>
@@ -43,6 +47,8 @@
 </template>
 <script setup>
 import { useAuthStore } from "~~/store/auth";
+
+const route = computed(() => useRoute().path);
 
 const sidebar = computed(() => {
   const user = useAuthStore().user;
@@ -75,7 +81,7 @@ const sidebar = computed(() => {
     },
     {
       type: "link",
-      link: "/price-list",
+      link: "/prices",
       text: "Prijslijst",
       icon: "far fa-money-bill-alt",
     },
@@ -93,7 +99,7 @@ const sidebar = computed(() => {
         },
         {
           type: "link",
-          link: "/lists",
+          link: "/list-management",
           text: "Lijstoverzicht",
           icon: "fab fa-sistrix",
         },
@@ -105,7 +111,7 @@ const sidebar = computed(() => {
         },
         {
           type: "link",
-          link: "/users",
+          link: "/user-management",
           text: "Gebruikers",
           icon: "far fa-address-book",
         },
@@ -131,13 +137,13 @@ const sidebar = computed(() => {
         },
         {
           type: "link",
-          link: "/price-lists",
+          link: "/price-management",
           text: "Prijsoverzicht",
           icon: "fas fa-money-check-alt",
         },
         {
           type: "link",
-          link: "/beurs",
+          link: "/admin-dashboard",
           text: "Beursoverzicht",
           icon: "fas fa-chart-line",
         },
