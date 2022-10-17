@@ -10,8 +10,10 @@ export default defineNuxtConfig({
             script: [
                 { src: "https://kit.fontawesome.com/c0db9975db.js", crossorigin: "anonymous" },
                 { src: "https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js" },
-                { src: "./assets/vendor/bootstrap/js/bootstrap.bundle.min.js", body: true },
-                { src: "./assets/vendor/jquery-easing/jquery.easing.min.js", body: true },
+                {
+                    src: "https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js",
+                    crossorigin: "anonymous", integrity: "sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+                },
                 { src: "./assets/js/sb-admin-2.js", body: true },
             ]
         },
