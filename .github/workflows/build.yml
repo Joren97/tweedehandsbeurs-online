@@ -46,8 +46,10 @@ jobs:
       - uses: "shivammathur/setup-php@v2"
         with:
           php-version: "latest"
-          
+
       - uses: "ramsey/composer-install@v2"
+        with:
+          working-directory: ./frontend
 
       - name: 📂 Upload files to backend
         uses: SamKirkland/FTP-Deploy-Action@4.3.2
