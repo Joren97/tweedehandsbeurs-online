@@ -9,13 +9,10 @@ export default defineNuxtConfig({
             }],
             script: [
                 { src: "https://kit.fontawesome.com/c0db9975db.js", crossorigin: "anonymous" },
-                { src: "assets/vendor/jquery/jquery.min.js", body: true },
-                { src: "assets/vendor/bootstrap/js/bootstrap.bundle.min.js", body: true },
-                { src: "assets/vendor/jquery-easing/jquery.easing.min.js", body: true },
-                { src: "assets/vendor/chart.js/Chart.min.js" },
-                { src: "assets/js/sb-admin-2.js", body: true },
-                { src: "assets/js/demo/chart-bar-demo.js", body: true },
-                { src: "assets/js/demo/chart-pie-demo.js", body: true },
+                { src: "https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js" },
+                { src: "./assets/vendor/bootstrap/js/bootstrap.bundle.min.js", body: true },
+                { src: "./assets/vendor/jquery-easing/jquery.easing.min.js", body: true },
+                { src: "./assets/js/sb-admin-2.js", body: true },
             ]
         }
     },
