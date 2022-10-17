@@ -39,6 +39,9 @@ jobs:
     name: 🛠 Build and upload backend to dev
     runs-on: ubuntu-latest
     steps:      
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
       - name: 📂 Upload files to backend
         uses: SamKirkland/FTP-Deploy-Action@4.3.2
         with:
