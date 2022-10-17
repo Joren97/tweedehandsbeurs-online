@@ -11,5 +11,9 @@ jobs:
     steps:
       - name: Setup pnpm
         uses: pnpm/action-setup@v2.2.4
+        
       - run: pnpm install --shamefully-hoist
+        working-directory: frontend    
+        
       - run: pnpm generate
+        working-directory: frontend
