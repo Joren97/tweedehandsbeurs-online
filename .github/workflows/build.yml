@@ -8,11 +8,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-18.04
-    steps:
+    steps:        
       - name: Setup pnpm
         uses: pnpm/action-setup@v2.2.4
-        with:
-          working-directory: frontend
         
       - run: pnpm install --shamefully-hoist
         working-directory: frontend    
