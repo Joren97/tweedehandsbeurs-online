@@ -45,7 +45,7 @@
   </ul>
   <!-- End of Sidebar -->
 </template>
-<script setup>
+<script setup lang="ts">
 import { useAuthStore } from "~~/store/auth";
 
 const route = computed(() => useRoute().path);
