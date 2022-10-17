@@ -33,3 +33,4 @@ jobs:
           username: ftp_2dehandsbeursonline.be
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: dev/
+          local-dir: ./frontend/.output/public/
