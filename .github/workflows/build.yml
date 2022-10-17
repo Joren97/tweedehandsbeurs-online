@@ -31,5 +31,5 @@ jobs:
         with:
           server: ftp.2dehandsbeursonline.be
           username: ftp_2dehandsbeursonline.be
-          password: ${{ secrets.FTP_PASSWORD }}s
+          password: ${{ secrets.FTP_PASSWORD }}
           server-dir: dev/
