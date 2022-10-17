@@ -6,8 +6,8 @@ on:
       - main
 
 jobs:
-  build:
-    name: 🛠 Build and upload to dev
+  build-frontend:
+    name: 🛠 Build and upload frontend to dev
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -34,3 +34,29 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: dev/
           local-dir: ./frontend/.output/public/
+
+  build-backend:
+    name: 🛠 Build and upload backend to dev
+    runs-on: ubuntu-latest
+    steps:      
+      - name: 📂 Upload files to backend
+        uses: SamKirkland/FTP-Deploy-Action@4.3.2
+        with:
+          server: ftp.2dehandsbeursonline.be
+          username: ftp_2dehandsbeursonline.be
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: api/
+          local-dir: ./backend/
+          exlucde: |
+            **/database/**
+            **/tests/**
+            .editorconfig
+            .env.example
+            .gitattributes
+            .gitignore
+            README.md
+            artisan
+            composer.lock
+            package.json
+            phpunit.xml
+            vite.config.js
