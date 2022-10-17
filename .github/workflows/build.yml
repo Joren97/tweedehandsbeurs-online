@@ -8,17 +8,16 @@ on:
 jobs:
   build:
     runs-on: ubuntu-18.04
+    defaults:
+      run:
+        working-directory: frontend
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-        
-      - run: cd frontend
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v2.2.4
 
       - run: pnpm install --shamefully-hoist
-        working-directory: frontend
 
       - run: pnpm generate
-        working-directory: frontend
