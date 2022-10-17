@@ -14,10 +14,8 @@ jobs:
         with:
           working-directory: frontend
         
-      - name: Install packages  
       - run: pnpm install --shamefully-hoist
         working-directory: frontend    
-        
-      - name: Generate static content  
+          
       - run: pnpm generate
         working-directory: frontend
