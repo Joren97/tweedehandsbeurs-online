@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    name: 🛠 Build
+    name: 🛠 Build and upload to dev
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -26,16 +26,11 @@ jobs:
       - run: pnpm generate
         working-directory: ./frontend
 
-  web-deploy:
-    name: 🎉 Deploy
-    needs: build
-    runs-on: ubuntu-latest
-    steps:    
-    - name: 📂 Upload files
-      uses: SamKirkland/FTP-Deploy-Action@4.3.2
-      with:
-        server: ftp.2dehandsbeursonline.be
-        username: ftp_2dehandsbeursonline.be
-        password: ${{ secrets.FTP_PASSWORD }}
-        local-dir: .output/public/
-        server-dir: dev/
+      - name: 📂 Upload files
+        uses: SamKirkland/FTP-Deploy-Action@4.3.2
+        with:
+          server: ftp.2dehandsbeursonline.be
+          username: ftp_2dehandsbeursonline.be
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: .output/public/
+          server-dir: dev/
