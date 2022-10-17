@@ -216,7 +216,7 @@
           aria-expanded="false"
         >
           <span class="mr-2 d-none d-lg-inline text-gray-600 small"
-            >{{ user.firstname }} {{ user.lastname }}</span
+            >{{ user.firstname }} {{ user.lastname }} Rol: {{ user.role }}</span
           >
           <img class="img-profile rounded-circle" src="~/assets/img/undraw_profile.svg" />
         </a>
