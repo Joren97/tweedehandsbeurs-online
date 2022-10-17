@@ -43,13 +43,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - uses: "shivammathur/setup-php@v2"
+        with:
+          php-version: "latest"
+          
+      - uses: "ramsey/composer-install@v2"
+
       - name: 📂 Upload files to backend
         uses: SamKirkland/FTP-Deploy-Action@4.3.2
         with:
           server: ftp.2dehandsbeursonline.be
           username: ftp_2dehandsbeursonline.be
           password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: api/
+          server-dir: apidev/
           local-dir: ./backend/
           exclude: |
             **/database/**
