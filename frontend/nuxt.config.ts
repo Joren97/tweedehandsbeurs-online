@@ -14,7 +14,7 @@ export default defineNuxtConfig({
                 { src: "./assets/vendor/jquery-easing/jquery.easing.min.js", body: true },
                 { src: "./assets/js/sb-admin-2.js", body: true },
             ]
-        }
+        },
     },
     css: [
         '~/assets/scss/sb-admin-2.scss'
