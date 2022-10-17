@@ -7,7 +7,8 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-18.04
+    name: 🛠 Build
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -24,3 +25,17 @@ jobs:
 
       - run: pnpm generate
         working-directory: ./frontend
+
+  web-deploy:
+    name: 🎉 Deploy
+    runs-on: ubuntu-latest
+    steps:
+    
+    - name: 📂 Upload files
+      uses: SamKirkland/FTP-Deploy-Action@4.3.2
+      with:
+        server: ftp.2dehandsbeursonline.be
+        username: ftp_2dehandsbeursonline.be
+        password: ${{ secrets.FTP_PASSWORD }}
+        local-dir: .output/public/
+        server-dir: dev/
