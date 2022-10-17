@@ -41,7 +41,7 @@ jobs:
     steps:      
       - name: Checkout code
         uses: actions/checkout@v2
-        
+
       - name: 📂 Upload files to backend
         uses: SamKirkland/FTP-Deploy-Action@4.3.2
         with:
@@ -50,7 +50,7 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: api/
           local-dir: ./backend/
-          exlucde: |
+          exclude: |
             **/database/**
             **/tests/**
             .editorconfig
