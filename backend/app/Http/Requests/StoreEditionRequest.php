@@ -13,7 +13,7 @@ class StoreEditionRequest extends FormRequest
      */
     public function authorize()
     {
-        return $this->user()->role == "admin";
+        return true;
     }
 
     /**

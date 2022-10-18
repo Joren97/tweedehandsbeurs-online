@@ -11,11 +11,12 @@ use Illuminate\Support\Facades\Route;
 Route::post('/auth/register', [AuthController::class , 'register']);
 Route::post('/auth/login', [AuthController::class , 'login']);
 
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get('auth/userinfo', [AuthController::class , 'userinfo']);
-    Route::apiResource('productlist', ProductlistController::class);
-    Route::apiResource('edition', EditionController::class);
-});
+// TODO PROTECT ROUTES USING SANCTUM ROLES
+// See https://stackoverflow.com/questions/71358904/laravel-sanctum-multiple-guard-middleware
+Route::get('auth/userinfo', [AuthController::class , 'userinfo']);
+Route::apiResource('productlist', ProductlistController::class);
+Route::apiResource('edition', EditionController::class);
+
 
 // TODO DELETE THIS WHEN GOING IN PRODUCTION
 Route::post('/seed', [SeedController::class , 'seed']);
