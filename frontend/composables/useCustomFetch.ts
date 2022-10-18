@@ -1,7 +1,9 @@
 import { FetchOptions } from "ohmyfetch";
 
 export const useCustomFetch = (url: string, options?: FetchOptions) => {
-    return $fetch(url, {
+    const config = useRuntimeConfig();
+
+    return $fetch(config.public.API_BASE_URL + url, {
         ...options,
         async onResponse({ request, response, options }) {
             console.log("[fetch response]");

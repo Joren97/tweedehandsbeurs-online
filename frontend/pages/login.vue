@@ -81,7 +81,7 @@ const login = async () => {
   console.log("login");
 
   try {
-    const { data } = await useCustomFetch("http://localhost:8000/api/auth/login", {
+    const { data } = await useCustomFetch("/api/auth/login", {
       method: "POST",
       body: user.value,
     });

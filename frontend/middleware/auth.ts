@@ -13,7 +13,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     // Check if user object is set, else fetch it
     if (!authStore.user) {
         try {
-            const { data } = await useCustomFetch("http://localhost:8000/api/auth/userinfo");
+            const { data } = await useCustomFetch("/api/auth/userinfo");
             authStore.user = data;
         } catch (error) {
             return navigateTo('/login');

@@ -26,7 +26,7 @@ jobs:
       - run: pnpm install --shamefully-hoist
         working-directory: ./frontend
 
-      - run: pnpm generate
+      - run: pnpm generate-prod
         working-directory: ./frontend
 
       - name: 📂 Upload files
