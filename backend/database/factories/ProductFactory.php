@@ -17,7 +17,10 @@ class ProductFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'description' => $this->faker->text,
+            'price_id' => $this->faker->numberBetween(1, 10),
+            'productlist_id' => $this->faker->numberBetween(1, 10),
+            'is_sold' => false,
         ];
     }
 }

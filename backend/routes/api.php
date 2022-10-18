@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\SeedController;
 use App\Http\Controllers\Api\EditionController;
 use App\Http\Controllers\Api\ProductlistController;
 use Illuminate\Support\Facades\Route;
@@ -15,3 +16,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('productlist', ProductlistController::class);
     Route::apiResource('edition', EditionController::class);
 });
+
+// TODO DELETE THIS WHEN GOING IN PRODUCTION
+Route::post('/seed', [SeedController::class , 'seed']);
+Route::post('/clear', [SeedController::class , 'clear']);
