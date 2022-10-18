@@ -42,7 +42,7 @@ jobs:
           server: ftp.2dehandsbeursonline.be
           username: ftp_2dehandsbeursonline.be
           password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: apidev/src
+          server-dir: apidev/src/
           local-dir: ./backend/
           exclude: |
             **/tests/**
