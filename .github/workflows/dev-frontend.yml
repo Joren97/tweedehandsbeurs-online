@@ -1,4 +1,4 @@
-name: Build application
+name: DEV - Build and deploy frontend
 
 on:
   workflow_dispatch:
@@ -9,8 +9,8 @@ on:
       - frontend/**
 
 jobs:
-  build:
-    name: 🛠 Build
+  build-frontend:
+    name: 🛠 Build and upload frontend to dev
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -29,11 +29,6 @@ jobs:
       - run: pnpm generate
         working-directory: ./frontend
 
-  deploy:
-    name: 🚀 Upload to dev
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
       - name: 📂 Upload files
         uses: SamKirkland/FTP-Deploy-Action@4.3.2
         with:
