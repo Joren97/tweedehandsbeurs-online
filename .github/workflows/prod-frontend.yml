@@ -1,0 +1,39 @@
+name: PROD - Build and deploy frontend
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - production
+    paths:
+      - frontend/**
+
+jobs:
+  build-frontend:
+    name: 🛠 Build and upload frontend to dev
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
+      - run: cd frontend
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2.2.4
+        with:
+          version: latest
+
+      - run: pnpm install --shamefully-hoist
+        working-directory: ./frontend
+
+      - run: pnpm generate
+        working-directory: ./frontend
+
+      - name: 📂 Upload files
+        uses: SamKirkland/FTP-Deploy-Action@4.3.2
+        with:
+          server: ftp.2dehandsbeursonline.be
+          username: ftp_2dehandsbeursonline.be
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: web/
+          local-dir: ./frontend/.output/public/
