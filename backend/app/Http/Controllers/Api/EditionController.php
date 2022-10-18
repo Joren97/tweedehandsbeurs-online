@@ -2,57 +2,52 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Filters\EditionFilter;
+use App\Http\Resources\EditionResource;
 use App\Models\Edition;
 use App\Http\Requests\StoreEditionRequest;
 use App\Http\Requests\UpdateEditionRequest;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\EditionCollection;
+use Illuminate\Http\Request;
 
 class EditionController extends ApiController
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \App\Http\Resources\EditionCollection
      */
-    public function index()
+    public function index(Request $request)
     {
-        $edition = Edition::all();
-        return $this->successResponse($edition);
+        $filter = new EditionFilter();
+        $filterItems = $filter->transform($request);
+
+        $editions = Edition::where($filterItems);
+
+        return new EditionCollection($editions->paginate()->appends($request->query()));
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreEditionRequest  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return \App\Http\Resources\EditionResource
      */
     public function store(StoreEditionRequest $request)
     {
-        $input = $request->all();
-        $edition = Edition::create($input);
-        return $this->successResponse($edition, "Edition created successfully", 201);
+        return new EditionResource(Edition::create($request->all()));
     }
 
     /**
      * Display the specified resource.
      *
      * @param  \App\Models\Edition  $edition
-     * @return \Illuminate\Http\Response
+     * @return \App\Http\Resources\EditionResource
      */
     public function show(Edition $edition)
     {
-    //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Edition  $edition
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Edition $edition)
-    {
-    //
+        return new EditionResource(Edition::create($edition));
     }
 
     /**
@@ -60,7 +55,7 @@ class EditionController extends ApiController
      *
      * @param  \App\Http\Requests\UpdateEditionRequest  $request
      * @param  \App\Models\Edition  $edition
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(UpdateEditionRequest $request, Edition $edition)
     {
@@ -82,12 +77,7 @@ class EditionController extends ApiController
      */
     public function destroy(Edition $edition)
     {
-        if (auth()->user()->role == "admin") {
-            $edition->delete();
-            return $this->successResponse($edition, "Edition deleted successfully", 200);
-        }
-        else {
-            return $this->unauthorizedResponse();
-        }
+        $edition->delete();
+        return $this->successResponse($edition, "Edition deleted successfully", 200);
     }
 }
