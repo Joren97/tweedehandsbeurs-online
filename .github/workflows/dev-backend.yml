@@ -34,7 +34,7 @@ jobs:
           username: ftp_2dehandsbeursonline.be
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: apidev/
-          local-dir: ./backend/public
+          local-dir: ./backend/public/
 
       - name: 📂 Upload src files to backend
         uses: SamKirkland/FTP-Deploy-Action@4.3.2
