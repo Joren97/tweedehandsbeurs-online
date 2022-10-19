@@ -24,17 +24,29 @@ jobs:
         with:
           working-directory: ./backend
 
-      - name: 📂 Upload files to backend
+      - run: |
+          sed -i 's/\.\./src/g' ./backend/public/index.php
+
+      - name: 👁 Upload public files to root folder
         uses: SamKirkland/FTP-Deploy-Action@4.3.2
         with:
           server: ftp.2dehandsbeursonline.be
           username: ftp_2dehandsbeursonline.be
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: api/
+          local-dir: ./backend/public/
+
+      - name: 📂 Upload src files to backend
+        uses: SamKirkland/FTP-Deploy-Action@4.3.2
+        with:
+          server: ftp.2dehandsbeursonline.be
+          username: ftp_2dehandsbeursonline.be
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: api/src/
           local-dir: ./backend/
           exclude: |
-            **/database/**
             **/tests/**
+            **/public/**
             .editorconfig
             .env.example
             .gitattributes
