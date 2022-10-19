@@ -3,6 +3,8 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\SeedController;
 use App\Http\Controllers\Api\EditionController;
+use App\Http\Controllers\Api\PriceController;
+use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProductlistController;
 use Illuminate\Support\Facades\Route;
 
@@ -16,6 +18,8 @@ Route::post('/auth/login', [AuthController::class , 'login']);
 Route::get('auth/userinfo', [AuthController::class , 'userinfo']);
 Route::apiResource('productlist', ProductlistController::class);
 Route::apiResource('edition', EditionController::class);
+Route::apiResource('price', PriceController::class);
+Route::apiResource('product', ProductController::class);
 
 
 // TODO DELETE THIS WHEN GOING IN PRODUCTION

@@ -2,146 +2,81 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Filters\ProductListFilter;
 use App\Models\Productlist;
 use App\Http\Requests\StoreProductlistRequest;
 use App\Http\Requests\UpdateProductlistRequest;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ProductListCollection;
+use App\Http\Resources\ProductListResource;
 use App\Models\Edition;
+use Illuminate\Http\Request;
 
 class ProductlistController extends ApiController
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return \App\Http\Resources\ProductListCollection
      */
-    public function index()
+    public function index(Request $request)
     {
-        // If the user is an admin, return all productlists
-        if ($this->role() == "admin") {
-            $productlists = Productlist::all();
-            return $this->successResponse($productlists);
+        $filter = new ProductListFilter();
+        $filterItems = $filter->transform($request);
+
+        $includeProducts = $request->query('includeProducts');
+
+        $productLists = ProductList::where($filterItems);
+
+        if ($includeProducts) {
+            $productLists = $productLists->with('products');
         }
 
-        // If the user is a customer, return only the productlists for the logged in user
-        $productlists = Productlist::where('user_id', auth()->user()->id)->get();
-
-        $productlist = Productlist::all();
-        return $this->successResponse($productlist);
+        return new ProductListCollection($productLists->paginate()->appends($request->query()));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StoreProductlistRequest  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param  \App\Http\Requests\StoreProductListRequest  $request
+     * @return \App\Http\Resources\ProductListResource
      */
-    public function store(StoreProductlistRequest $request)
+    public function store(StoreProductListRequest $request)
     {
-        $input = $request->all();
-
-        // Get the user ID from the request
-        $user_id = auth()->user()->id;
-
-        // Get the active edition
-        $edition = Edition::where('is_active', 1)->first();
-
-        $input['user_id'] = $user_id;
-        $input['edition_id'] = $edition->id;
-
-        $created = Productlist::create($input);
-        return $this->successResponse($created, "Productlist created successfully", 201);
+        return new ProductListResource(ProductList::create($request->all()));
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Productlist  $productlist
-     * @return \Illuminate\Http\JsonResponse
+     * @param  \App\Models\ProductList  $productList
+     * @return \App\Http\Resources\ProductListResource
      */
-    public function show(Productlist $productlist)
+    public function show(ProductList $productList)
     {
-        // If the user is an admin or employee, return the productlist
-        if ($this->role() == "admin" || $this->role() == "employee") {
-            return $this->successResponse($productlist);
-        }
-
-        // If the user is a customer, return the productlist if it belongs to the logged in user
-        if ($this->role() == "customer") {
-            if ($productlist->user_id == auth()->user()->id) {
-                return $this->successResponse($productlist);
-            }
-        }
-
-        return $this->errorResponse("You are not authorized to view this productlist", 403);
+        return new ProductListResource($productList);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdateProductlistRequest  $request
-     * @param  \App\Models\Productlist  $productlist
-     * @return \Illuminate\Http\JsonResponse
+     * @param  \App\Http\Requests\UpdateProductListRequest  $request
+     * @param  \App\Models\ProductList  $productList
+     * @return \Illuminate\Http\Response
      */
-    public function update(UpdateProductlistRequest $request, Productlist $productlist)
+    public function update(UpdateProductListRequest $request, ProductList $productList)
     {
-        // Get the role from the user
-        $role = auth()->user()->role;
-
-        // If the user is not an admin or employee, check if the user is the owner of the productlist
-        if ($role != "admin" && $role != "employee") {
-            if ($productlist->user_id != auth()->user()->id) {
-                return $this->errorResponse("You are not authorized to update this productlist", 403);
-            }
-        }
-
-        // If list is confirmed by user, only admin or employee can update
-        if ($productlist->is_user_confirmed && $role != "admin" && $role != "employee") {
-            return $this->errorResponse("You are not authorized to update this productlist", 403);
-        }
-
-        // If list is confirmed by user and validated by employee, only admin can update
-        if ($productlist->is_user_confirmed && $productlist->is_employee_validated && $role != "admin") {
-            return $this->errorResponse("You are not authorized to update this productlist", 403);
-        }
-
-        // Update the list
-        $input = $request->all();
-        $productlist->fill($input);
-        $productlist->save();
-        return $this->successResponse($productlist);
+        //
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Productlist  $productlist
-     * @return \Illuminate\Http\JsonResponse
+     * @param  \App\Models\ProductList  $productList
+     * @return \Illuminate\Http\Response
      */
-    public function destroy(Productlist $productlist)
+    public function destroy(ProductList $productList)
     {
-        // Get the role from the user
-        $role = auth()->user()->role;
 
-        // If the user is not an admin or employee, check if the user is the owner of the productlist
-        if ($role != "admin" && $role != "employee") {
-            if ($productlist->user_id != auth()->user()->id) {
-                return $this->errorResponse("You are not authorized to delete this productlist", 403);
-            }
-        }
-
-        // If list is confirmed by user, only admin or employee can delete
-        if ($productlist->is_user_confirmed && $role != "admin" && $role != "employee") {
-            return $this->errorResponse("You are not authorized to delete this productlist", 403);
-        }
-
-        // If list is confirmed by user and validated by employee, only admin can delete
-        if ($productlist->is_user_confirmed && $productlist->is_employee_validated && $role != "admin") {
-            return $this->errorResponse("You are not authorized to delete this productlist", 403);
-        }
-
-        // Delete the list
-        $productlist->delete();
-        return $this->successResponse($productlist);
     }
 }

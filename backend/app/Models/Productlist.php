@@ -13,7 +13,13 @@ class Productlist extends Model
         'edition_id',
         'user_id',
         'list_number',
+        'member_number',
         'is_user_confirmed',
         'is_employee_validated',
     ];
+
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
 }
