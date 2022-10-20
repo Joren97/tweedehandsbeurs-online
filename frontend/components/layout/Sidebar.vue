@@ -51,7 +51,9 @@ import { useAuthStore } from "~~/store/auth";
 const route = computed(() => useRoute().path);
 
 const sidebar = computed(() => {
-  const user = useAuthStore().user;
+  // TODO DELETE THIS LATER
+  const showAll = true;
+  const role = !useAuthStore().user ? "guest" : useAuthStore().user.role;
 
   let sidebar = [
     {
@@ -87,7 +89,7 @@ const sidebar = computed(() => {
     },
   ];
 
-  if (user.role === "employee" || user.role === "admin") {
+  if (role === "employee" || role === "admin" || showAll) {
     sidebar.push(
       ...[
         {
@@ -119,7 +121,7 @@ const sidebar = computed(() => {
     );
   }
 
-  if (user.role === "admin") {
+  if (role === "admin" || showAll) {
     sidebar.push(
       ...[
         {

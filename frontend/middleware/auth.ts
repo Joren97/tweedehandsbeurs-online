@@ -1,5 +1,8 @@
 import { useAuthStore } from './../store/auth';
 export default defineNuxtRouteMiddleware(async (to, from) => {
+    // TODO DELETE THIS LATER
+    return true;
+
     const authStore = useAuthStore();
     const cookie = useCookie('apiToken');
     const authLevel = to.meta.authLevel;

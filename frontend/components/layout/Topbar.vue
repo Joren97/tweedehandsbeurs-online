@@ -215,9 +215,7 @@
           aria-haspopup="true"
           aria-expanded="false"
         >
-          <span class="mr-2 d-none d-lg-inline text-gray-600 small"
-            >{{ user.firstname }} {{ user.lastname }} Rol: {{ user.role }}</span
-          >
+          <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ username }}</span>
           <img class="img-profile rounded-circle" src="~/assets/img/undraw_profile.svg" />
         </a>
         <!-- Dropdown - User Information -->
@@ -257,5 +255,8 @@
 import { useAuthStore } from "~~/store/auth";
 
 const authStore = useAuthStore();
-const user = computed(() => authStore.user);
+const username = computed(() => {
+  if (!authStore.user) return "No user";
+  return authStore.user.firstname + " " + authStore.user.lastname;
+});
 </script>
