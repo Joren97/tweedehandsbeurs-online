@@ -24,12 +24,18 @@ class ProductlistController extends ApiController
         $filter = new ProductListFilter();
         $filterItems = $filter->transform($request);
 
-        $includeProducts = $request->query('includeProducts');
-
         $productLists = ProductList::where($filterItems);
+
+        $includeProducts = $request->query('includeProducts');
 
         if ($includeProducts) {
             $productLists = $productLists->with('products');
+        }
+
+        $includeUser = $request->query('includeUser');
+
+        if ($includeUser) {
+            $productLists = $productLists->with('user');
         }
 
         return new ProductListCollection($productLists->paginate()->appends($request->query()));

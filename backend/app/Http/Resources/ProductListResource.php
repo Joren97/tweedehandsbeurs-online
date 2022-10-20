@@ -18,11 +18,12 @@ class ProductListResource extends JsonResource
             'id' => $this->id,
             'listNumber' => $this->list_number,
             'memberNumber' => $this->member_number,
-            'isUserConfirmed' => $this->is_user_confirmed,
-            'isEmployeeValidated' => $this->is_employee_validated,
+            'isUserConfirmed' => $this->is_user_confirmed ? true : false,
+            'isEmployeeValidated' => $this->is_employee_validated ? true : false,
             'editionId' => $this->edition_id,
             'userId' => $this->user_id,
             'products' => ProductResource::collection($this->whenLoaded('products')),
+            'user' => new UserResource($this->whenLoaded('user')),
         ];
     }
 }
