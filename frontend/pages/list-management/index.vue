@@ -13,6 +13,7 @@
           <th scope="col">Lidnummer</th>
           <th scope="col">Bevestigd</th>
           <th scope="col">Gevalideerd</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
@@ -23,6 +24,15 @@
           <td>{{ emptyCheck(item.memberNumber) }}</td>
           <td>{{ item.isUserConfirmed }}</td>
           <td>{{ item.isEmployeeValidated }}</td>
+          <td>
+            <NuxtLink :to="`/list-management/${item.id}`" class="bt btn-primary btn-sm">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </NuxtLink>
+
+            <!-- <button class="btn btn-primary btn-sm" @click="showModal(item.listNumber)">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </button> -->
+          </td>
         </tr>
       </tbody>
     </table>
