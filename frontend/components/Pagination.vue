@@ -1,0 +1,56 @@
+<template>
+  <div>
+    <span>{{ from }}</span
+    >&nbsp;&dash;&nbsp;<span>{{ to }}</span
+    >&nbsp;&sol;&nbsp;<span>{{ total }}</span>
+    <button
+      class="btn btn-primary"
+      type="button"
+      :disabled="page == 1"
+      @click="previousPage()"
+    >
+      <i class="fas fa-chevron-left"></i>
+    </button>
+    <button
+      class="btn btn-primary"
+      type="button"
+      :disabled="page == lastPage"
+      @click="nextPage()"
+    >
+      <i class="fas fa-chevron-right"></i>
+    </button>
+  </div>
+</template>
+<script setup>
+const props = defineProps({
+  from: {
+    type: Number,
+    required: true,
+  },
+  to: {
+    type: Number,
+    required: true,
+  },
+  total: {
+    type: Number,
+    required: true,
+  },
+  page: {
+    type: Number,
+    required: true,
+    default: 1,
+  },
+  lastPage: {
+    type: Number,
+    required: true,
+  },
+});
+
+// TODO: Make pagination appear in url query
+
+const emit = defineEmits(["previous-page", "next-page"]);
+
+const previousPage = () => emit("previous-page");
+
+const nextPage = () => emit("next-page");
+</script>

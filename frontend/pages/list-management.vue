@@ -3,6 +3,7 @@
     <LayoutPageHeading>
       <template v-slot:title>Lijstenbeheer</template>
     </LayoutPageHeading>
+    {{ pending }}
     <table class="table">
       <thead>
         <tr>
@@ -25,7 +26,15 @@
         </tr>
       </tbody>
     </table>
-    <!-- <ThePagination test="hello" /> -->
+    <Pagination
+      :page="pagination.current_page"
+      :from="pagination.from"
+      :to="pagination.to"
+      :total="pagination.total"
+      :last-page="pagination.last_page"
+      @previous-page="previousPage"
+      @next-page="nextPage"
+    />
     <p>This is the list management page</p>
   </div>
 </template>
@@ -38,9 +47,37 @@ definePageMeta({
   },
 });
 
-const { pending, data } = useCustomLazyFetch("/api/productlist?includeUser=true");
+const page = ref(1);
+
+const route = useRoute();
+const config = useRuntimeConfig();
+
+const { pending, data, refresh } = useLazyAsyncData(
+  `productlists`,
+  () =>
+    $fetch(
+      `${config.public.API_BASE_URL}/api/productlist?page=${page.value}&includeUser=true`
+    ),
+  { watch: [page] }
+);
+
+const pagination = computed(() => {
+  if (!data) return {};
+  if (!data.value) return {};
+  return data.value.meta;
+});
+
 const lists = computed(() => {
+  if (!data) return [];
   if (!data.value) return [];
   return data.value.data;
 });
+
+const previousPage = () => {
+  page.value = page.value - 1;
+};
+
+const nextPage = () => {
+  page.value = page.value + 1;
+};
 </script>
