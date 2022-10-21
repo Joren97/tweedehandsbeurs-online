@@ -13,7 +13,7 @@
           <th scope="col">Lidnummer</th>
           <th scope="col">Bevestigd</th>
           <th scope="col">Gevalideerd</th>
-          <th></th>
+          <th scope="col"></th>
         </tr>
       </thead>
       <tbody>
@@ -25,13 +25,9 @@
           <td>{{ item.isUserConfirmed }}</td>
           <td>{{ item.isEmployeeValidated }}</td>
           <td>
-            <NuxtLink :to="`/list-management/${item.id}`" class="bt btn-primary btn-sm">
-              <i class="fa-solid fa-magnifying-glass"></i>
+            <NuxtLink class="btn btn-primary btn-sm" :to="`/list-management/${item.id}`">
+              <i class="fas fa-eye"></i>
             </NuxtLink>
-
-            <!-- <button class="btn btn-primary btn-sm" @click="showModal(item.listNumber)">
-              <i class="fa-solid fa-magnifying-glass"></i>
-            </button> -->
           </td>
         </tr>
       </tbody>
@@ -42,8 +38,6 @@
       :to="pagination.to"
       :total="pagination.total"
       :last-page="pagination.last_page"
-      @previous-page="previousPage"
-      @next-page="nextPage"
     />
     <p>This is the list management page</p>
   </div>
@@ -57,16 +51,17 @@ definePageMeta({
   },
 });
 
-const page = ref(1);
+const page = computed(() => {
+  return parseInt(useRoute().query.page) || 1;
+});
 
-const route = useRoute();
-const config = useRuntimeConfig();
-
-const { pending, data, refresh } = useLazyAsyncData(
-  `productlists`,
+const { pending, data } = useLazyAsyncData(
+  "productlists",
   () =>
     $fetch(
-      `${config.public.API_BASE_URL}/api/productlist?page=${page.value}&includeUser=true`
+      `${useRuntimeConfig().public.API_BASE_URL}/api/productlist?page=${
+        page.value
+      }&includeUser=true`
     ),
   { watch: [page] }
 );
@@ -82,12 +77,4 @@ const lists = computed(() => {
   if (!data.value) return [];
   return data.value.data;
 });
-
-const previousPage = () => {
-  page.value = page.value - 1;
-};
-
-const nextPage = () => {
-  page.value = page.value + 1;
-};
 </script>
