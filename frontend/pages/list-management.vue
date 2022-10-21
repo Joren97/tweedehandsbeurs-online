@@ -32,8 +32,6 @@
       :to="pagination.to"
       :total="pagination.total"
       :last-page="pagination.last_page"
-      @previous-page="previousPage"
-      @next-page="nextPage"
     />
     <p>This is the list management page</p>
   </div>
@@ -47,16 +45,17 @@ definePageMeta({
   },
 });
 
-const page = ref(1);
+const page = computed(() => {
+  return parseInt(useRoute().query.page) || 1;
+});
 
-const route = useRoute();
-const config = useRuntimeConfig();
-
-const { pending, data, refresh } = useLazyAsyncData(
-  `productlists`,
+const { pending, data } = useLazyAsyncData(
+  "productlists",
   () =>
     $fetch(
-      `${config.public.API_BASE_URL}/api/productlist?page=${page.value}&includeUser=true`
+      `${useRuntimeConfig().public.API_BASE_URL}/api/productlist?page=${
+        page.value
+      }&includeUser=true`
     ),
   { watch: [page] }
 );
@@ -72,12 +71,4 @@ const lists = computed(() => {
   if (!data.value) return [];
   return data.value.data;
 });
-
-const previousPage = () => {
-  page.value = page.value - 1;
-};
-
-const nextPage = () => {
-  page.value = page.value + 1;
-};
 </script>

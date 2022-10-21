@@ -26,14 +26,17 @@ const props = defineProps({
   from: {
     type: Number,
     required: true,
+    default: 1,
   },
   to: {
     type: Number,
     required: true,
+    default: 1,
   },
   total: {
     type: Number,
     required: true,
+    default: 0,
   },
   page: {
     type: Number,
@@ -43,14 +46,31 @@ const props = defineProps({
   lastPage: {
     type: Number,
     required: true,
+    default: 1,
   },
 });
 
 // TODO: Make pagination appear in url query
 
+const router = useRouter();
+
 const emit = defineEmits(["previous-page", "next-page"]);
 
-const previousPage = () => emit("previous-page");
+const previousPage = () => {
+  router.push({
+    query: {
+      page: props.page - 1,
+    },
+  });
+  emit("previous-page");
+};
 
-const nextPage = () => emit("next-page");
+const nextPage = () => {
+  router.push({
+    query: {
+      page: props.page + 1,
+    },
+  });
+  emit("next-page");
+};
 </script>
