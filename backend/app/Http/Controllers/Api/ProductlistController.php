@@ -58,8 +58,22 @@ class ProductlistController extends ApiController
      * @param  \App\Models\ProductList  $productList
      * @return \App\Http\Resources\ProductListResource
      */
-    public function show(ProductList $productList)
+    public function show(int $id)
     {
+        $productList = ProductList::findOrFail($id);
+
+        $includeUser = request()->query('includeUser');
+
+        if ($includeUser) {
+            $productList = $productList->loadMissing('user');
+        }
+
+        $includeProducts = request()->query('includeProducts');
+
+        if ($includeProducts) {
+            $productList = $productList->loadMissing('products');
+        }
+
         return new ProductListResource($productList);
     }
 

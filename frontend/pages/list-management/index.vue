@@ -13,6 +13,7 @@
           <th scope="col">Lidnummer</th>
           <th scope="col">Bevestigd</th>
           <th scope="col">Gevalideerd</th>
+          <th scope="col"></th>
         </tr>
       </thead>
       <tbody>
@@ -23,6 +24,11 @@
           <td>{{ emptyCheck(item.memberNumber) }}</td>
           <td>{{ item.isUserConfirmed }}</td>
           <td>{{ item.isEmployeeValidated }}</td>
+          <td>
+            <NuxtLink class="btn btn-primary btn-sm" :to="`/list-management/${item.id}`">
+              <i class="fas fa-eye"></i>
+            </NuxtLink>
+          </td>
         </tr>
       </tbody>
     </table>
