@@ -17,7 +17,8 @@ class EditionResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'year' => $this->year
+            'year' => $this->year,
+            'isActive' => $this->is_active,
         ];
     }
 }
