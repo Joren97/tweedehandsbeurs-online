@@ -16,7 +16,9 @@ Route::post('/auth/login', [AuthController::class, 'login']);
 // User routes
 Route::group(['middleware' => ['auth:sanctum', 'ability:user,employee,admin']], function () {
     Route::get('auth/userinfo', [AuthController::class, 'userinfo']);
+
     Route::get('productlist/me', [ProductlistController::class, 'me']);
+
     Route::get('edition', [EditionController::class, 'index']);
     Route::get('edition/{edition}', [EditionController::class, 'show']);
 });
@@ -24,9 +26,11 @@ Route::group(['middleware' => ['auth:sanctum', 'ability:user,employee,admin']], 
 // Employee routes
 Route::group(['middleware' => ['auth:sanctum', 'ability:employee,admin']], function () {
     Route::apiResource('productlist', ProductlistController::class);
+
     Route::post('edition', [EditionController::class, 'store']);
     Route::put('edition/{edition}', [EditionController::class, 'update']);
     Route::delete('edition/{edition}', [EditionController::class, 'destroy']);
+
     Route::apiResource('price', PriceController::class);
     Route::apiResource('product', ProductController::class);
 });
