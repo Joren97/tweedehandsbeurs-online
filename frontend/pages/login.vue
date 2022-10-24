@@ -80,24 +80,21 @@ const fieldErrors = ref({});
 const login = async () => {
   console.log("login");
 
-  try {
-    const { data } = await useCustomFetch("/api/auth/login", {
-      method: "POST",
-      body: user.value,
-    });
+  const { data, error } = await useCustomFetch("/api/auth/login", {
+    method: "POST",
+    body: user.value,
+    initialCache: false,
+  });
 
-
-    let maxAge = null;
-    if (data.value.data.remember) maxAge = 604800;
-    const token = useCookie("apiToken", { maxAge });
-    token.value = data.value.data.token;
-    navigateTo("/");
-  } catch (error) {
-    const {
-      data: { status, errors },
-    } = error;
-
-    fieldErrors.value = errors;
+  if (error.value != null) {
+    fieldErrors.value = error.value.data.errors;
+    return;
   }
+
+  let maxAge = null;
+  if (data.value.data.remember) maxAge = 604800;
+  const token = useCookie("apiToken", { maxAge });
+  token.value = data.value.data.token;
+  navigateTo("/");
 };
 </script>
