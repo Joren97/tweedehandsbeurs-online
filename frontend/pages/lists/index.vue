@@ -6,7 +6,9 @@
     <div class="row row-cols-4">
       <div class="col mb-3" v-for="item in editionsWithLists">
         <div class="card">
-          <div class="card-header">{{ item.year }} &dash; {{ item.name }}</div>
+          <div class="card-header" :class="{ 'fw-bold': item.isActive }">
+            {{ item.year }} &dash; {{ item.name }}
+          </div>
           <ul class="list-group list-group-flush">
             <template v-if="item.lists.length > 0">
               <li class="list-group-item pe-clickable" v-for="item in item.lists">
@@ -36,7 +38,7 @@
       aria-labelledby="newListModalLabel"
       aria-hidden="true"
     >
-      <NewListModal />
+      <NewListModal :active-edition="activeEdition" />
     </div>
   </div>
 </template>
@@ -70,5 +72,13 @@ const editionsWithLists = computed(() => {
       lists: listsData.value.data.filter((list) => list.editionId === edition.id),
     };
   });
+});
+
+const activeEdition = computed(() => {
+  if (!editionsData) return null;
+  if (!editionsData.value) return null;
+  if (!editionsData.value.data) return null;
+
+  return editionsData.value.data.find((edition) => edition.isActive);
 });
 </script>
