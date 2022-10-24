@@ -38,6 +38,15 @@ class ProductlistController extends ApiController
             $productLists = $productLists->with('user');
         }
 
+        $search = $request->query('search');
+
+        if ($search) {
+            $productLists = $productLists->orWhere('list_number', 'like', '%' . $search . '%')->orWhereHas('user', function ($query) use ($search) {
+                $query->where('firstname', 'like', '%' . $search . '%')
+                    ->orWhere('lastname', 'like', '%' . $search . '%');
+            });
+        }
+
         return new ProductListCollection($productLists->paginate()->appends($request->query()));
     }
 
