@@ -14,4 +14,14 @@ class ApiController extends Controller
     {
         return auth()->user()->role;
     }
+
+    function hasAdminRole()
+    {
+        return $this->role() == 'admin';
+    }
+
+    function hasEmployeeRole()
+    {
+        return $this->role() == 'employee';
+    }
 }

@@ -51,6 +51,40 @@ class ProductlistController extends ApiController
     }
 
     /**
+     * Display a listing of resources associated with the user.
+     *
+     * @return \App\Http\Resources\ProductListCollection
+     */
+    public function me(Request $request)
+    {
+        $filter = new ProductListFilter();
+        $filterItems = $filter->transform($request);
+
+        // Get productlists associated with the user
+        $productLists = ProductList::where('user_id', auth()->user()->id)->where($filterItems);
+
+        $includeProducts = $request->query('includeProducts');
+
+        if ($includeProducts) {
+            $productLists = $productLists->with('products');
+        }
+
+        $includeEdition = $request->query('includeEdition');
+
+        if ($includeEdition) {
+            $productLists = $productLists->with('edition');
+        }
+
+        $includeUser = $request->query('includeUser');
+
+        if ($includeUser) {
+            $productLists = $productLists->with('user');
+        }
+
+        return new ProductListCollection($productLists->paginate()->appends($request->query()));
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreProductListRequest  $request

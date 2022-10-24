@@ -42,11 +42,11 @@ class AuthController extends ApiController
     {
         try {
             $validateUser = Validator::make($request->all(),
-            [
-                'email' => 'required|email',
-                'password' => 'required',
-                'remember' => 'boolean'
-            ]);
+                [
+                    'email' => 'required|email',
+                    'password' => 'required',
+                    'remember' => 'boolean'
+                ]);
 
             if ($validateUser->fails()) {
                 return response()->json([
@@ -75,14 +75,16 @@ class AuthController extends ApiController
 
             $user = User::where('email', $request->email)->first();
 
+            // Get role of user
+            $role = $user->role;
+
             // Delete all old tokens
             $user->tokens()->delete();
-            $user['token'] = $user->createToken("apiToken")->plainTextToken;
+            $user['token'] = $user->createToken("apiToken", [$role])->plainTextToken;
             $user['remember'] = $request->remember;
 
             return $this->successResponse($user, "Gebruiker werd aangemeld", 200);
-        }
-        catch (\Throwable $th) {
+        } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
                 'message' => $th->getMessage()

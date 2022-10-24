@@ -13,15 +13,26 @@ use Illuminate\Support\Facades\Route;
 Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/login', [AuthController::class, 'login']);
 
-// TODO PROTECT ROUTES USING SANCTUM ROLES
-// See https://stackoverflow.com/questions/71358904/laravel-sanctum-multiple-guard-middleware
-Route::get('auth/userinfo', [AuthController::class, 'userinfo']);
-Route::apiResource('productlist', ProductlistController::class);
-Route::apiResource('edition', EditionController::class);
-Route::apiResource('price', PriceController::class);
-Route::apiResource('product', ProductController::class);
+// User routes
+Route::group(['middleware' => ['auth:sanctum', 'ability:user,employee,admin']], function () {
+    Route::get('auth/userinfo', [AuthController::class, 'userinfo']);
+    Route::get('productlist/me', [ProductlistController::class, 'me']);
+    Route::get('edition', [EditionController::class, 'index']);
+    Route::get('edition/{edition}', [EditionController::class, 'show']);
+});
 
+// Employee routes
+Route::group(['middleware' => ['auth:sanctum', 'ability:employee,admin']], function () {
+    Route::apiResource('productlist', ProductlistController::class);
+    Route::post('edition', [EditionController::class, 'store']);
+    Route::put('edition/{edition}', [EditionController::class, 'update']);
+    Route::delete('edition/{edition}', [EditionController::class, 'destroy']);
+    Route::apiResource('price', PriceController::class);
+    Route::apiResource('product', ProductController::class);
+});
 
-// TODO DELETE THIS WHEN GOING IN PRODUCTION
-Route::post('/seed', [SeedController::class, 'seed']);
-Route::post('/clear', [SeedController::class, 'clear']);
+// Admin routes
+Route::group(['middleware' => ['auth:sanctum', 'ability:admin']], function () {
+    Route::post('/seed', [SeedController::class, 'seed']);
+    Route::post('/clear', [SeedController::class, 'clear']);
+});

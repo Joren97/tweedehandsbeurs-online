@@ -24,6 +24,7 @@ class ProductListResource extends JsonResource
             'userId' => $this->user_id,
             'products' => ProductResource::collection($this->whenLoaded('products')),
             'user' => new UserResource($this->whenLoaded('user')),
+            'edition' => new EditionResource($this->whenLoaded('edition')),
         ];
     }
 }
