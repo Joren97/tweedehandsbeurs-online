@@ -55,7 +55,7 @@ class ProductlistController extends ApiController
      *
      * @return \App\Http\Resources\ProductListCollection
      */
-    public function me(Request $request)
+    public function getListsForLoggedInUser(Request $request)
     {
         $filter = new ProductListFilter();
         $filterItems = $filter->transform($request);
