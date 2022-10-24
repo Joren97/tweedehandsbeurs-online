@@ -32,11 +32,12 @@ definePageMeta({
   },
 });
 
-const [
-  { pending: editionsPending, data: editionsData },
-  { pending: listsPending, data: listsData },
-] = await Promise.all([
-  useCustomLazyFetch(`/api/edition`),
-  useCustomLazyFetch(`/api/productlist/me`),
-]);
+const {
+  pending: editionsPending,
+  data: editionsData,
+} = useCustomLazyFetch(`/api/edition`, { key: "edition" });
+const {
+  pending: listsPending,
+  data: listsData,
+} = useCustomLazyFetch(`/api/productlist/me`, { key: "productlist" });
 </script>
