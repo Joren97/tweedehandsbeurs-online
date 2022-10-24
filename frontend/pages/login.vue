@@ -86,10 +86,11 @@ const login = async () => {
       body: user.value,
     });
 
+
     let maxAge = null;
-    if (data.remember) maxAge = 604800;
+    if (data.value.data.remember) maxAge = 604800;
     const token = useCookie("apiToken", { maxAge });
-    token.value = data.token;
+    token.value = data.value.data.token;
     navigateTo("/");
   } catch (error) {
     const {
