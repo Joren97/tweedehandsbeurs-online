@@ -1,9 +1,9 @@
-import { FetchOptions } from "ohmyfetch";
+import { UseFetchOptions } from "nuxt/dist/app/composables";
 
-export const useCustomFetch = (url: string, options?: FetchOptions) => {
+export const useCustomFetch = (url: string, options?: UseFetchOptions<unknown>) => {
     const config = useRuntimeConfig();
 
-    return $fetch(config.public.API_BASE_URL + url, {
+    return useFetch(config.public.API_BASE_URL + url, {
         ...options,
         async onResponse({ request, response, options }) {
             console.log("[fetch response]");
@@ -13,13 +13,13 @@ export const useCustomFetch = (url: string, options?: FetchOptions) => {
         },
 
         async onRequest({ request, options }) {
-            const token = useCookie('apiToken')
+            const token = useCookie("apiToken");
 
             if (token.value) {
                 options.headers = {
                     ...options.headers,
                     Authorization: `Bearer ${token.value}`,
-                }
+                };
             }
 
             console.log("[fetch request]");
