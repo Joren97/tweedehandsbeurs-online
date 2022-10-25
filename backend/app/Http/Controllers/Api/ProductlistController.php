@@ -85,6 +85,46 @@ class ProductlistController extends ApiController
     }
 
     /**
+     * Store a newly created resource in storage for the logged in user.
+     *
+     * @param  \App\Http\Requests\StoreProductListRequest  $request
+     * @return \App\Http\Resources\ProductListResource
+     */
+    public function storeForLoggedInUser(StoreProductListRequest $request)
+    {
+        // Set edition id equal to active edition
+        $productlist['edition_id'] = Edition::where('is_active', true)->first()->id;
+        // Set user id equal to logged in user
+        $productlist['user_id'] = auth()->user()->id;
+        $productlist['list_number'] = $request->listNumber;
+        if ($request->has('memberNumber')) {
+            $productlist['member_number'] = $request->memberNumber;
+        }
+
+        // Check if list number already exists on current edition
+        $existingProductList = ProductList::where('edition_id', $productlist['edition_id'])
+            ->where('list_number', $productlist['list_number'])->first();
+
+        if ($existingProductList) {
+            $errors = ['listNumber' => ['Lijstnummer is reeds in gebruik.']];
+            return $this->fieldErrorResponse($errors, 404);
+        }
+
+        // Check if list number already exists on current edition for current user
+        $existingProductList = ProductList::where('edition_id', $productlist['edition_id'])
+            ->where('user_id', $productlist['user_id'])
+            ->where('list_number', $productlist['list_number'])->first();
+
+        if ($existingProductList) {
+            $errors = ['listNumber' => ['Lijstnummer is reeds in gebruik.']];
+            return $this->fieldErrorResponse($errors, 404);
+        }
+
+        // Create the productlist
+        return new ProductListResource(ProductList::create($productlist));
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreProductListRequest  $request

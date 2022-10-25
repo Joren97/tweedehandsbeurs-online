@@ -18,6 +18,7 @@ Route::group(['middleware' => ['auth:sanctum', 'ability:user,employee,admin']], 
     Route::get('auth/userinfo', [AuthController::class, 'userinfo']);
 
     Route::get('productlist/me', [ProductlistController::class, 'getListsForLoggedInUser']);
+    Route::post('productlist/me', [ProductlistController::class, 'storeForLoggedInUser']);
 
     Route::get('edition', [EditionController::class, 'index']);
     Route::get('edition/{edition}', [EditionController::class, 'show']);
