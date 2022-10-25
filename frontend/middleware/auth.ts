@@ -11,10 +11,10 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     }
 
     // Check if user object is set, else fetch it
-    if (!authStore.user) {
+    if (!authStore.user || authStore.user == null) {
         try {
-            const { data } = await useCustomFetch("/api/auth/userinfo");
-            authStore.user = data;
+            const { data: { value } } = await useCustomFetch("/api/auth/userinfo");
+            authStore.user = value.data;
         } catch (error) {
             return navigateTo('/login');
         }
