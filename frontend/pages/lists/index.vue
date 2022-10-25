@@ -38,7 +38,7 @@
       aria-labelledby="newListModalLabel"
       aria-hidden="true"
     >
-      <NewListModal :active-edition="activeEdition" />
+      <NewListModal :active-edition="activeEdition" @list-created="onListCreated" />
     </div>
   </div>
 </template>
@@ -58,6 +58,7 @@ const {
 const {
   pending: listsPending,
   data: listsData,
+  refresh: listsRefresh,
 } = useCustomLazyFetch(`/api/productlist/me`, { key: "productlist" });
 
 const editionsWithLists = computed(() => {
@@ -81,4 +82,8 @@ const activeEdition = computed(() => {
 
   return editionsData.value.data.find((edition) => edition.isActive);
 });
+
+const onListCreated = () => {
+  listsRefresh();
+};
 </script>
