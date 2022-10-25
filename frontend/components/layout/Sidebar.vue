@@ -52,7 +52,7 @@ const route = computed(() => useRoute().path);
 
 const sidebar = computed(() => {
   // TODO DELETE THIS LATER
-  const showAll = true;
+  const showAll = false;
   const role = !useAuthStore().user ? "guest" : useAuthStore().user.role;
 
   let sidebar = [
