@@ -55,15 +55,13 @@ const page = computed(() => {
   return parseInt(useRoute().query.page) || 1;
 });
 
-const { pending, data } = useLazyAsyncData(
-  "productlists",
-  () =>
-    $fetch(
-      `${useRuntimeConfig().public.API_BASE_URL}/api/productlist?page=${
-        page.value
-      }&includeUser=true`
-    ),
-  { watch: [page] }
+const { pending, data } = useCustomLazyFetch(
+  `/api/productlist?page=${page.value}&includeUser=true`,
+  {
+    initialCache: false,
+    watch: [page],
+    key: "lists",
+  }
 );
 
 const pagination = computed(() => {
