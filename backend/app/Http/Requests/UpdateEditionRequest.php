@@ -26,7 +26,7 @@ class UpdateEditionRequest extends FormRequest
         return [
             'year' => 'required|integer',
             'name' => 'required',
-            'is_active' => 'required|boolean'
+            'isActive' => 'required|boolean'
         ];
     }
 }

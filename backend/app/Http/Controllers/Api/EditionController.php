@@ -63,7 +63,7 @@ class EditionController extends ApiController
 
         $edition->year = $input['year'];
         $edition->name = $input['name'];
-        $edition->is_active = $input['is_active'];
+        $edition->is_active = $input['isActive'];
         $edition->save();
 
         return $this->successResponse($edition, "Edition updated successfully", 200);
