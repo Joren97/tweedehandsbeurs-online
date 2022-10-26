@@ -13,5 +13,6 @@ definePageMeta({
   meta: {
     authLevel: "user",
   },
+  title: "Profiel",
 });
 </script>
