@@ -43,6 +43,9 @@
   </div>
 </template>
 <script setup>
+useHead({
+  title: "Lijstenbeheer",
+});
 definePageMeta({
   layout: "authorized",
   middleware: ["auth"],
@@ -55,12 +58,11 @@ const page = computed(() => {
   return parseInt(useRoute().query.page) || 1;
 });
 
-const { pending, data } = useCustomLazyFetch(
-  `/api/productlist?page=${page.value}&includeUser=true`,
+const { pending, data } = myAsyncData(
+  () => `/api/productlist?page=${page.value}&includeUser=true`,
+  {},
   {
-    initialCache: false,
     watch: [page],
-    key: "lists",
   }
 );
 
