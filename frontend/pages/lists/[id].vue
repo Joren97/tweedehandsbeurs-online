@@ -8,16 +8,16 @@
       type="button"
       class="btn btn-primary"
       data-bs-toggle="modal"
-      data-bs-target="#newListModal"
+      data-bs-target="#newProductModal"
     >
-      Nieuwe lijst toevoegen
+      Product toevoegen
     </button>
     {{ data }}
     <div
       class="modal fade"
-      id="newListModal"
+      id="newProductModal"
       tabindex="-1"
-      aria-labelledby="newListModalLabel"
+      aria-labelledby="newProductModalLabel"
       aria-hidden="true"
     >
       <NewProductModal @product-created="onProductCreated" />
@@ -37,9 +37,10 @@ definePageMeta({
   },
 });
 
+clearNuxtData();
 const { data, pending, refresh } = myLazyFetch(
   () => `/api/productlist/me/${route.params.id}`,
-  { initialCache: false, default: {} }
+  { initialCache: false }
 );
 
 const onProductCreated = () => {
