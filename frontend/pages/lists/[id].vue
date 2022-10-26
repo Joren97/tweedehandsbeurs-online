@@ -1,7 +1,7 @@
 <template>
   <div>
     <LayoutPageHeading>
-      <template v-slot:title>Mijn lijsten | Lijst xxx</template>
+      <template v-slot:title>{{ pageTitle }}</template>
     </LayoutPageHeading>
 
     <button
@@ -12,7 +12,7 @@
     >
       Product toevoegen
     </button>
-    {{ data }}
+    {{ list }}
     <div
       class="modal fade"
       id="newProductModal"
@@ -26,9 +26,6 @@
 </template>
 <script setup>
 const route = useRoute();
-useHead({
-  title: `Mijn lijsten | Lijst ${route.params.id}`,
-});
 definePageMeta({
   layout: "authorized",
   middleware: ["auth"],
@@ -40,10 +37,35 @@ definePageMeta({
 clearNuxtData();
 const { data, pending, refresh } = myLazyFetch(
   () => `/api/productlist/me/${route.params.id}`,
-  { initialCache: false }
+  {
+    initialCache: false,
+    params: {
+      includeProducts: true,
+    },
+  }
 );
+
+const list = computed(() => {
+  if (!data) return null;
+  if (!data.value) return null;
+  return data.value.data;
+});
 
 const onProductCreated = () => {
   refresh();
 };
+
+const pageTitle = computed(() => {
+  if (!list) return "Mijn lijsten";
+  if (!list.value) return "Mijn lijsten";
+  return `Mijn lijsten | Lijst ${list.value.listNumber}`;
+});
+
+useHead({
+  title: computed(() => {
+    if (!list) return "Mijn lijsten";
+    if (!list.value) return "Mijn lijsten";
+    return `Mijn lijsten | Lijst ${list.value.listNumber}`;
+  }),
+});
 </script>
