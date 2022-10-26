@@ -3,8 +3,8 @@
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
-    "generate-dev": "cross-env API_BASE_URL=http://api.dev.2dehandsbeursonline.be/public nuxt generate",
-    "generate-prod": "cross-env API_BASE_URL=http://api.2dehandsbeursonline.be/public nuxt generate",
+    "generate-dev": "cross-env API_BASE_URL=http://api.dev.2dehandsbeursonline.be nuxt generate",
+    "generate-prod": "cross-env API_BASE_URL=http://api.2dehandsbeursonline.be nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
   },
