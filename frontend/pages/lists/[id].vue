@@ -37,11 +37,10 @@ definePageMeta({
   },
 });
 
-const {
-  data,
-  pending,
-  refresh,
-} = useCustomLazyFetch(`/api/productlist/me/${route.params.id}`, { key: "edition" });
+const { data, pending, refresh } = myLazyFetch(
+  () => `/api/productlist/me/${route.params.id}`,
+  { initialCache: false, default: {} }
+);
 
 const onProductCreated = () => {
   refresh();
