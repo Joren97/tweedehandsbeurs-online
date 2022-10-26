@@ -136,6 +136,36 @@ class ProductlistController extends ApiController
     }
 
     /**
+     * Display the specified resource for the logged in user.
+     *
+     * @param  \App\Models\ProductList  $productList
+     * @return \App\Http\Resources\ProductListResource
+     */
+    public function showForLoggedInUser(int $id)
+    {
+        $productList = ProductList::findOrFail($id);
+
+        // If Productlist does not belong to logged in user, return error
+        if ($productList->user_id !== auth()->user()->id) {
+            return $this->errorResponse('Productlist does not belong to logged in user.', 404);
+        }
+
+        $includeUser = request()->query('includeUser');
+
+        if ($includeUser) {
+            $productList = $productList->loadMissing('user');
+        }
+
+        $includeProducts = request()->query('includeProducts');
+
+        if ($includeProducts) {
+            $productList = $productList->loadMissing('products');
+        }
+
+        return new ProductListResource($productList);
+    }
+
+    /**
      * Display the specified resource.
      *
      * @param  \App\Models\ProductList  $productList

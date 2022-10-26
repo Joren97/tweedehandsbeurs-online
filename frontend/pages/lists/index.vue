@@ -11,7 +11,11 @@
           </div>
           <ul class="list-group list-group-flush">
             <template v-if="item.lists.length > 0">
-              <li class="list-group-item pe-clickable" v-for="item in item.lists">
+              <li
+                class="list-group-item pe-clickable"
+                v-for="item in item.lists"
+                @click="openList(item.id)"
+              >
                 Lijst {{ item.listNumber }}
                 <span v-if="item.memberNumber" class="text-muted small"
                   >({{ item.memberNumber }})</span
@@ -43,6 +47,9 @@
   </div>
 </template>
 <script setup>
+useHead({
+  title: "Mijn lijsten",
+});
 definePageMeta({
   layout: "authorized",
   middleware: ["auth"],
@@ -85,5 +92,9 @@ const activeEdition = computed(() => {
 
 const onListCreated = () => {
   listsRefresh();
+};
+
+const openList = (id) => {
+  useRouter().push(`/lists/${id}`);
 };
 </script>
