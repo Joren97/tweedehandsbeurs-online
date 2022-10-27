@@ -7,11 +7,14 @@ use App\Models\Productlist;
 use App\Http\Requests\StoreProductlistRequest;
 use App\Http\Requests\UpdateProductlistRequest;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\MailController;
+use App\Http\Controllers\PDFController;
 use App\Http\Requests\ConfirmProductlistRequest;
 use App\Http\Resources\ProductListCollection;
 use App\Http\Resources\ProductListResource;
 use App\Models\Edition;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class ProductlistController extends ApiController
 {
@@ -206,6 +209,17 @@ class ProductlistController extends ApiController
         if ($list->user_id !== auth()->user()->id) {
             return $this->errorResponse('Productlist does not belong to logged in user.', 404);
         }
+
+        // Get PDF of productlist
+        $pdf = PDFController::generateProductlistPdf($list->id);
+
+        // Send an email to the user
+        $data["email"] = "aatmaninfotech@gmail.com";
+        $data["title"] = "From ItSolutionStuff.com";
+        $data["body"] = "This is Demo";
+
+        MailController::sendMail('emails.myMail', $data, 'synaevejoren@gmail.com',
+            'Jouw productlijst', $pdf, 'productlijst.pdf');
 
         $list->is_user_confirmed = true;
         $list->save();

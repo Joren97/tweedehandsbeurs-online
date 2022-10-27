@@ -3,14 +3,16 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Mail\MyMail;
 use App\Models\Edition;
 use App\Models\Price;
 use App\Models\Product;
 use App\Models\Productlist;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
-class SeedController extends Controller
+class SeedController extends ApiController
 {
     public function seed(Request $request)
     {
@@ -63,5 +65,17 @@ class SeedController extends Controller
         Price::truncate();
         Edition::truncate();
         User::where('id', '>', 4)->delete();
+    }
+
+    public function testMail()
+    {
+        $mailData = [
+            'title' => 'Mail from ItSolutionStuff.com',
+            'body' => 'This is for testing email using smtp.'
+        ];
+
+        Mail::to('synaevejoren@gmail.com')->send(new MyMail($mailData));
+
+        return $this->successResponse("Email is sent.");
     }
 }
