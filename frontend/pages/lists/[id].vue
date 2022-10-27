@@ -4,6 +4,53 @@
       <template v-slot:title>{{ pageTitle }}</template>
     </LayoutPageHeading>
 
+    <div class="row">
+      <div class="col-8">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Beschrijving</th>
+              <th>Vraagprijs</th>
+              <th>Verkoopprijs</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in products" :key="item.id">
+              <td>{{ item.id }}</td>
+              <td>{{ item.description }}</td>
+              <td>{{ item.price.askingPrice }}</td>
+              <td>{{ item.price.sellingPrice }}</td>
+              <td>Verwijderen / Aanpassen</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-4">
+        <table class="table">
+          <tbody v-if="list">
+            <tr>
+              <th>Lijstnummer</th>
+              <td>{{ list.listNumber }}</td>
+            </tr>
+            <tr>
+              <th>Lidnummer</th>
+              <td>{{ emptyCheck(list.memberNumber) }}</td>
+            </tr>
+            <tr>
+              <th>Bevestigd</th>
+              <td>{{ list.isUserConfirmed }}</td>
+            </tr>
+            <tr>
+              <th>Gevalideerd</th>
+              <td>{{ list.isEmployeeValidated }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
     <button
       type="button"
       class="btn btn-primary"
@@ -15,12 +62,10 @@
     <button
       class="btn btn-primary"
       @click="confirmList"
-      :disabled="listPending || (list && list.data.isUserConfirmed)"
+      :disabled="listPending || (list && list.isUserConfirmed)"
     >
       Lijst bevestigen
     </button>
-    <p>{{ list }}</p>
-    <p>{{ prices }}</p>
     <div
       class="modal fade"
       id="newProductModal"
@@ -44,7 +89,7 @@ definePageMeta({
 
 clearNuxtData();
 
-const { data: list, pending: listPending, refresh } = myLazyFetch(
+const { data: listData, pending: listPending, refresh } = myLazyFetch(
   () => `/api/productlist/me/${route.params.id}`,
   {
     key: "productlist",
@@ -86,10 +131,19 @@ const onProductCreated = () => {
 };
 
 const pageTitle = computed(() => {
-  if (!list) return "Mijn lijsten";
-  if (!list.value) return "Mijn lijsten";
-  const data = list.value.data;
-  return `Mijn lijsten | Lijst ${data.listNumber}`;
+  if (list) return "Mijn lijsten";
+  return `Mijn lijsten | Lijst ${list.value.listNumber}`;
+});
+
+const list = computed(() => {
+  if (!listData) return null;
+  if (!listData.value) return null;
+  return listData.value.data;
+});
+
+const products = computed(() => {
+  if (!list.value) return [];
+  return list.value.products;
 });
 
 useHead({
