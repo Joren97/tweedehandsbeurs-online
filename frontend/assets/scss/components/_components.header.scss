@@ -1,0 +1,25 @@
+.c-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: calc(100% - 17.5rem);
+  height: 4.375rem;
+  background-color: #ffffff;
+  padding: 0 1rem;
+  transform: translateX(17.5rem);
+
+  .header__navigation {
+    ul {
+      display: flex;
+      align-items: center;
+
+      li {
+        margin-right: 1rem;
+
+        a {
+          color: $black;
+        }
+      }
+    }
+  }
+}

@@ -9,6 +9,7 @@
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
+    "bootstrap": "^5.2.2",
     "cross-env": "^7.0.3",
     "nuxt": "3.0.0-rc.12",
     "sass": "^1.55.0",
