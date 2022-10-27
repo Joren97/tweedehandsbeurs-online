@@ -18,10 +18,10 @@
           </thead>
           <tbody>
             <tr v-for="item in products" :key="item.id">
-              <td>{{ item.id }}</td>
+              <td>{{ item.productNumber }}</td>
               <td>{{ item.description }}</td>
-              <td>{{ item.price.askingPrice }}</td>
-              <td>{{ item.price.sellingPrice }}</td>
+              <td>{{ toEuro(item.price.askingPrice) }}</td>
+              <td>{{ toEuro(item.price.sellingPrice) }}</td>
               <td>Verwijderen / Aanpassen</td>
             </tr>
           </tbody>
