@@ -116,4 +116,29 @@ class ProductController extends Controller
     {
 
     }
+
+    /**
+     * Remove the specified resource from storage for the logged in user.
+     *
+     * @param  integer  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroyForLoggedInUser($id)
+    {
+        $product = Product::with('productList')->findOrFail($id);
+
+        // If the productlist does not belong to the logged in user, return a 403
+        if ($product->productList->user_id !== auth()->user()->id) {
+            return response()->json(['message' => 'Forbidden'], 403);
+        }
+
+        // If the productlist is is confirmed by the user, return a 403
+        if ($product->productList->is_user_confirmed) {
+            return $this->errorResponse('Deze lijst is reeds bevestigd.', 403);
+        }
+
+        $product->delete();
+
+        return response()->json(['message' => 'Product verwijderd.'], 200);
+    }
 }
