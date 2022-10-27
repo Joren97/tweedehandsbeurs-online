@@ -18,6 +18,7 @@ class Product extends Model
         'description',
         'price_id',
         'productlist_id',
+        'product_number',
     ];
 
     public function productList()

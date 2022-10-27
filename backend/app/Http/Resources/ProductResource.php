@@ -19,6 +19,7 @@ class ProductResource extends JsonResource
             'priceId' => $this->price_id,
             'productlistId' => $this->productlist_id,
             'description' => $this->description,
+            'productNumber' => $this->product_number,
             'isSold' => $this->is_sold == 1,
             'price' => PriceResource::make($this->price)
         ];

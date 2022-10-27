@@ -18,7 +18,9 @@
         <label for="asking-price" class="col-form-label">Vraagprijs:</label>
         <select class="form-select" aria-label="Vraagprijs" v-model="selectedPriceId">
           <option selected>-- Selecteer een vraagprijs --</option>
-          <option v-for="item in prices" :value="item.id">{{ item.askingPrice }}</option>
+          <option v-for="item in prices" :value="item.id">
+            {{ toEuro(item.askingPrice) }}
+          </option>
         </select>
         <p v-if="fieldErrors.price">{{ fieldErrors.price }}</p>
 
@@ -70,7 +72,7 @@ const fieldErrors = ref({});
 const sellingPrice = computed(() => {
   if (selectedPriceId.value === 0) return "-- Selecteer een vraagprijs --";
   const price = prices.value.find((p) => p.id === selectedPriceId.value);
-  return price.sellingPrice;
+  return toEuro(price.sellingPrice);
 });
 
 const submitProduct = async () => {

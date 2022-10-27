@@ -20,7 +20,7 @@ class Productlist extends Model
 
     public function products()
     {
-        return $this->hasMany(Product::class);
+        return $this->hasMany(Product::class)->orderBy('product_number');
     }
 
     public function user()
