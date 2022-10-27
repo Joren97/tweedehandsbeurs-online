@@ -198,16 +198,16 @@ class ProductlistController extends ApiController
      * @param  integer  $id
      * @return \Illuminate\Http\Response
      */
-    public function updateForLoggedInUser(ConfirmProductlistRequest $request, $id)
+    public function confirmListForLoggedInUser($id)
     {
         $list = ProductList::findOrFail($id);
 
-        // If Productlist does not belong to logged in user, return error
+        // If productlist does not belong to logged in user, return error
         if ($list->user_id !== auth()->user()->id) {
             return $this->errorResponse('Productlist does not belong to logged in user.', 404);
         }
 
-        $list->is_user_confirmed = $request->isUserConfirmed;
+        $list->is_user_confirmed = true;
         $list->save();
 
         return new ProductListResource($list);

@@ -15,7 +15,7 @@
     <button
       class="btn btn-primary"
       @click="confirmList"
-      :disabled="pending || (list && list.data.isUserConfirmed)"
+      :disabled="listPending || (list && list.data.isUserConfirmed)"
     >
       Lijst bevestigen
     </button>
@@ -63,15 +63,10 @@ const { data: prices, pending: pricesPending } = myLazyFetch(() => `/api/price`,
 });
 
 const confirmList = async () => {
-  const body = {
-    isUserConfirmed: true,
-  };
-
   const { pending, error } = await myFetch(
-    () => `/api/productlist/me/${route.params.id}`,
+    () => `/api/productlist/me/confirm/${route.params.id}`,
     {
       method: "PUT",
-      body,
       key: "confirm",
       initialCache: false,
     }

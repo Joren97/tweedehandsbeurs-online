@@ -19,7 +19,7 @@ Route::group(['middleware' => ['auth:sanctum', 'ability:user,employee,admin']], 
 
     Route::get('productlist/me', [ProductlistController::class, 'getListsForLoggedInUser']);
     Route::post('productlist/me', [ProductlistController::class, 'storeForLoggedInUser']);
-    Route::put('productlist/me/{productlist}', [ProductlistController::class, 'updateForLoggedInUser']);
+    Route::put('productlist/me/confirm/{productlist}', [ProductlistController::class, 'confirmListForLoggedInUser']);
     Route::get('productlist/me/{productlist}', [ProductlistController::class, 'showForLoggedInUser']);
 
     Route::post('product/me', [ProductController::class, 'storeForLoggedInUser']);
