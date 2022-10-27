@@ -50,7 +50,7 @@
 <script setup>
 const props = defineProps({
   priceData: {
-    type: Object,
+    type: [Object, null],
     required: true,
     default: { data: [] },
   },
