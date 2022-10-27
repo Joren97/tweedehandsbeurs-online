@@ -9,6 +9,7 @@ use App\Http\Requests\UpdateProductRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProductCollection;
 use App\Http\Resources\ProductResource;
+use App\Models\Productlist;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -37,6 +38,25 @@ class ProductController extends Controller
     public function store(StoreProductRequest $request)
     {
         return new ProductResource(Product::create($request->all()));
+    }
+
+    /**
+     * Store a newly created resource in storage for the logged in user.
+     *
+     * @param  \App\Http\Requests\StoreProductRequest  $request
+     * @return \App\Http\Resources\ProductResource
+     */
+    public function storeForLoggedInUser(StoreProductRequest $request)
+    {
+        // Find the productlist 
+        $productlist = Productlist::findOrFail($request->productlistId);
+        // If the productlist does not belong to the logged in user, return a 403
+        if ($productlist->user_id !== auth()->user()->id) {
+            return response()->json(['message' => 'Forbidden'], 403);
+        }
+
+        return new ProductResource(Product::create($request->all()));
+
     }
 
     /**

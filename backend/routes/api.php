@@ -21,6 +21,10 @@ Route::group(['middleware' => ['auth:sanctum', 'ability:user,employee,admin']], 
     Route::post('productlist/me', [ProductlistController::class, 'storeForLoggedInUser']);
     Route::get('productlist/me/{productlist}', [ProductlistController::class, 'showForLoggedInUser']);
 
+    Route::post('product/me', [ProductController::class, 'storeForLoggedInUser']);
+
+    Route::get('price', [PriceController::class, 'index']);
+
     Route::get('edition', [EditionController::class, 'index']);
     Route::get('edition/{edition}', [EditionController::class, 'show']);
 });
@@ -33,7 +37,6 @@ Route::group(['middleware' => ['auth:sanctum', 'ability:employee,admin']], funct
     Route::put('edition/{edition}', [EditionController::class, 'update']);
     Route::delete('edition/{edition}', [EditionController::class, 'destroy']);
 
-    Route::apiResource('price', PriceController::class);
     Route::apiResource('product', ProductController::class);
 });
 
@@ -41,4 +44,8 @@ Route::group(['middleware' => ['auth:sanctum', 'ability:employee,admin']], funct
 Route::group(['middleware' => ['auth:sanctum', 'ability:admin']], function () {
     Route::post('/seed', [SeedController::class, 'seed']);
     Route::post('/clear', [SeedController::class, 'clear']);
+
+    Route::post('price', [PriceController::class, 'store']);
+    Route::put('price/{price}', [PriceController::class, 'update']);
+    Route::delete('price/{price}', [PriceController::class, 'destroy']);
 });
