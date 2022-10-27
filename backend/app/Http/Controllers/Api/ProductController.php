@@ -55,7 +55,11 @@ class ProductController extends Controller
             return response()->json(['message' => 'Forbidden'], 403);
         }
 
-        return new ProductResource(Product::create($request->all()));
+        $product['description'] = $request->description;
+        $product['price_id'] = $request->priceId;
+        $product['productlist_id'] = $request->productlistId;
+
+        return new ProductResource(Product::create($product));
 
     }
 

@@ -80,20 +80,15 @@ const submitProduct = async () => {
     productlistId: useRoute().params.id,
   };
 
-  const { data, pending, error } = myAsyncData(
-    () => `api/product/me`,
-    {
-      method: "POST",
-      body,
-    },
-    {
-      initialCache: false,
-    }
-  );
+  const { data, pending, error } = await useCustomFetch(`/api/product/me`, {
+    method: "POST",
+    body,
+    initialCache: false,
+  });
 
   if (error.value != null) {
     console.log(error.value);
-    // fieldErrors.value = error.value.data.errors;
+    fieldErrors.value = error.value.data.errors;
     return;
   }
 
