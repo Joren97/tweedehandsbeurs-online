@@ -27,7 +27,14 @@
                   <!-- Delete icon -->
                   <i class="fa-regular fa-trash-can"></i>
                 </button>
-                / Aanpassen
+                <button
+                  class="btn btn-secondary"
+                  @click="productToEditId = item.id"
+                  data-bs-toggle="modal"
+                  data-bs-target="#editProductModal"
+                >
+                  <i class="fa-solid fa-pencil"></i>
+                </button>
               </td>
             </tr>
           </tbody>
@@ -81,6 +88,19 @@
     >
       <NewProductModal @product-created="onProductCreated" :price-data="prices" />
     </div>
+    <div
+      class="modal fade"
+      id="editProductModal"
+      tabindex="-1"
+      aria-labelledby="editProductModal"
+      aria-hidden="true"
+    >
+      <EditProductModal
+        @product-updated="onProductUpdated"
+        :price-data="prices"
+        :product-to-edit="productToEdit"
+      />
+    </div>
   </div>
 </template>
 <script setup>
@@ -94,6 +114,14 @@ definePageMeta({
 });
 
 clearNuxtData();
+
+const productToEditId = ref(0);
+const productToEdit = computed(() => {
+  if (productToEditId.value === 0) {
+    return null;
+  }
+  return products.value.find((p) => p.id === productToEditId.value);
+});
 
 const { data: listData, pending: listPending, refresh } = myLazyFetch(
   () => `/api/productlist/me/${route.params.id}`,
@@ -149,6 +177,10 @@ const deleteProduct = async (productId) => {
 };
 
 const onProductCreated = () => {
+  refresh();
+};
+
+const onProductUpdated = () => {
   refresh();
 };
 
