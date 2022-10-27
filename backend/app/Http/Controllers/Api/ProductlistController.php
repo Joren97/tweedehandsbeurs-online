@@ -7,6 +7,7 @@ use App\Models\Productlist;
 use App\Http\Requests\StoreProductlistRequest;
 use App\Http\Requests\UpdateProductlistRequest;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ConfirmProductlistRequest;
 use App\Http\Resources\ProductListCollection;
 use App\Http\Resources\ProductListResource;
 use App\Models\Edition;
@@ -188,6 +189,28 @@ class ProductlistController extends ApiController
         }
 
         return new ProductListResource($productList);
+    }
+
+    /**
+     * Update the specified resource in storage for the logged in user.
+     *
+     * @param  \App\Http\Requests\UpdateProductListRequest  $request
+     * @param  integer  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function updateForLoggedInUser(ConfirmProductlistRequest $request, $id)
+    {
+        $list = ProductList::findOrFail($id);
+
+        // If Productlist does not belong to logged in user, return error
+        if ($list->user_id !== auth()->user()->id) {
+            return $this->errorResponse('Productlist does not belong to logged in user.', 404);
+        }
+
+        $list->is_user_confirmed = $request->isUserConfirmed;
+        $list->save();
+
+        return new ProductListResource($list);
     }
 
     /**
