@@ -23,7 +23,7 @@ export default defineNuxtConfig({
       ],
     },
   },
-  css: ['~/assets/scss/main.scss'],
+  css: ['~/assets/scss/main.scss', '~/assets/scss/sb-admin-2.scss'],
   modules: [
     [
       '@pinia/nuxt',
