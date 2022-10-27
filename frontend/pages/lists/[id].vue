@@ -12,7 +12,8 @@
     >
       Product toevoegen
     </button>
-    {{ list }}
+    <p>{{ list }}</p>
+    <p>{{ prices }}</p>
     <div
       class="modal fade"
       id="newProductModal"
@@ -20,7 +21,7 @@
       aria-labelledby="newProductModalLabel"
       aria-hidden="true"
     >
-      <NewProductModal @product-created="onProductCreated" />
+      <NewProductModal @product-created="onProductCreated" :price-data="prices" />
     </div>
   </div>
 </template>
@@ -35,9 +36,11 @@ definePageMeta({
 });
 
 clearNuxtData();
-const { data, pending, refresh } = myLazyFetch(
+
+const { data: list, pending: listPending, refresh } = myLazyFetch(
   () => `/api/productlist/me/${route.params.id}`,
   {
+    key: "productlist",
     initialCache: false,
     params: {
       includeProducts: true,
@@ -45,11 +48,18 @@ const { data, pending, refresh } = myLazyFetch(
   }
 );
 
-const list = computed(() => {
-  if (!data) return null;
-  if (!data.value) return null;
-  return data.value.data;
+const { data: prices, pending: pricesPending } = myLazyFetch(() => `/api/price`, {
+  key: "prices",
+  params: {
+    perPage: 100,
+  },
 });
+
+// const list = computed(() => {
+//   if (!data) return null;
+//   if (!data.value) return null;
+//   return data.value.data;
+// });
 
 const onProductCreated = () => {
   refresh();
@@ -58,14 +68,11 @@ const onProductCreated = () => {
 const pageTitle = computed(() => {
   if (!list) return "Mijn lijsten";
   if (!list.value) return "Mijn lijsten";
-  return `Mijn lijsten | Lijst ${list.value.listNumber}`;
+  const data = list.value.data;
+  return `Mijn lijsten | Lijst ${data.listNumber}`;
 });
 
 useHead({
-  title: computed(() => {
-    if (!list) return "Mijn lijsten";
-    if (!list.value) return "Mijn lijsten";
-    return `Mijn lijsten | Lijst ${list.value.listNumber}`;
-  }),
+  title: pageTitle,
 });
 </script>
