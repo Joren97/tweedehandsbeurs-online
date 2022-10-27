@@ -11,7 +11,7 @@ use App\Http\Resources\PriceCollection;
 use App\Http\Resources\PriceResource;
 use Illuminate\Http\Request;
 
-class PriceController extends Controller
+class PriceController extends ApiController
 {
     /**
      * Display a listing of the resource.
@@ -25,7 +25,7 @@ class PriceController extends Controller
 
         $prices = Price::where($filterItems);
 
-        return new PriceCollection($prices->paginate()->appends($request->query()));
+        return new PriceCollection($prices->paginate($filter->perPage($request))->appends($request->query()));
     }
 
     /**

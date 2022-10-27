@@ -19,6 +19,11 @@ class ApiFilter
         'gte' => '>=',
     ];
 
+    public function perPage(Request $request)
+    {
+        return $request->input('perPage', 15);
+    }
+
     public function transform(Request $request)
     {
         $eloQuery = [];
