@@ -22,7 +22,20 @@
               <td>{{ item.description }}</td>
               <td>{{ toEuro(item.price.askingPrice) }}</td>
               <td>{{ toEuro(item.price.sellingPrice) }}</td>
-              <td>Verwijderen / Aanpassen</td>
+              <td>
+                <button class="btn btn-primary" @click="deleteProduct(item.id)">
+                  <!-- Delete icon -->
+                  <i class="fa-regular fa-trash-can"></i>
+                </button>
+                <button
+                  class="btn btn-secondary"
+                  @click="productToEditId = item.id"
+                  data-bs-toggle="modal"
+                  data-bs-target="#editProductModal"
+                >
+                  <i class="fa-solid fa-pencil"></i>
+                </button>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -75,6 +88,19 @@
     >
       <NewProductModal @product-created="onProductCreated" :price-data="prices" />
     </div>
+    <div
+      class="modal fade"
+      id="editProductModal"
+      tabindex="-1"
+      aria-labelledby="editProductModal"
+      aria-hidden="true"
+    >
+      <EditProductModal
+        @product-updated="onProductUpdated"
+        :price-data="prices"
+        :product-to-edit="productToEdit"
+      />
+    </div>
   </div>
 </template>
 <script setup>
@@ -88,6 +114,14 @@ definePageMeta({
 });
 
 clearNuxtData();
+
+const productToEditId = ref(0);
+const productToEdit = computed(() => {
+  if (productToEditId.value === 0) {
+    return null;
+  }
+  return products.value.find((p) => p.id === productToEditId.value);
+});
 
 const { data: listData, pending: listPending, refresh } = myLazyFetch(
   () => `/api/productlist/me/${route.params.id}`,
@@ -126,12 +160,32 @@ const confirmList = async () => {
   refresh();
 };
 
+const deleteProduct = async (productId) => {
+  const { pending, error } = await myFetch(() => `/api/product/me/${productId}`, {
+    method: "DELETE",
+    key: "delete",
+    initialCache: false,
+  });
+
+  if (error.value != null) {
+    console.log(error.value);
+    fieldErrors.value = error.value.data.errors;
+    return;
+  }
+
+  refresh();
+};
+
 const onProductCreated = () => {
   refresh();
 };
 
+const onProductUpdated = () => {
+  refresh();
+};
+
 const pageTitle = computed(() => {
-  if (list) return "Mijn lijsten";
+  if (!list || !list.value) return "Mijn lijsten";
   return `Mijn lijsten | Lijst ${list.value.listNumber}`;
 });
 

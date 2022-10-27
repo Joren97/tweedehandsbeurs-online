@@ -24,6 +24,8 @@ Route::group(['middleware' => ['auth:sanctum', 'ability:user,employee,admin']], 
     Route::get('productlist/me/{productlist}', [ProductlistController::class, 'showForLoggedInUser']);
 
     Route::post('product/me', [ProductController::class, 'storeForLoggedInUser']);
+    Route::delete('product/me/{product}', [ProductController::class, 'destroyForLoggedInUser']);
+    Route::put('product/me/{product}', [ProductController::class, 'updateForLoggedInUser']);
 
     Route::get('price', [PriceController::class, 'index']);
 

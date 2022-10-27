@@ -23,7 +23,7 @@ class Product extends Model
 
     public function productList()
     {
-        return $this->belongsTo(Productlist::class);
+        return $this->belongsTo(Productlist::class, 'productlist_id');
     }
 
     public function price()
