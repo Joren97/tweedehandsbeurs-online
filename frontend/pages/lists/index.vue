@@ -58,15 +58,15 @@ definePageMeta({
   },
 });
 
-const {
-  pending: editionsPending,
-  data: editionsData,
-} = useCustomLazyFetch(`/api/edition`, { key: "edition" });
+const { pending: editionsPending, data: editionsData } = myLazyFetch(
+  () => `/api/edition`,
+  { key: "edition", initialCache: false }
+);
 const {
   pending: listsPending,
   data: listsData,
   refresh: listsRefresh,
-} = useCustomLazyFetch(`/api/productlist/me`, { key: "productlist" });
+} = myLazyFetch(() => `/api/productlist/me`, { key: "productlist", initialCache: false });
 
 const editionsWithLists = computed(() => {
   if (!editionsData) return [];
