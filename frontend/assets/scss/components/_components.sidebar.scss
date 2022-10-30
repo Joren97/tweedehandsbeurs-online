@@ -6,16 +6,15 @@
   left: 0;
   width: 17.5rem;
   height: 100%;
-  background-color: $primary;
+  background-color: #eeeeee;
   z-index: 999;
 
   .sidebar__top {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     display: flex;
     align-items: center;
     height: 4.375rem;
-    color: $white;
-    background-color: $primary-dark;
+    color: $black;
     padding: 1rem;
   }
 
@@ -25,14 +24,15 @@
       flex-direction: column;
 
       a {
+        text-decoration: none;
         display: flex;
         align-items: center;
-        color: $white;
+        color: $black;
         padding: 1rem;
         transition: background-color 0.25s ease-in-out;
 
         &:hover {
-          background-color: #cdcdcd;
+          background-color: #e3e6f0;
         }
 
         svg {

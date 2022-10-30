@@ -1,72 +1,37 @@
 <template>
-  <div>
-    <LayoutPageHeading>
-      <template v-slot:title>Mijn lijsten</template>
-    </LayoutPageHeading>
-    <div class="row row-cols-4">
-      <div class="col mb-3" v-for="item in editionsWithLists">
-        <div class="card">
-          <div class="card-header" :class="{ 'fw-bold': item.isActive }">
-            {{ item.year }} &dash; {{ item.name }}
+  <section class="dashboard__lists">
+    <div class="lists__grid">
+      <div class="col-3" v-for="item in editionsWithLists" :key="item.id">
+        <div class="grid__item">
+          <div class="item__title">{{ item.year }} - {{ item.name }}</div>
+          <div class="item__lists" v-if="item.lists.length > 0">
+            <div class="list" v-for="list in item.lists" :key="list.id" @click="openList(list.id)">{{ list.id }} Lijst {{ list.listNumber }} ({{ list.memberNumber }})</div>
           </div>
-          <ul class="list-group list-group-flush">
-            <template v-if="item.lists.length > 0">
-              <li
-                class="list-group-item pe-clickable"
-                v-for="item in item.lists"
-                @click="openList(item.id)"
-              >
-                Lijst {{ item.listNumber }}
-                <span v-if="item.memberNumber" class="text-muted small"
-                  >({{ item.memberNumber }})</span
-                >
-              </li>
-            </template>
-            <template v-else><li class="list-group-item">Geen lijsten</li> </template>
-          </ul>
+          <div class="item__lists" v-else>Geen lijsten</div>
         </div>
       </div>
     </div>
-    <button
-      type="button"
-      class="btn btn-primary"
-      data-bs-toggle="modal"
-      data-bs-target="#newListModal"
-    >
-      Nieuwe lijst toevoegen
-    </button>
-    <div
-      class="modal fade"
-      id="newListModal"
-      tabindex="-1"
-      aria-labelledby="newListModalLabel"
-      aria-hidden="true"
-    >
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newListModal">Nieuwe lijst toevoegen</button>
+    <div class="modal fade" id="newListModal" tabindex="-1" aria-labelledby="newListModalLabel" aria-hidden="true">
       <NewListModal :active-edition="activeEdition" @list-created="onListCreated" />
     </div>
-  </div>
+  </section>
 </template>
+
 <script setup>
 useHead({
-  title: "Mijn lijsten",
+  title: 'Mijn lijsten',
 });
 definePageMeta({
-  layout: "authorized",
-  middleware: ["auth"],
+  layout: 'dashboard',
+  middleware: ['auth'],
   meta: {
-    authLevel: "user",
+    authLevel: 'user',
   },
 });
 
-const { pending: editionsPending, data: editionsData } = myLazyFetch(
-  () => `/api/edition`,
-  { key: "edition", initialCache: false }
-);
-const {
-  pending: listsPending,
-  data: listsData,
-  refresh: listsRefresh,
-} = myLazyFetch(() => `/api/productlist/me`, { key: "productlist", initialCache: false });
+const { pending: editionsPending, data: editionsData } = myLazyFetch(() => `/api/edition`, { key: 'edition', initialCache: false });
+const { pending: listsPending, data: listsData, refresh: listsRefresh } = myLazyFetch(() => `/api/productlist/me`, { key: 'productlist', initialCache: false });
 
 const editionsWithLists = computed(() => {
   if (!editionsData) return [];

@@ -1,0 +1,17 @@
+.dashboard__lists {
+  margin-bottom: 2rem;
+}
+
+.lists__grid {
+  display: flex;
+  flex-wrap: wrap;
+
+  .grid__item {
+    display: flex;
+    flex-direction: column;
+    background-color: #efefef;
+    padding: 2rem;
+    margin-bottom: 1rem;
+    border-radius: 1rem;
+  }
+}
