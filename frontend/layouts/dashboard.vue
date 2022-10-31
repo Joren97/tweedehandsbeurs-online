@@ -1,10 +1,10 @@
 <template>
   <div class="body">
-    <LayoutTopbar />
-    <LayoutSidebar />
+    <TheHeader />
+    <TheSidebar />
     <main>
       <slot />
     </main>
-    <LayoutFooter />
+    <TheFooter />
   </div>
 </template>
