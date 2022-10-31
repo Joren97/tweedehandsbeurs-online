@@ -32,25 +32,19 @@
         </tr>
       </tbody>
     </table>
-    <Pagination
-      :page="pagination.current_page"
-      :from="pagination.from"
-      :to="pagination.to"
-      :total="pagination.total"
-      :last-page="pagination.last_page"
-    />
+    <Pagination :page="pagination.current_page" :from="pagination.from" :to="pagination.to" :total="pagination.total" :last-page="pagination.last_page" />
     <p>This is the list management page</p>
   </div>
 </template>
 <script setup>
 useHead({
-  title: "Lijstenbeheer",
+  title: 'Lijstenbeheer',
 });
 definePageMeta({
-  layout: "authorized",
-  middleware: ["auth"],
+  layout: 'dashboard',
+  middleware: ['auth'],
   meta: {
-    authLevel: "employee",
+    authLevel: 'employee',
   },
 });
 

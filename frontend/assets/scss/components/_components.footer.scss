@@ -1,0 +1,10 @@
+.c-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(100% - 17.5rem);
+  height: 4.5rem;
+  background-color: #dddddd;
+  padding: 0 1rem;
+  transform: translateX(17.5rem);
+}

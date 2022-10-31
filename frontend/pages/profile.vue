@@ -8,11 +8,11 @@
 </template>
 <script setup>
 definePageMeta({
-  layout: "authorized",
-  middleware: ["auth"],
+  layout: 'dashboard',
+  middleware: ['auth'],
   meta: {
-    authLevel: "user",
+    authLevel: 'user',
   },
-  title: "Profiel",
+  title: 'Profiel',
 });
 </script>

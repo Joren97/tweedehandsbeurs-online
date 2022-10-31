@@ -27,12 +27,7 @@
                   <!-- Delete icon -->
                   <i class="fa-regular fa-trash-can"></i>
                 </button>
-                <button
-                  class="btn btn-secondary"
-                  @click="productToEditId = item.id"
-                  data-bs-toggle="modal"
-                  data-bs-target="#editProductModal"
-                >
+                <button class="btn btn-secondary" @click="productToEditId = item.id" data-bs-toggle="modal" data-bs-target="#editProductModal">
                   <i class="fa-solid fa-pencil"></i>
                 </button>
               </td>
@@ -64,52 +59,23 @@
       </div>
     </div>
 
-    <button
-      type="button"
-      class="btn btn-primary"
-      data-bs-toggle="modal"
-      data-bs-target="#newProductModal"
-    >
-      Product toevoegen
-    </button>
-    <button
-      class="btn btn-primary"
-      @click="confirmList"
-      :disabled="listPending || (list && list.isUserConfirmed)"
-    >
-      Lijst bevestigen
-    </button>
-    <div
-      class="modal fade"
-      id="newProductModal"
-      tabindex="-1"
-      aria-labelledby="newProductModalLabel"
-      aria-hidden="true"
-    >
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newProductModal">Product toevoegen</button>
+    <button class="btn btn-primary" @click="confirmList" :disabled="listPending || (list && list.isUserConfirmed)">Lijst bevestigen</button>
+    <div class="modal fade" id="newProductModal" tabindex="-1" aria-labelledby="newProductModalLabel" aria-hidden="true">
       <NewProductModal @product-created="onProductCreated" :price-data="prices" />
     </div>
-    <div
-      class="modal fade"
-      id="editProductModal"
-      tabindex="-1"
-      aria-labelledby="editProductModal"
-      aria-hidden="true"
-    >
-      <EditProductModal
-        @product-updated="onProductUpdated"
-        :price-data="prices"
-        :product-to-edit="productToEdit"
-      />
+    <div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModal" aria-hidden="true">
+      <EditProductModal @product-updated="onProductUpdated" :price-data="prices" :product-to-edit="productToEdit" />
     </div>
   </div>
 </template>
 <script setup>
 const route = useRoute();
 definePageMeta({
-  layout: "authorized",
-  middleware: ["auth"],
+  layout: 'dashboard',
+  middleware: ['auth'],
   meta: {
-    authLevel: "user",
+    authLevel: 'user',
   },
 });
 
@@ -123,33 +89,31 @@ const productToEdit = computed(() => {
   return products.value.find((p) => p.id === productToEditId.value);
 });
 
-const { data: listData, pending: listPending, refresh } = myLazyFetch(
-  () => `/api/productlist/me/${route.params.id}`,
-  {
-    key: "productlist",
-    initialCache: false,
-    params: {
-      includeProducts: true,
-    },
-  }
-);
+const {
+  data: listData,
+  pending: listPending,
+  refresh,
+} = myLazyFetch(() => `/api/productlist/me/${route.params.id}`, {
+  key: 'productlist',
+  initialCache: false,
+  params: {
+    includeProducts: true,
+  },
+});
 
 const { data: prices, pending: pricesPending } = myLazyFetch(() => `/api/price`, {
-  key: "prices",
+  key: 'prices',
   params: {
     perPage: 100,
   },
 });
 
 const confirmList = async () => {
-  const { pending, error } = await myFetch(
-    () => `/api/productlist/me/confirm/${route.params.id}`,
-    {
-      method: "PUT",
-      key: "confirm",
-      initialCache: false,
-    }
-  );
+  const { pending, error } = await myFetch(() => `/api/productlist/me/confirm/${route.params.id}`, {
+    method: 'PUT',
+    key: 'confirm',
+    initialCache: false,
+  });
 
   if (error.value != null) {
     console.log(error.value);
@@ -162,8 +126,8 @@ const confirmList = async () => {
 
 const deleteProduct = async (productId) => {
   const { pending, error } = await myFetch(() => `/api/product/me/${productId}`, {
-    method: "DELETE",
-    key: "delete",
+    method: 'DELETE',
+    key: 'delete',
     initialCache: false,
   });
 
@@ -185,7 +149,7 @@ const onProductUpdated = () => {
 };
 
 const pageTitle = computed(() => {
-  if (!list || !list.value) return "Mijn lijsten";
+  if (!list || !list.value) return 'Mijn lijsten';
   return `Mijn lijsten | Lijst ${list.value.listNumber}`;
 });
 

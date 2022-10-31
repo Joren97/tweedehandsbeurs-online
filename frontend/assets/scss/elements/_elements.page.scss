@@ -28,6 +28,7 @@ main {
   position: relative;
   width: calc(100% - 17.5rem);
   height: 100%;
+  padding: 1rem;
   transform: translateX(17.5rem);
   transition: all 0.25s ease-in-out;
 }
