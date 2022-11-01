@@ -103,10 +103,11 @@ class AuthController extends ApiController
         $user = auth()->user();
         $user->firstname = $request->firstname;
         $user->lastname = $request->lastname;
-        $user->phone_number = $request->phone_number;
+        $user->phone_number = $request->phoneNumber;
+        $user->member_number = $request->memberNumber;
         $user->address = $request->address;
         $user->city = $request->city;
-        $user->postal_code = $request->postal_code;
+        $user->postal_code = $request->postalCode;
         $user->save();
         return $this->successResponse($user, "User info updated", 200);
     }
