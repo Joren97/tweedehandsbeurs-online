@@ -2,7 +2,10 @@ lockfileVersion: 5.4
 
 specifiers:
   '@pinia/nuxt': ^0.4.3
+  '@types/lodash': ^4.14.187
+  bootstrap: ^5.2.2
   cross-env: ^7.0.3
+  lodash: ^4.17.21
   nuxt: 3.0.0-rc.12
   sass: ^1.55.0
   typescript: ^4.8.4
@@ -10,8 +13,11 @@ specifiers:
 
 dependencies:
   '@pinia/nuxt': 0.4.3_typescript@4.8.4
+  lodash: 4.17.21
 
 devDependencies:
+  '@types/lodash': 4.14.187
+  bootstrap: 5.2.2
   cross-env: 7.0.3
   nuxt: 3.0.0-rc.12_ewavxvzjhcwiowirskzbfblgqu
   sass: 1.55.0
@@ -736,6 +742,10 @@ packages:
     resolution: {integrity: sha512-WulqXMDUTYAXCjZnk6JtIHPigp55cVtDgDrO2gHRwhyJto21+1zbVCtOYB2L1F9w4qCQ0rOGWBnBe0FNTiEJIQ==}
     dev: true
 
+  /@types/lodash/4.14.187:
+    resolution: {integrity: sha512-MrO/xLXCaUgZy3y96C/iOsaIqZSeupyTImKClHunL5GrmaiII2VwvWmLBu2hwa0Kp0sV19CsyjtrTc/Fx8rg/A==}
+    dev: true
+
   /@types/node/18.7.23:
     resolution: {integrity: sha512-DWNcCHolDq0ZKGizjx2DZjR/PqsYwAcYUJmfMWqtVU2MBMG5Mo+xFZrhGId5r/O5HOuMPyQEcM6KUBp5lBZZBg==}
     dev: true
@@ -1207,6 +1217,12 @@ packages:
 
   /boolbase/1.0.0:
     resolution: {integrity: sha512-JZOSA7Mo9sNGB8+UjSgzdLtokWAky1zbztM3WRLCbZ70/3cTANmQmOdR7y2g+J0e2WXywy1yS468tY+IruqEww==}
+    dev: true
+
+  /bootstrap/5.2.2:
+    resolution: {integrity: sha512-dEtzMTV71n6Fhmbg4fYJzQsw1N29hJKO1js5ackCgIpDcGid2ETMGC6zwSYw09v05Y+oRdQ9loC54zB1La3hHQ==}
+    peerDependencies:
+      '@popperjs/core': ^2.11.6
     dev: true
 
   /brace-expansion/1.1.11:
@@ -2708,7 +2724,6 @@ packages:
 
   /lodash/4.17.21:
     resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
-    dev: true
 
   /log-symbols/5.1.0:
     resolution: {integrity: sha512-l0x2DvrW294C9uDCoQe1VSU4gf529FkSZ6leBl4TiqZH/e+0R7hSfHQBNut2mNygDgHwvYHfFLn6Oxb3VWj2rA==}

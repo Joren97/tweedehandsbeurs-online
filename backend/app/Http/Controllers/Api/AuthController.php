@@ -97,4 +97,17 @@ class AuthController extends ApiController
         $user = auth()->user();
         return $this->successResponse($user, "User info", 200);
     }
+
+    public function updateProfile(Request $request)
+    {
+        $user = auth()->user();
+        $user->firstname = $request->firstname;
+        $user->lastname = $request->lastname;
+        $user->phone_number = $request->phone_number;
+        $user->address = $request->address;
+        $user->city = $request->city;
+        $user->postal_code = $request->postal_code;
+        $user->save();
+        return $this->successResponse($user, "User info updated", 200);
+    }
 }

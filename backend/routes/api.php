@@ -17,6 +17,8 @@ Route::get('/mail', [SeedController::class, 'testMail']);
 // User routes
 Route::group(['middleware' => ['auth:sanctum', 'ability:user,employee,admin']], function () {
     Route::get('auth/userinfo', [AuthController::class, 'userinfo']);
+    Route::post('auth/logout', [AuthController::class, 'logout']);
+    Route::put('auth/me', [AuthController::class, 'updateProfile']);
 
     Route::get('productlist/me', [ProductlistController::class, 'getListsForLoggedInUser']);
     Route::post('productlist/me', [ProductlistController::class, 'storeForLoggedInUser']);

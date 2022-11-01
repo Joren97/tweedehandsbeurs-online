@@ -9,6 +9,7 @@
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.187",
     "bootstrap": "^5.2.2",
     "cross-env": "^7.0.3",
     "nuxt": "3.0.0-rc.12",
@@ -17,6 +18,7 @@
     "vue-tsc": "^1.0.8"
   },
   "dependencies": {
-    "@pinia/nuxt": "^0.4.3"
+    "@pinia/nuxt": "^0.4.3",
+    "lodash": "^4.17.21"
   }
 }
