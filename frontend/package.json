@@ -19,6 +19,9 @@
   },
   "dependencies": {
     "@pinia/nuxt": "^0.4.3",
-    "lodash": "^4.17.21"
+    "@vee-validate/rules": "^4.7.2",
+    "lodash": "^4.17.21",
+    "vee-validate": "^4.7.2",
+    "yup": "^0.32.11"
   }
 }
