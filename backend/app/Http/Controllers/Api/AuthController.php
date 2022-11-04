@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
+use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -19,16 +20,18 @@ class AuthController extends ApiController
      */
     public function register(StoreUserRequest $request)
     {
-        $user = User::create([
-            'firstname' => $request->firstname,
-            'lastname' => $request->lastname,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'phone_number' => $request->phone_number,
-            'address' => $request->address,
-            'city' => $request->city,
-            'postal_code' => $request->postal_code,
-        ]);
+        $user = User::create(
+            [
+                'firstname' => $request->firstname,
+                'lastname' => $request->lastname,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'phone_number' => $request->phone_number,
+                'address' => $request->address,
+                'city' => $request->city,
+                'postal_code' => $request->postal_code,
+            ]
+        );
         $user['token'] = $user->createToken('apiToken')->plainTextToken;
         return $this->successResponse($user, "User created successfully", 201);
     }
@@ -41,19 +44,24 @@ class AuthController extends ApiController
     public function login(Request $request)
     {
         try {
-            $validateUser = Validator::make($request->all(),
+            $validateUser = Validator::make(
+                $request->all(),
                 [
                     'email' => 'required|email',
                     'password' => 'required',
                     'remember' => 'boolean'
-                ]);
+                ]
+            );
 
             if ($validateUser->fails()) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'validation error',
-                    'errors' => $validateUser->errors()
-                ], 401);
+                return response()->json(
+                    [
+                        'status' => false,
+                        'message' => 'validation error',
+                        'errors' => $validateUser->errors()
+                    ],
+                    401
+                );
             }
 
             // Check if email exists
@@ -85,17 +93,20 @@ class AuthController extends ApiController
 
             return $this->successResponse($user, "Gebruiker werd aangemeld", 200);
         } catch (\Throwable $th) {
-            return response()->json([
-                'status' => false,
-                'message' => $th->getMessage()
-            ], 500);
+            return response()->json(
+                [
+                    'status' => false,
+                    'message' => $th->getMessage()
+                ],
+                500
+            );
         }
     }
 
     public function userinfo()
     {
         $user = auth()->user();
-        return $this->successResponse($user, "User info", 200);
+        return new UserResource($user);
     }
 
     public function updateProfile(Request $request)
