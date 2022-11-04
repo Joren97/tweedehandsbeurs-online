@@ -67,5 +67,23 @@ const validationSchema = object({
   email: string().required().email().label("Email"),
   firstname: string().required().label("Voornaam"),
   lastname: string().required().label("Familienaam"),
+  memberNumber: string()
+    .matches(/^\d{3}-\d{3}-\d{3}$/, {
+      message: "Ongeldig lidnummer.",
+      excludeEmptyString: true,
+    })
+    .nullable()
+    .label("Lidnummer"),
+  phoneNumber: string().required().matches(/^\d*$/, {
+    message: "Telefoon mag enkel cijfers bevatten.",
+    excludeEmptyString: true,
+  }),
+  address: string().required(),
+  city: string().required(),
+  postalCode: string()
+    .required()
+    .matches(/^\d{4}$/, {
+      message: "Ongeldige postcode.",
+    }),
 });
 </script>
