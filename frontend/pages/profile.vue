@@ -1,8 +1,12 @@
 <template>
   <div>
     <LayoutPageHeading>
-      <template v-slot:title>Profile</template>
+      <template v-slot:title>Profiel</template>
     </LayoutPageHeading>
+    <p>
+      Op deze pagina kan je je persoonlijke gegevens aanpassen. We gebruiken deze gegevens
+      om je te kunnen contacteren mocht dit nodig zijn.
+    </p>
     <VForm
       @submit="updateProfile"
       :validation-schema="validationSchema"
