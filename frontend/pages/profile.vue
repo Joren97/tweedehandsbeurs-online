@@ -64,10 +64,7 @@
       <button class="btn btn-primary" type="submit" :disabled="!formMeta.valid">
         Submit
       </button>
-      <div class="alert alert-success" role="alert">Je profiel werd aangepast.</div>
-      <div class="alert alert-danger" role="alert">
-        Er liep iets fout. Probeer het opnieuw.
-      </div>
+      <VNotification :message="alertMessage" :type="alertType" />
     </VForm>
   </div>
 </template>
@@ -88,6 +85,8 @@ useHead({
 });
 
 const user = ref({});
+const alertMessage = ref("");
+const alertType = ref("");
 
 const { data: userData, pending, error, refresh } = await myLazyFetch(
   () => "/api/auth/userinfo",
@@ -101,7 +100,13 @@ watch(userData, (newVal) => {
 });
 
 const updateProfile = async (values, actions) => {
-  const { data, pending, error } = await myAsyncData(
+  const {
+    data: {
+      value: { status, message, data },
+    },
+    pending,
+    error,
+  } = await myAsyncData(
     () => "/api/auth/me",
     {
       method: "PUT",
@@ -111,8 +116,14 @@ const updateProfile = async (values, actions) => {
       initialCache: false,
     }
   );
-  refresh();
-  actions.resetForm();
+
+  alertMessage.value = message;
+  alertType.value = status;
+
+  if (status === "Success") {
+    actions.resetForm();
+    refresh();
+  }
 };
 
 const validationSchema = object({
