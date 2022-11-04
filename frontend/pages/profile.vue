@@ -5,7 +5,9 @@
     </LayoutPageHeading>
     <p>
       Op deze pagina kan je je persoonlijke gegevens aanpassen. We gebruiken deze gegevens
-      om je te kunnen contacteren mocht dit nodig zijn.
+      om je te kunnen contacteren mocht dit nodig zijn. Deze gegevens zijn niet publiek
+      zichtbaar voor andere gebruikers van de applicatie. Enkel medewerkers van de
+      Gezinsbond hebben toegang tot deze gegevens.
     </p>
     <VForm
       @submit="updateProfile"
@@ -13,14 +15,52 @@
       :initial-values="user"
       v-slot="{ meta: formMeta, errors: formErrors }"
     >
-      <VTextInput type="email" label="Email" name="email" placeholder="Email" disabled />
-      <VTextInput label="Voornaam" name="firstname" placeholder="John" />
-      <VTextInput label="Familienaam" name="lastname" placeholder="Doe" />
-      <VTextInput label="Lidnummer" name="memberNumber" />
-      <VTextInput label="Telefoon" name="phoneNumber" />
-      <VTextInput label="Adres" name="address" />
-      <VTextInput label="Gemeente" name="city" />
-      <VTextInput label="Postcode" name="postalCode" />
+      <div class="row">
+        <div class="col-12">
+          <p class="fw-bold">Emailadres</p>
+          <VTextInput
+            type="email"
+            label="Email"
+            name="email"
+            placeholder="Email"
+            disabled
+          />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12"><p class="fw-bold">Volledige naam</p></div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <VTextInput label="Voornaam" name="firstname" placeholder="John" />
+        </div>
+        <div class="col-6">
+          <VTextInput label="Familienaam" name="lastname" placeholder="Doe" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <p class="fw-bold">Adresgegevens</p>
+        </div>
+        <div class="col-6">
+          <VTextInput label="Gemeente" name="city" />
+        </div>
+        <div class="col-6">
+          <VTextInput label="Postcode" name="postalCode" />
+        </div>
+        <div class="col-12">
+          <VTextInput label="Straat + nummer" name="address" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12"><p class="fw-bold">Extra info</p></div>
+        <div class="col-6">
+          <VTextInput label="Lidnummer" name="memberNumber" />
+        </div>
+        <div class="col-6">
+          <VTextInput label="Telefoon" name="phoneNumber" />
+        </div>
+      </div>
       <button class="btn btn-primary" type="submit" :disabled="!formMeta.valid">
         Submit
       </button>

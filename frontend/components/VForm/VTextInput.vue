@@ -1,8 +1,8 @@
 <template>
-  <div>
-    <label class="form-label">{{ label }}</label>
+  <div class="form-floating">
     <VField :name="name" v-slot="{ field, meta, errors }">
       <input
+        :id="name"
         :disabled="disabled"
         v-bind="field"
         class="form-control"
@@ -13,6 +13,7 @@
         :placeholder="placeholder"
         :type="type"
       />
+      <label :for="name" class="form-label">{{ label }}</label>
       <VErrorMessage :name="name" as="div" class="invalid-feedback" />
     </VField>
   </div>
