@@ -20,6 +20,10 @@
       <button class="btn btn-primary" type="submit" :disabled="!formMeta.valid">
         Submit
       </button>
+      <div class="alert alert-success" role="alert">Je profiel werd aangepast.</div>
+      <div class="alert alert-danger" role="alert">
+        Er liep iets fout. Probeer het opnieuw.
+      </div>
     </VForm>
   </div>
 </template>
@@ -32,6 +36,10 @@ definePageMeta({
   meta: {
     authLevel: "user",
   },
+  title: "Profiel",
+});
+
+useHead({
   title: "Profiel",
 });
 
