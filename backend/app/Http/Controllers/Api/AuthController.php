@@ -2,13 +2,22 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Requests\auth\ValidateTokenRequest;
+use App\Mail\SendCodeResetPassword;
+use App\Models\PasswordResets;
 use App\Models\User;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\auth\ForgotPasswordRequest;
+use App\Http\Requests\auth\ResetPasswordRequest;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Resources\UserResource;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends ApiController
@@ -121,5 +130,44 @@ class AuthController extends ApiController
         $user->postal_code = $request->postalCode;
         $user->save();
         return $this->successResponse($user, "User info updated", 200);
+    }
+
+    public function forgotPassword(ForgotPasswordRequest $request)
+    {
+        PasswordResets::where('email', $request->email)->delete();
+
+        $tokenData = PasswordResets::create($request->data());
+
+        Mail::to($request->email)->send(new SendCodeResetPassword($tokenData->token));
+
+        return $this->successResponse([], "Email sent", 200);
+    }
+
+    public function validateForgotPasswordToken(ValidateTokenRequest $request)
+    {
+        $passwordReset = PasswordResets::firstWhere('token', $request->token);
+
+        if ($passwordReset->isExpire()) {
+            return $this->errorResponse("Your token is expired", 401);
+        }
+
+        return $this->successResponse([], "Token is valid", 200);
+    }
+
+    public function resetPassword(ResetPasswordRequest $request)
+    {
+        $passwordReset = PasswordResets::firstWhere('token', $request->token);
+
+        if ($passwordReset->isExpire()) {
+            return $this->errorResponse("Your token is expired", 401);
+        }
+
+        $user = User::firstWhere('email', $passwordReset->email);
+
+        $user->update(array('password' => Hash::make($request->password)));
+
+        $passwordReset->delete();
+
+        return $this->successResponse([], "Password reset", 200);
     }
 }
