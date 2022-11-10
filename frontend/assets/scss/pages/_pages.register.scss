@@ -2,13 +2,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-grow: 1;
 
   .register__form {
     display: flex;
     align-items: center;
     width: 75rem;
     height: 35rem;
-    margin-top: 20rem;
     background-color: #eeeeee;
     border-radius: 0.5rem;
   }
