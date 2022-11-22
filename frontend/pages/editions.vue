@@ -20,9 +20,12 @@
             ><span v-else> <i class="fa-solid fa-xmark" /></span>
           </td>
           <td>
-            <NuxtLink class="btn btn-primary btn-sm" :to="`/list-management/${item.id}`">
+            <button class="btn btn-primary btn-sm" @click="activate(item, true)">
               Activate
-            </NuxtLink>
+            </button>
+            <button class="btn btn-primary btn-sm" @click="activate(item, false)">
+              Deactivate
+            </button>
           </td>
         </tr>
       </tbody>
@@ -49,7 +52,7 @@ const page = computed(() => {
   return parseInt(useRoute().query.page) || 1;
 });
 
-const { pending, data } = myAsyncData(
+const { pending, data, refresh: refreshEditions } = myAsyncData(
   () => `/api/edition?page=${page.value}`,
   {},
   {
@@ -68,4 +71,16 @@ const editions = computed(() => {
   if (!data.value) return [];
   return data.value.data;
 });
+const activate = async (edition, isActive) => {
+  const res = await useAPI(`/api/edition/${edition.id}`, {
+    method: "PUT",
+    body: {
+      ...edition,
+      isActive,
+    },
+  });
+  if (res.status === "Success") {
+    refreshEditions();
+  }
+};
 </script>
