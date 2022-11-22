@@ -64,13 +64,15 @@
       <button class="btn btn-primary" type="submit" :disabled="!formMeta.valid">
         Submit
       </button>
-      <VNotification :message="alertMessage" :type="alertType" />
+      <TheNotification :message="alertMessage" :type="alertType" />
     </VForm>
   </div>
 </template>
 <script setup>
 import { object, string } from "yup";
 import _ from "lodash";
+import { useNotificationStore } from "~~/store/notification";
+const notificationStore = useNotificationStore();
 definePageMeta({
   layout: "dashboard",
   middleware: ["auth"],
@@ -105,8 +107,8 @@ const updateProfile = async (values, actions) => {
     body: values,
   });
 
-  alertMessage.value = message;
-  alertType.value = status;
+  notificationStore.message = message;
+  notificationStore.status = status;
 
   if (status === "Success") {
     user.value = data;
