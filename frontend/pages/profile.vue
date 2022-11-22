@@ -100,29 +100,17 @@ watch(userData, (newVal) => {
 });
 
 const updateProfile = async (values, actions) => {
-  const {
-    data: {
-      value: { status, message, data },
-    },
-    pending,
-    error,
-  } = await myAsyncData(
-    () => "/api/auth/me",
-    {
-      method: "PUT",
-      body: values,
-    },
-    {
-      initialCache: false,
-    }
-  );
+  const { status, message, data } = await useAPI("/api/auth/me", {
+    method: "PUT",
+    body: values,
+  });
 
   alertMessage.value = message;
   alertType.value = status;
 
   if (status === "Success") {
+    user.value = data;
     actions.resetForm();
-    refresh();
   }
 };
 
