@@ -64,7 +64,7 @@
       <button class="btn btn-primary" type="submit" :disabled="!formMeta.valid">
         Submit
       </button>
-      <TheNotification :message="alertMessage" :type="alertType" />
+      <TheNotification />
     </VForm>
   </div>
 </template>
