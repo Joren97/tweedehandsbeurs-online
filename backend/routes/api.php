@@ -19,7 +19,8 @@ Route::get('/mail', [SeedController::class, 'testMail']);
 
 // User routes
 Route::group(
-    ['middleware' => ['auth:sanctum', 'ability:user,employee,admin']], function () {
+    ['middleware' => ['auth:sanctum', 'ability:user,employee,admin']],
+    function () {
         Route::get('auth/userinfo', [AuthController::class, 'userinfo']);
         Route::post('auth/logout', [AuthController::class, 'logout']);
         Route::put('auth/me', [AuthController::class, 'updateProfile']);
@@ -42,12 +43,9 @@ Route::group(
 
 // Employee routes
 Route::group(
-    ['middleware' => ['auth:sanctum', 'ability:employee,admin']], function () {
+    ['middleware' => ['auth:sanctum', 'ability:employee,admin']],
+    function () {
         Route::apiResource('productlist', ProductlistController::class);
-
-        Route::post('edition', [EditionController::class, 'store']);
-        Route::put('edition/{edition}', [EditionController::class, 'update']);
-        Route::delete('edition/{edition}', [EditionController::class, 'destroy']);
 
         Route::apiResource('product', ProductController::class);
     }
@@ -55,12 +53,17 @@ Route::group(
 
 // Admin routes
 Route::group(
-    ['middleware' => ['auth:sanctum', 'ability:admin']], function () {
+    ['middleware' => ['auth:sanctum', 'ability:admin']],
+    function () {
         Route::post('/seed', [SeedController::class, 'seed']);
         Route::post('/clear', [SeedController::class, 'clear']);
 
         Route::post('price', [PriceController::class, 'store']);
         Route::put('price/{price}', [PriceController::class, 'update']);
         Route::delete('price/{price}', [PriceController::class, 'destroy']);
+
+        Route::post('edition', [EditionController::class, 'store']);
+        Route::put('edition/{edition}', [EditionController::class, 'update']);
+        Route::delete('edition/{edition}', [EditionController::class, 'destroy']);
     }
 );
