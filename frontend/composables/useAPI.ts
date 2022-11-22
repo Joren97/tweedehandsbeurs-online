@@ -1,5 +1,5 @@
 import { NitroFetchRequest, TypedInternalResponse } from "nitropack";
-import { FetchOptions } from "ohmyfetch";
+import { FetchOptions } from "ofetch";
 
 export const useAPI = <T = unknown, R extends NitroFetchRequest = NitroFetchRequest>(request: R, opts?: FetchOptions | undefined): Promise<TypedInternalResponse<R, T>> => {
     const config = useRuntimeConfig()
@@ -13,7 +13,7 @@ export const useAPI = <T = unknown, R extends NitroFetchRequest = NitroFetchRequ
         headers,
         onRequest({ request, options }) {
             console.log("Intercepted API", request);
-        }
+        },
     })
 
     return customFetch(request, opts)
