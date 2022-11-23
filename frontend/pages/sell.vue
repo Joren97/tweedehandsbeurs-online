@@ -57,7 +57,7 @@
     </div>
     <div class="row">
       <div class="col-12">
-        <TheNotification :message="alertMessage" :type="alertType" :key="alertKey" />
+        <TheNotification />
       </div>
     </div>
   </div>
@@ -97,6 +97,12 @@ const form = ref({
 });
 
 const searchProduct = async (values, actions) => {
+  const x = await useCustomLazyFetch(
+    `/api/product?listNumber[eq]=${values.listNumber}&productNumber[eq]=${values.productNumber}`
+  );
+
+  console.log(x);
+
   const { status, message, data } = await useAPI(
     `/api/product?listNumber[eq]=${values.listNumber}&productNumber[eq]=${values.productNumber}`
   );
@@ -109,12 +115,11 @@ const searchProduct = async (values, actions) => {
     notificationStore.status = "Error";
   } else {
     product.value = data[0];
+    await nextTick();
+    document.getElementById("sell").focus();
   }
 
   actions.resetForm();
-  await nextTick();
-  document.getElementById("sell").focus();
-
   if (status === "Error") document.getElementById("productNumber").focus();
   if (data.length === 0) document.getElementById("productNumber").focus();
   if (data[0].isSold) document.getElementById("productNumber").focus();
