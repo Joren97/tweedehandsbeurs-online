@@ -12,7 +12,7 @@ use App\Http\Resources\ProductResource;
 use App\Models\Productlist;
 use Illuminate\Http\Request;
 
-class ProductController extends Controller
+class ProductController extends ApiController
 {
     /**
      * Display a listing of the resource.
@@ -25,6 +25,15 @@ class ProductController extends Controller
         $filterItems = $filter->transform($request);
 
         $products = Product::where($filterItems);
+
+        if ($request->query('listNumber')) {
+            $listNumber = $request->query('listNumber');
+            $productList = Productlist::where('list_number', $listNumber)->first();
+            if ($productList == null) {
+                return $this->errorResponse("Product list with number " . $request->query('listNumber')['eq'] . " was not found", 200);
+            }
+            $products = $products->whereRelation('productList', 'id', '=', $productList->id);
+        }
 
         return new ProductCollection($products->paginate()->appends($request->query()));
     }
@@ -132,7 +141,16 @@ class ProductController extends Controller
      */
     public function update(UpdateProductRequest $request, Product $product)
     {
-        //
+        $input = $request->all();
+
+        $product->price_id = $input['priceId'];
+        $product->productlist_id = $input['productlistId'];
+        $product->description = $input['description'];
+        $product->is_sold = $input['isSold'];
+        $product->product_number = $input['productNumber'];
+        $product->save();
+
+        return $this->successResponse(new ProductResource($product), "Product updated successfully", 200);
     }
 
     /**

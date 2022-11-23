@@ -8,6 +8,11 @@ use App\Filters\ApiFilter;
 
 class ProductFilter extends ApiFilter
 {
+    protected $columnMap = [
+        'productNumber' => 'product_number',
+    ];
+
     protected $safeParms = [
+        'productNumber' => ['eq'],
     ];
 }
