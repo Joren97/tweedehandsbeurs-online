@@ -16,8 +16,8 @@ class PriceResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'askingPrice' => $this->asking_price,
-            'sellingPrice' => $this->selling_price
+            'askingPrice' => floatval($this->asking_price),
+            'sellingPrice' => floatval($this->selling_price)
         ];
     }
 }
