@@ -1,19 +1,27 @@
-import { AsyncDataOptions, UseFetchOptions } from "nuxt/dist/app/composables";
+import { UseFetchOptions } from '#app'
+import { NitroFetchRequest } from 'nitropack'
+import { KeyOfRes } from 'nuxt/dist/app/composables/asyncData'
 
-export const myFetch = (url: Function, fetchOptions?: UseFetchOptions<unknown>) => {
+export function myFetch<T>(
+  request: NitroFetchRequest,
+  opts?:
+    | UseFetchOptions<
+      T extends void ? unknown : T,
+      (res: T extends void ? unknown : T) => T extends void ? unknown : T,
+      KeyOfRes<
+        (res: T extends void ? unknown : T) => T extends void ? unknown : T
+      >
+    >
+    | undefined
+) {
   const config = useRuntimeConfig();
+  const token = useCookie("apiToken");
+  const headers = token.value ? { 'Authorization': `Bearer ${token.value}` } : {};
 
-  return useFetch(config.public.API_BASE_URL + url(), {
-    ...fetchOptions,
-    async onRequest({ request, options }) {
-      const token = useCookie("apiToken");
-
-      if (token.value) {
-        options.headers = {
-          ...options.headers,
-          Authorization: `Bearer ${token.value}`,
-        };
-      }
-    },
-  });
-};
+  return useFetch<T>(request, {
+    baseURL: config.public.API_BASE_URL,
+    headers,
+    initialCache: false,
+    ...opts,
+  })
+}
