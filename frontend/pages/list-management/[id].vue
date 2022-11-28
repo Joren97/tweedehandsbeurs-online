@@ -3,14 +3,15 @@
     <LayoutPageHeading>
       <template v-slot:title
         ><p class="placeholder-glow">
-          <span v-if="pending" class="placeholder">Lijst xxx</span>
+          <span v-if="mainPending" class="placeholder">Lijst xxx</span>
           <span v-else>Lijst {{ list.listNumber }}</span>
         </p></template
       >
     </LayoutPageHeading>
     <div class="row">
       <div class="col-8">
-        {{ list.products }}
+        {{ mainPending }}
+        <EmployeeProductTable :products="products" @refresh="refresh" />
       </div>
       <div class="col-4">
         <table class="table">
@@ -23,14 +24,14 @@
             <tr>
               <td>Lijstnummer</td>
               <td class="placeholder-glow">
-                <span class="w-100 placeholder" v-if="pending"></span>
+                <span class="w-100 placeholder" v-if="mainPending"></span>
                 <span v-else>{{ list.listNumber }}</span>
               </td>
             </tr>
             <tr>
               <td>Lidnummer</td>
               <td class="placeholder-glow">
-                <span class="w-100 placeholder" v-if="pending"></span>
+                <span class="w-100 placeholder" v-if="mainPending"></span>
                 <span v-else>{{ emptyCheck(list.memberNumber) }}</span>
               </td>
             </tr>
@@ -89,8 +90,6 @@
         </table>
       </div>
     </div>
-    {{ pending }}
-    {{ list }}
   </div>
 </template>
 <script setup>
@@ -102,8 +101,9 @@ definePageMeta({
   },
 });
 
-const { pending, data } = myFetch(
-  `/api/productlist/${useRoute().params.id}?includeUser=true&includeProducts=true`
+const { pending: mainPending, data, refresh } = myFetch(
+  `/api/productlist/${useRoute().params.id}?includeUser=true&includeProducts=true`,
+  { key: "list" }
 );
 
 const list = computed(() => {
@@ -124,5 +124,11 @@ const fullAddress = computed(() => {
     return `${user.value.address}, ${user.value.postalCode} ${user.value.city}`;
   }
   return "";
+});
+
+const products = computed(() => {
+  if (!list.value) return [];
+  if (!list.value.products) return [];
+  return list.value.products;
 });
 </script>
