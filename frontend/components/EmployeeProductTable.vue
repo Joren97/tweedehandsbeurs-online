@@ -10,7 +10,37 @@
         <th></th>
       </tr>
     </thead>
-    <tbody>
+    <tbody class="placeholder-glow" v-if="loading">
+      <tr v-for="i in 5">
+        <td>
+          <div class="placeholder-glow">
+            <div class="placeholder w-100"></div>
+          </div>
+        </td>
+        <td>
+          <div class="placeholder-glow">
+            <div class="placeholder w-100"></div>
+          </div>
+        </td>
+        <td>
+          <div class="placeholder-glow">
+            <div class="placeholder w-100"></div>
+          </div>
+        </td>
+        <td>
+          <div class="placeholder-glow">
+            <div class="placeholder w-100"></div>
+          </div>
+        </td>
+        <td>
+          <div class="placeholder-glow">
+            <div class="placeholder w-100"></div>
+          </div>
+        </td>
+        <td></td>
+      </tr>
+    </tbody>
+    <tbody v-else>
       <tr v-for="item in products">
         <td>{{ item.productNumber }}</td>
         <td>{{ item.description }}</td>
@@ -45,6 +75,11 @@ const props = defineProps({
     type: [Array, null],
     required: false,
     default: null,
+  },
+  loading: {
+    type: Boolean,
+    required: false,
+    default: false,
   },
 });
 
