@@ -129,7 +129,7 @@ class AuthController extends ApiController
         $user->city = $request->city;
         $user->postal_code = $request->postalCode;
         $user->save();
-        return $this->successResponse($user, "User info updated", 200);
+        return $this->successResponse(new UserResource($user), "User info updated", 200);
     }
 
     public function forgotPassword(ForgotPasswordRequest $request)
