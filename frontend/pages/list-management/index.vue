@@ -52,6 +52,7 @@
         <p>Bevestigd</p>
         <div class="form-check form-check-inline">
           <input
+            v-model="isUserConfirmed"
             class="form-check-input"
             type="radio"
             name="confirmed"
@@ -62,6 +63,7 @@
         </div>
         <div class="form-check form-check-inline">
           <input
+            v-model="isUserConfirmed"
             class="form-check-input"
             type="radio"
             name="confirmed"
@@ -72,6 +74,7 @@
         </div>
         <div class="form-check form-check-inline">
           <input
+            v-model="isUserConfirmed"
             class="form-check-input"
             type="radio"
             name="confirmed"
@@ -83,6 +86,7 @@
         <p>Gevalideerd</p>
         <div class="form-check form-check-inline">
           <input
+            v-model="isEmployeeValidated"
             class="form-check-input"
             type="radio"
             name="validated"
@@ -93,6 +97,7 @@
         </div>
         <div class="form-check form-check-inline">
           <input
+            v-model="isEmployeeValidated"
             class="form-check-input"
             type="radio"
             name="validated"
@@ -103,6 +108,7 @@
         </div>
         <div class="form-check form-check-inline">
           <input
+            v-model="isEmployeeValidated"
             class="form-check-input"
             type="radio"
             name="validated"
@@ -114,6 +120,7 @@
         <p>Uitbetaald</p>
         <div class="form-check form-check-inline">
           <input
+            v-model="isPaidToUser"
             class="form-check-input"
             type="radio"
             name="paid"
@@ -124,6 +131,7 @@
         </div>
         <div class="form-check form-check-inline">
           <input
+            v-model="isPaidToUser"
             class="form-check-input"
             type="radio"
             name="paid"
@@ -134,6 +142,7 @@
         </div>
         <div class="form-check form-check-inline">
           <input
+            v-model="isPaidToUser"
             class="form-check-input"
             type="radio"
             name="paid"
@@ -159,16 +168,35 @@ definePageMeta({
 });
 
 const search = ref("");
+const isUserConfirmed = ref("any");
+const isEmployeeValidated = ref("any");
+const isPaidToUser = ref("any");
+const query = computed(() => {
+  let query = "&isUserConfirmed[]=0&isUserConfirmed[]=1";
+  query += "&isEmployeeValidated[]=0&isEmployeeValidated[]=1";
+  query += "&isPaidToUser[]=0&isPaidToUser[]=1";
+  if (isUserConfirmed.value == "yes") query = query.replace("isUserConfirmed[]=0", "");
+  if (isUserConfirmed.value == "no") query = query.replace("isUserConfirmed[]=1", "");
+  if (isEmployeeValidated.value == "yes")
+    query = query.replace("isEmployeeValidated[]=0", "");
+  if (isEmployeeValidated.value == "no")
+    query = query.replace("isEmployeeValidated[]=1", "");
+  if (isPaidToUser.value == "yes") query = query.replace("isPaidToUser[]=0", "");
+  if (isPaidToUser.value == "no") query = query.replace("isPaidToUser[]=1", "");
+
+  return query;
+});
 
 const page = computed(() => {
   return parseInt(useRoute().query.page) || 1;
 });
 
 const { pending, data } = myAsyncData(
-  () => `/api/productlist?page=${page.value}&includeUser=true&search=${search.value}`,
+  () =>
+    `/api/productlist?page=${page.value}&includeUser=true&search=${search.value}${query.value}`,
   {},
   {
-    watch: [page, search],
+    watch: [page, search, query],
   }
 );
 

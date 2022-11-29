@@ -51,6 +51,18 @@ class ProductlistController extends ApiController
             });
         }
 
+        if ($request->query('isUserConfirmed')) {
+            $productLists = $productLists->whereIn('is_user_confirmed', $request->query('isUserConfirmed'));
+        }
+
+        if ($request->query('isEmployeeValidated')) {
+            $productLists = $productLists->whereIn('is_employee_validated', $request->query('isEmployeeValidated'));
+        }
+
+        if ($request->query('isPaidToUser')) {
+            $productLists = $productLists->whereIn('is_paid_to_user', $request->query('isPaidToUser'));
+        }
+
         return new ProductListCollection($productLists->paginate()->appends($request->query()));
     }
 
