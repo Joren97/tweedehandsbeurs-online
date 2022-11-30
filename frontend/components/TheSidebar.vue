@@ -8,13 +8,19 @@
             <NuxtLink to="/"> <i class="fas fa-fw fa-tachometer-alt"></i>Dashboard </NuxtLink>
           </li>
           <li>
-            <NuxtLink to="/lists"> <i class="far fa-list-alt"></i>Mijn Lijsten </NuxtLink>
+            Admin
+          </li>
+          <li>
+            <NuxtLink to="/lists" class="active"> <i class="far fa-list-alt"></i>Mijn Lijsten </NuxtLink>
           </li>
           <li>
             <NuxtLink to="/profile"> <i class="far fa-user-circle"></i> Profiel </NuxtLink>
           </li>
           <li>
             <NuxtLink to="/prices"><i class="far fa-money-bill-alt"></i> Prijslijst </NuxtLink>
+          </li>
+          <li>
+            Leden
           </li>
           <li>
             <NuxtLink to="/list-management"><i class="fab fa-sistrix"></i> Lijstoverzicht </NuxtLink>
@@ -25,6 +31,7 @@
           <li>
             <NuxtLink to="/user-management"><i class="far fa-address-book"></i> Gebruikers </NuxtLink>
           </li>
+          <li>Gebruiker</li>
           <li>
             <NuxtLink to="/editions"><i class="fas fa-cogs"></i> Edities </NuxtLink>
           </li>

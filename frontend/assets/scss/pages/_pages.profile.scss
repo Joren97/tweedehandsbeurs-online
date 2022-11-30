@@ -1,0 +1,27 @@
+.dashboard__profile {
+
+
+
+  .profile__message {
+    //display: none;
+    margin-top: 1rem;
+
+    .message__success {
+      display: flex;
+      align-items: center;
+      width: 20rem;
+      background-color: #1cc88a;
+      color: #ffffff;
+      padding: 1rem;
+    }
+
+    .message__error {
+      display: flex;
+      align-items: center;
+      width: 20rem;
+      background-color: #e74a3b;
+      color: #ffffff;
+      padding: 1rem;
+    }
+  }
+}
