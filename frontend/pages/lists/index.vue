@@ -1,16 +1,24 @@
 <template>
   <section class="dashboard__lists">
+    <div class="lists__title">
+      Mijn lijsten
+    </div>
+
     <div class="lists__grid">
       <div class="grid__item" v-for="item in editionsWithLists" :key="item.id">
         <div class="item__title">{{ item.year }} - {{ item.name }}</div>
         <div class="item__lists" v-if="item.lists.length > 0">
-          <div class="list" v-for="list in item.lists" :key="list.id" @click="openList(list.id)">{{ list.id }} Lijst {{ list.listNumber }} ({{ list.memberNumber }})</div>
+          <div class="lists__item" v-for="list in item.lists" :key="list.id" @click="openList(list.id)">{{ list.id }} Lijst {{ list.listNumber }} ({{ list.memberNumber }})</div>
         </div>
-        <div class="item__lists" v-else>Geen lijsten</div>
+        <div class="item__lists" v-else>
+          <div class="lists__emtpy">
+            Geen lijsten
+          </div>
+        </div>
       </div>
     </div>
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newListModal">Nieuwe lijst toevoegen</button>
-    <div class="modal fade" id="newListModal" tabindex="-1" aria-labelledby="newListModalLabel" aria-hidden="true">
+    <div class="modal fade d-none" id="newListModal">
       <NewListModal :active-edition="activeEdition" @list-created="onListCreated" />
     </div>
   </section>

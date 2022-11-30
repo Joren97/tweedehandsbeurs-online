@@ -5,6 +5,13 @@
   background-color: #555555;
   padding: 0.75rem 1.25rem;
   border: 1px solid #555555;
+  border-radius: .375rem;
+  transition: background-color .25s ease-in-out;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #444444;
+  }
 
   &.btn-register,
   &.btn-login {

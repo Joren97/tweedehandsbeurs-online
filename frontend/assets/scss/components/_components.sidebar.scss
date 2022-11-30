@@ -6,7 +6,7 @@
   left: 0;
   width: 17.5rem;
   height: 100%;
-  background-color: #eeeeee;
+  background-color: #ffffff;
   z-index: 999;
 
   .sidebar__top {
@@ -23,16 +23,31 @@
       display: flex;
       flex-direction: column;
 
+      li {
+        padding: 0 1rem .5rem;
+
+        &:last-child {
+          padding: 0 1rem;
+        }
+      }
+
       a {
+        line-height: 1rem;
         text-decoration: none;
         display: flex;
         align-items: center;
         color: $black;
         padding: 1rem;
+        border-radius: .75rem;
         transition: background-color 0.25s ease-in-out;
 
         &:hover {
-          background-color: #e3e6f0;
+          background-color: #f4f4f4;
+        }
+
+        &.active {
+          font-weight: 700;
+          background-color: #f4f4f4;
         }
 
         svg {
