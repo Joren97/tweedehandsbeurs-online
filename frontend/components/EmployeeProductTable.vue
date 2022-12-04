@@ -1,16 +1,17 @@
 <template>
-  <table class="table">
-    <thead>
+  <section class="section__list-detail">
+    <table class="list-detail__table">
+      <thead>
       <tr>
         <th>#</th>
         <th>Beschrijving</th>
         <th>Vraagprijs</th>
         <th>Verkoopprijs</th>
         <th>Verkocht</th>
-        <th></th>
+        <th>Acties</th>
       </tr>
-    </thead>
-    <tbody class="placeholder-glow" v-if="loading">
+      </thead>
+      <tbody class="placeholder-glow" v-if="loading">
       <tr v-for="i in 5">
         <td>
           <div class="placeholder-glow">
@@ -39,24 +40,24 @@
         </td>
         <td></td>
       </tr>
-    </tbody>
-    <tbody v-else>
+      </tbody>
+      <tbody v-else>
       <tr v-for="item in products">
-        <td>{{ item.productNumber }}</td>
-        <td>{{ item.description }}</td>
-        <td>{{ toEuro(item.price.askingPrice) }}</td>
-        <td>{{ toEuro(item.price.sellingPrice) }}</td>
-        <td>
-          <span v-if="item.isSold"> <i class="fa-solid fa-check" /></span
-          ><span v-else> <i class="fa-solid fa-xmark" /></span>
+        <td class="table__column">{{ item.productNumber }}</td>
+        <td class="table__column column__description">{{ item.description }}</td>
+        <td class="table__column">{{ toEuro(item.price.askingPrice) }}</td>
+        <td class="table__column">{{ toEuro(item.price.sellingPrice) }}</td>
+        <td class="table__column">
+          <span v-if="item.isSold"> <i class="fa-solid fa-check"/></span>
+          <span v-else> <i class="fa-solid fa-xmark"/></span>
         </td>
-        <td>
-          <button class="btn btn-primary"><i class="fa-solid fa-trash"></i></button>
-          <button class="btn btn-secondary"><i class="fa-solid fa-pencil"></i></button>
-          <button class="btn btn-secondary" @click="sell(item, false)" v-if="item.isSold">
+        <td class="table__column column__actions">
+          <button class=""><i class="fa-solid fa-trash"></i></button>
+          <button class="" @click="showModal = true"><i class="fa-solid fa-pencil"></i></button>
+          <button class="" @click="sell(item, false)" v-if="item.isSold">
             <i class="fa-solid fa-close"></i>
           </button>
-          <button class="btn btn-primary" @click="sell(item, true)" v-if="!item.isSold">
+          <button class="" @click="sell(item, true)" v-if="!item.isSold">
             <i class="fa-solid fa-euro-sign"></i>
           </button>
         </td>
@@ -66,8 +67,10 @@
         <td>{{ toEuro(totalSold) }}</td>
         <td colspan="3"></td>
       </tr>
-    </tbody>
-  </table>
+      </tbody>
+    </table>
+    <EditProductModal v-if="showModal"/>
+  </section>
 </template>
 <script setup>
 const props = defineProps({
@@ -81,7 +84,13 @@ const props = defineProps({
     required: false,
     default: false,
   },
+  data: function () {
+    return {
+      showModal: false
+    }
+  }
 });
+
 
 const emit = defineEmits(["refresh"]);
 
@@ -97,11 +106,12 @@ const totalSold = computed(() => {
   return 0;
 });
 
+
 const sell = async (product, sold) => {
-  const newProduct = { ...product, isSold: sold };
+  const newProduct = {...product, isSold: sold};
   const {
     data: {
-      value: { status, message, data },
+      value: {status, message, data},
     },
   } = await myFetch(`/api/product/${product.id}`, {
     method: "PUT",
