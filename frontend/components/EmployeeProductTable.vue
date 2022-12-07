@@ -69,7 +69,7 @@
       </tr>
       </tbody>
     </table>
-    <EditProductModal v-if="showModal"/>
+    <EditProductModal />
   </section>
 </template>
 <script setup>
