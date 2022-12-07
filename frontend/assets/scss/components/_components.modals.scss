@@ -1,0 +1,13 @@
+.modal-dialog {
+  position: absolute;
+  top: 10rem;
+  left: calc(50% - 17.5rem);
+  width: 35rem;
+  background-color: $white;
+  padding: 2rem;
+
+  #selling-price {
+    margin-bottom: 1rem;
+  }
+
+}

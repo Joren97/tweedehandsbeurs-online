@@ -1,0 +1,51 @@
+.section__list-detail {
+  max-height: calc(100vh - 17.5rem);
+  overflow-y: scroll;
+}
+
+.list-detail__table {
+  width: 100%;
+  border-radius: .5rem;
+
+  th {
+    color: $white;
+    background-color: $primary;
+    padding: 1rem;
+  }
+
+  .table__column {
+    padding: 1rem;
+    vertical-align: middle;
+  }
+
+  .column__description {
+    width: 35rem;
+  }
+
+  .column__actions {
+    display: flex;
+    align-items: center;
+
+    button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.5rem;
+      height: 2.5rem;
+      margin-right: .5rem;
+      color: $white;
+      background-color: $primary;
+      border: none;
+      transition: background-color .25s ease-in-out;
+
+      &:last-child {
+        margin-right: 0;
+      }
+
+      &:hover {
+        background-color: $primary-dark;
+      }
+    }
+  }
+}
+

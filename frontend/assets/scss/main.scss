@@ -1,22 +1,24 @@
 // Helpers
-@import "helpers/helpers.variables";
+@import 'helpers/helpers.variables';
 
 // Vendors
-@import "~/node_modules/bootstrap/scss/bootstrap";
+@import '~/node_modules/bootstrap/scss/bootstrap';
 
 // Elements
-@import "elements/elements.page";
+@import 'elements/elements.page';
 
 // Components
-@import "components/components.buttons";
-@import "components/components.footer";
-@import "components/components.forms";
-@import "components/components.header";
-@import "components/components.inputs";
-@import "components/components.sidebar";
+@import 'components/components.buttons';
+@import 'components/components.footer';
+@import 'components/components.forms';
+@import 'components/components.header';
+@import 'components/components.inputs';
+@import 'components/components.modals';
+@import 'components/components.sidebar';
 
 // Pages
 @import 'pages/pages.lists';
+@import 'pages/pages.list-detail';
 @import 'pages/pages.login';
 @import 'pages/pages.profile';
 @import 'pages/pages.register';
