@@ -6,7 +6,7 @@
 
     <div class="row">
       <div class="col-8">
-        <table class="table">
+        <table class="">
           <thead>
             <tr>
               <th>#</th>
