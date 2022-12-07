@@ -10,68 +10,74 @@
       Gezinsbond hebben toegang tot deze gegevens.
     </p>
     <VForm
-        @submit="updateProfile"
-        :validation-schema="validationSchema"
-        :initial-values="user"
-        v-slot="{ meta: formMeta, errors: formErrors }"
+      @submit="updateProfile"
+      :validation-schema="validationSchema"
+      :initial-values="user"
+      v-slot="{ meta: formMeta, errors: formErrors }"
     >
       <div class="row">
         <div class="col-12">
-          <p class="fw-bold">Emailadres</p>
+          <p class="fw-semibold">Emailadres</p>
           <VTextInput
-              type="email"
-              label="Email"
-              name="email"
-              placeholder="Email"
-              disabled
+            type="email"
+            label="Email"
+            name="email"
+            placeholder="Email"
+            disabled
+            class="mb-3"
           />
         </div>
       </div>
       <div class="row">
-        <div class="col-12"><p class="fw-bold">Volledige naam</p></div>
+        <div class="col-12"><p class="fw-semibold">Volledige naam</p></div>
       </div>
       <div class="row">
-        <div class="col-6">
-          <VTextInput label="Voornaam" name="firstname" placeholder="John"/>
+        <div class="col-lg-6 col-sm-12">
+          <VTextInput label="Voornaam" name="firstname" placeholder="John" class="mb-3" />
         </div>
-        <div class="col-6">
-          <VTextInput label="Familienaam" name="lastname" placeholder="Doe"/>
+        <div class="col-lg-6 col-sm-12">
+          <VTextInput
+            label="Familienaam"
+            name="lastname"
+            placeholder="Doe"
+            class="mb-3"
+          />
         </div>
       </div>
       <div class="row">
         <div class="col-12">
-          <p class="fw-bold">Adresgegevens</p>
+          <p class="fw-semibold">Adresgegevens</p>
         </div>
-        <div class="col-6">
-          <VTextInput label="Gemeente" name="city"/>
+        <div class="col-lg-6 col-sm-12 mb-3">
+          <VTextInput label="Gemeente" name="city" />
         </div>
-        <div class="col-6">
-          <VTextInput label="Postcode" name="postalCode"/>
+        <div class="col-lg-6 col-sm-12 mb-3">
+          <VTextInput label="Postcode" name="postalCode" />
         </div>
-        <div class="col-12">
-          <VTextInput label="Straat + nummer" name="address"/>
+        <div class="col-12 mb-3">
+          <VTextInput label="Straat + nummer" name="address" />
         </div>
       </div>
       <div class="row">
-        <div class="col-12"><p class="fw-bold">Extra info</p></div>
-        <div class="col-6">
-          <VTextInput label="Lidnummer" name="memberNumber"/>
+        <div class="col-12"><p class="fw-semibold">Extra info</p></div>
+        <div class="col-lg-6 col-sm-12 mb-3">
+          <VTextInput label="Lidnummer" name="memberNumber" />
         </div>
-        <div class="col-6">
-          <VTextInput label="Telefoon" name="phoneNumber"/>
+        <div class="col-lg-6 col-sm-12 mb-3">
+          <VTextInput label="Telefoon" name="phoneNumber" />
         </div>
       </div>
       <button class="btn btn-primary" type="submit" :disabled="!formMeta.valid">
         Submit
       </button>
-      <TheNotification/>
+      <TheNotification />
     </VForm>
   </div>
 </template>
 <script setup>
-import {object, string} from "yup";
+import { object, string } from "yup";
 import _ from "lodash";
-import {useNotificationStore} from "~~/store/notification";
+import { useNotificationStore } from "~~/store/notification";
 
 const notificationStore = useNotificationStore();
 definePageMeta({
@@ -88,17 +94,17 @@ useHead({
 const user = ref({});
 const alertMessage = ref("");
 const alertType = ref("");
-const {data: userData, pending, error, refresh} = await myLazyFetch(
-    () => "/api/auth/userinfo",
-    {
-      initialCache: false,
-    }
+const { data: userData, pending, error, refresh } = await myLazyFetch(
+  () => "/api/auth/userinfo",
+  {
+    initialCache: false,
+  }
 );
 watch(userData, (newVal) => {
   user.value = newVal.data;
 });
 const updateProfile = async (values, actions) => {
-  const {status, message, data} = await useAPI("/api/auth/me", {
+  const { status, message, data } = await useAPI("/api/auth/me", {
     method: "PUT",
     body: values,
   });
@@ -114,12 +120,12 @@ const validationSchema = object({
   firstname: string().required().label("Voornaam"),
   lastname: string().required().label("Familienaam"),
   memberNumber: string()
-      .matches(/^\d{3}-\d{3}-\d{3}$/, {
-        message: "Ongeldig lidnummer.",
-        excludeEmptyString: true,
-      })
-      .nullable()
-      .label("Lidnummer"),
+    .matches(/^\d{3}-\d{3}-\d{3}$/, {
+      message: "Ongeldig lidnummer.",
+      excludeEmptyString: true,
+    })
+    .nullable()
+    .label("Lidnummer"),
   phoneNumber: string().required().matches(/^\d*$/, {
     message: "Telefoon mag enkel cijfers bevatten.",
     excludeEmptyString: true,
@@ -127,9 +133,9 @@ const validationSchema = object({
   address: string().required(),
   city: string().required(),
   postalCode: string()
-      .required()
-      .matches(/^\d{4}$/, {
-        message: "Ongeldige postcode.",
-      }),
+    .required()
+    .matches(/^\d{4}$/, {
+      message: "Ongeldige postcode.",
+    }),
 });
 </script>
