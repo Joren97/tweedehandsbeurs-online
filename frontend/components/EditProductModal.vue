@@ -4,31 +4,42 @@
       <div class="modal-header">
         <h1 class="modal-title fs-5" id="editProductModal">Product bewerken</h1>
         <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
+          type="button"
+          class="btn-close"
+          @click="closeModal"
+          aria-label="Close"
         ></button>
       </div>
       <div class="modal-body">
         <label for="description" class="col-form-label">Beschrijving:</label>
-        <input type="text" class="form-control" id="description" v-model="description"/>
-<!--        <p v-if="fieldErrors.description">{{ fieldErrors.description }}</p>-->
+        <input type="text" class="form-control" id="description" v-model="description" />
+        <!--        <p v-if="fieldErrors.description">{{ fieldErrors.description }}</p>-->
 
         <label for="asking-price" class="col-form-label">Vraagprijs:</label>
         <select class="form-select" aria-label="Vraagprijs" v-model="selectedPriceId">
           <option selected>-- Selecteer een vraagprijs --</option>
-<!--          <option v-for="item in prices" :value="item.id">-->
-<!--            {{ toEuro(item.askingPrice) }}-->
-<!--          </option>-->
+          <option v-for="item in prices" :value="item.id">
+            {{ toEuro(item.askingPrice) }}
+          </option>
         </select>
-<!--        <p v-if="fieldErrors.price">{{ fieldErrors.price }}</p>-->
+        <!--        <p v-if="fieldErrors.price">{{ fieldErrors.price }}</p>-->
 
         <label for="selling-price" class="col-form-label">Verkoopprijs:</label>
-        <input type="text" class="form-control" id="selling-price" disabled :value="sellingPrice"/>
+        <input
+          type="text"
+          class="form-control"
+          id="selling-price"
+          disabled
+          :value="sellingPrice"
+        />
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="dismiss-button-edit">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+          id="dismiss-button-edit"
+        >
           Sluiten
         </button>
         <button type="button" class="btn btn-primary" @click="updateProduct">
@@ -38,17 +49,21 @@
     </div>
   </div>
 </template>
+
 <script setup>
+import { useAuthStore } from "~~/store/auth";
+const authStore = useAuthStore();
+
 const props = defineProps({
-  priceData: {
-    type: [Object, null],
-    required: true,
-    default: {data: []},
-  },
   productToEdit: {
     type: [Object, null],
     required: true,
     default: null,
+  },
+  prices: {
+    type: [Array],
+    required: true,
+    default: () => [],
   },
 });
 
@@ -57,20 +72,15 @@ const updatedDescription = ref("");
 const updatedSelectedPriceId = ref(0);
 
 watch(
-    () => props.productToEdit,
-    (newVal) => {
-      fieldErrors.value = {};
-      updatedDescription.value = newVal.description;
-      updatedSelectedPriceId.value = newVal.priceId;
-    }
+  () => props.productToEdit,
+  (newVal) => {
+    fieldErrors.value = {};
+    updatedDescription.value = newVal.description;
+    updatedSelectedPriceId.value = newVal.priceId;
+  }
 );
 
-const prices = computed(() => {
-  if (props.priceData == null) return [];
-  return props.priceData.data;
-});
-
-const emit = defineEmits(["product-updated"]);
+const emit = defineEmits(["product-updated", "dismiss-modal"]);
 
 const description = computed({
   get: () => {
@@ -94,26 +104,32 @@ const sellingPrice = computed(() => {
   if (updatedSelectedPriceId.value === 0 && selectedPriceId.value === 0)
     return "-- Selecteer een vraagprijs --";
   if (updatedSelectedPriceId.value === 0 && selectedPriceId.value !== 0)
-    return toEuro(prices.value.find((p) => p.id === selectedPriceId.value).sellingPrice);
+    return toEuro(props.prices.find((p) => p.id === selectedPriceId.value).sellingPrice);
   if (updatedSelectedPriceId.value !== 0)
     return toEuro(
-        prices.value.find((p) => p.id === updatedSelectedPriceId.value).sellingPrice
+      props.prices.find((p) => p.id === updatedSelectedPriceId.value).sellingPrice
     );
 });
 
 const updateProduct = async () => {
   const body = {
+    ...props.productToEdit,
     description: updatedDescription.value,
     priceId: updatedSelectedPriceId.value,
   };
 
-  const {data, pending, error} = await useCustomFetch(
-      `/api/product/me/${props.productToEdit.id}`,
-      {
-        method: "PUT",
-        body,
-        initialCache: false,
-      }
+  const url =
+    authStore.user.role === "admin" || authStore.user.role === "employee"
+      ? "/api/product"
+      : "/api/product/me";
+
+  const { data, pending, error } = await useCustomFetch(
+    `${url}/${props.productToEdit.id}`,
+    {
+      method: "PUT",
+      body,
+      initialCache: false,
+    }
   );
 
   if (error.value != null) {
@@ -122,9 +138,10 @@ const updateProduct = async () => {
     return;
   }
 
-  // Hide the bootstrap modal
-  document.getElementById("dismiss-button-edit").click();
-  // Emit to parent
   emit("product-updated");
+};
+
+const closeModal = () => {
+  emit("dismiss-modal");
 };
 </script>
