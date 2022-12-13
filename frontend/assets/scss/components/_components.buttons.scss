@@ -1,16 +1,25 @@
 .btn {
   font-size: 0.875rem;
-  display: inline-block;
+  display: flex;
+  align-items: center;
   color: #ffffff;
   background-color: #555555;
-  padding: 0.75rem 1.25rem;
+  padding: 0.5rem 1.5rem;
   border: 1px solid #555555;
   border-radius: .375rem;
   transition: background-color .25s ease-in-out;
   cursor: pointer;
 
   &:hover {
-    background-color: #444444;
+    background-color: $primary-dark;
+  }
+
+  &.btn-primary {
+    background-color: $primary;
+
+    &:hover {
+      background-color: $primary-dark;
+    }
   }
 
   &.btn-register,
@@ -24,5 +33,11 @@
     &:hover {
       background-color: #685350;
     }
+  }
+
+  svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-right: .5rem;
   }
 }

@@ -1,6 +1,6 @@
 <template>
   <aside class="c-sidebar">
-    <div class="sidebar__top">Tweedehandsbeurs Online</div>
+    <div class="sidebar__top">Tweedehandsbeurs <span>Online</span></div>
     <div class="sidebar__navigation">
       <nav>
         <ul>
@@ -9,7 +9,7 @@
               <i class="fas fa-fw fa-tachometer-alt"></i>Dashboard
             </NuxtLink>
           </li>
-          <li>Gebruiker</li>
+          <li class="navigation__title">Gebruiker</li>
           <li>
             <NuxtLink to="/lists" class="active">
               <i class="far fa-list-alt"></i>Mijn Lijsten
@@ -25,7 +25,7 @@
               ><i class="far fa-money-bill-alt"></i> Prijslijst
             </NuxtLink>
           </li>
-          <li>Medewerker</li>
+          <li class="navigation__title">Medewerker</li>
           <li>
             <NuxtLink to="/list-management"
               ><i class="fab fa-sistrix"></i> Lijstoverzicht
@@ -39,7 +39,7 @@
               ><i class="far fa-address-book"></i> Gebruikers
             </NuxtLink>
           </li>
-          <li>Admin</li>
+          <li class="navigation__title">Admin</li>
           <li>
             <NuxtLink to="/editions"><i class="fas fa-cogs"></i> Edities </NuxtLink>
           </li>
