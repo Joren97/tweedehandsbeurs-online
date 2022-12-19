@@ -18,7 +18,16 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in lists">
+            <tr v-for="i in 15" class="placeholder-glow" v-if="pending">
+              <td><span class="placeholder w-100"></span></td>
+              <td><span class="placeholder w-100"></span></td>
+              <td><span class="placeholder w-100"></span></td>
+              <td><span class="placeholder w-100"></span></td>
+              <td><span class="placeholder w-100"></span></td>
+              <td><span class="placeholder w-100"></span></td>
+              <td><span class="placeholder w-100"></span></td>
+            </tr>
+            <tr v-for="item in lists" v-else>
               <th scope="row">{{ item.listNumber }}</th>
               <td>{{ item.user.firstname }}</td>
               <td>{{ item.user.lastname }}</td>
