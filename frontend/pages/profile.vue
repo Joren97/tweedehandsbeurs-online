@@ -104,7 +104,7 @@ watch(userData, (newVal) => {
   user.value = newVal.data;
 });
 const updateProfile = async (values, actions) => {
-  const { status, message, data } = await useAPI("/api/auth/me", {
+  const { status, message, data } = await useApi("/api/auth/me", {
     method: "PUT",
     body: values,
   });

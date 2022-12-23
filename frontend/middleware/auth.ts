@@ -14,7 +14,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     // Check if user object is set, else fetch it
     if (!authStore.user || authStore.user == null) {
         try {
-            const { data: { value } } = await myFetch(() => "/api/auth/userinfo", {
+            const { data: { value } } = await myFetch("/api/auth/userinfo", {
                 initialCache: false,
             }) as ohMyFetchResponse;
             if (value && value.data) {

@@ -103,7 +103,7 @@ const searchProduct = async (values, actions) => {
 
   console.log(x);
 
-  const { status, message, data } = await useAPI(
+  const { status, message, data } = await useApi(
     `/api/product?listNumber[eq]=${values.listNumber}&productNumber[eq]=${values.productNumber}`
   );
 
@@ -126,7 +126,7 @@ const searchProduct = async (values, actions) => {
 };
 
 const sellProduct = async (p) => {
-  const { status, message, data } = await useAPI(`/api/product/${p.id}`, {
+  const { status, message, data } = await useApi(`/api/product/${p.id}`, {
     method: "PUT",
     body: {
       ...p,
