@@ -72,7 +72,7 @@ const editions = computed(() => {
   return data.value.data;
 });
 const activate = async (edition, isActive) => {
-  const res = await useAPI(`/api/edition/${edition.id}`, {
+  const res = await useApi(`/api/edition/${edition.id}`, {
     method: "PUT",
     body: {
       ...edition,
