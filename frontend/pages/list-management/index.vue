@@ -3,165 +3,125 @@
     <LayoutPageHeading>
       <template v-slot:title>Lijstenbeheer</template>
     </LayoutPageHeading>
-    <div class="row">
-      <div class="col">
-        <table class="table">
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Voornaam</th>
-              <th scope="col">Naam</th>
-              <th scope="col">Lidnummer</th>
-              <th scope="col">Bevestigd</th>
-              <th scope="col">Gevalideerd</th>
-              <th scope="col"></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="i in 15" class="placeholder-glow" v-if="pending">
-              <td><span class="placeholder w-100"></span></td>
-              <td><span class="placeholder w-100"></span></td>
-              <td><span class="placeholder w-100"></span></td>
-              <td><span class="placeholder w-100"></span></td>
-              <td><span class="placeholder w-100"></span></td>
-              <td><span class="placeholder w-100"></span></td>
-              <td><span class="placeholder w-100"></span></td>
-            </tr>
-            <tr v-for="item in lists" v-else>
-              <th scope="row">{{ item.listNumber }}</th>
-              <td>{{ item.user.firstname }}</td>
-              <td>{{ item.user.lastname }}</td>
-              <td>{{ emptyCheck(item.memberNumber) }}</td>
-              <td>{{ item.isUserConfirmed }}</td>
-              <td>{{ item.isEmployeeValidated }}</td>
-              <td>
-                <NuxtLink
-                  class="btn btn-primary btn-sm"
-                  :to="`/list-management/${item.id}`"
-                >
-                  <i class="fas fa-eye"></i>
-                </NuxtLink>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <Pagination
-          :page="pagination.current_page"
-          :from="pagination.from"
-          :to="pagination.to"
-          :total="pagination.total"
-          :last-page="pagination.last_page"
-        />
-      </div>
-      <div class="col-3">
-        <div class="form-floating mb-3">
-          <input class="form-control" id="search" @input="keywordChange" />
-          <label for="search">Zoekterm</label>
-        </div>
-        <p>Bevestigd</p>
-        <div class="form-check form-check-inline">
-          <input
-            v-model="isUserConfirmed"
-            class="form-check-input"
-            type="radio"
-            name="confirmed"
-            id="confirmed-yes"
-            value="yes"
-          />
-          <label class="form-check-label" for="confirmed-yes">Ja</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input
-            v-model="isUserConfirmed"
-            class="form-check-input"
-            type="radio"
-            name="confirmed"
-            id="confirmed-no"
-            value="no"
-          />
-          <label class="form-check-label" for="confirmed-no">Nee</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input
-            v-model="isUserConfirmed"
-            class="form-check-input"
-            type="radio"
-            name="confirmed"
-            id="confirmed-any"
-            value="any"
-          />
-          <label class="form-check-label" for="confirmed-any">Alles</label>
-        </div>
-        <p>Gevalideerd</p>
-        <div class="form-check form-check-inline">
-          <input
-            v-model="isEmployeeValidated"
-            class="form-check-input"
-            type="radio"
-            name="validated"
-            id="validated-yes"
-            value="yes"
-          />
-          <label class="form-check-label" for="validated-yes">Ja</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input
-            v-model="isEmployeeValidated"
-            class="form-check-input"
-            type="radio"
-            name="validated"
-            id="validated-no"
-            value="no"
-          />
-          <label class="form-check-label" for="validated-no">Nee</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input
-            v-model="isEmployeeValidated"
-            class="form-check-input"
-            type="radio"
-            name="validated"
-            id="validated-any"
-            value="any"
-          />
-          <label class="form-check-label" for="validated-any">Alles</label>
-        </div>
-        <p>Uitbetaald</p>
-        <div class="form-check form-check-inline">
-          <input
-            v-model="isPaidToUser"
-            class="form-check-input"
-            type="radio"
-            name="paid"
-            id="paid-yes"
-            value="yes"
-          />
-          <label class="form-check-label" for="paid-yes">Ja</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input
-            v-model="isPaidToUser"
-            class="form-check-input"
-            type="radio"
-            name="paid"
-            id="paid-no"
-            value="no"
-          />
-          <label class="form-check-label" for="paid-no">Nee</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input
-            v-model="isPaidToUser"
-            class="form-check-input"
-            type="radio"
-            name="paid"
-            id="paid-any"
-            value="any"
-          />
-          <label class="form-check-label" for="paid-any">Alles</label>
+    <section class="section__list-management">
+      <div class="list-management__filters">
+        <div class="row align-items-center mb-3">
+          <div class="col-3">
+            <div class="filters__search">
+              <input class="form-control" name="search" id="search" @input="keywordChange" placeholder="Zoeken"/>
+            </div>
+          </div>
+
+          <div class="col-3">
+            <div class="filters filters__confirmed">
+              <p>Bevestigd</p>
+              <select class="selection__confirmed" v-model="isUserConfirmed">
+                <option value="any">Alles</option>
+                <option value="yes">Ja</option>
+                <option value="no">Nee</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="filters filters__validated">
+              <p>Gevalideerd</p>
+              <select class="selection__confirmed" v-model="isEmployeeValidated">
+                <option value="any">Alles</option>
+                <option value="yes">Ja</option>
+                <option value="no">Nee</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="filters filters__paid">
+              <p>Uitbetaald</p>
+              <select class="selection__confirmed" v-model="isPaidToUser">
+                <option value="any">Alles</option>
+                <option value="yes">Ja</option>
+                <option value="no">Nee</option>
+              </select>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+
+
+      <div class="row">
+        <div class="col">
+          <div class="list-management__table">
+            <div class="table__headers">
+              <div class="header__number">#</div>
+              <div class="header__first-name">Voornaam</div>
+              <div class="header__last-name">Achternaam</div>
+              <div class="header__member-number">Lidnummer</div>
+              <div class="header__confirmed">Bevestigd</div>
+              <div class="header__validated">Gevalideerd</div>
+              <div class="header__actions">Acties</div>
+            </div>
+            <div class="table__items">
+              <div class="item" v-for="item in lists">
+                <div class="item__number">{{ item.listNumber }}</div>
+                <div class="item__first-name">{{ item.user.firstname }}</div>
+                <div class="item__last-name">{{ item.user.lastname }}</div>
+                <div class="item__member-number">{{ emptyCheck(item.memberNumber) }}</div>
+                <div class="item__confirmed">{{ item.isUserConfirmed }}</div>
+                <div class="item__validated">{{ item.isEmployeeValidated }}</div>
+                <div class="item__actions">
+                  <NuxtLink class="btn btn-primary btn-sm" :to="`/list-management/${item.id}`">
+                    <i class="fas fa-eye"></i>
+                  </NuxtLink>
+                </div>
+              </div>
+            </div>
+          </div>
+<!--          <table class="table">-->
+<!--            <thead>-->
+<!--            <tr>-->
+<!--              <th scope="col">#</th>-->
+<!--              <th scope="col">Voornaam</th>-->
+<!--              <th scope="col">Naam</th>-->
+<!--              <th scope="col">Lidnummer</th>-->
+<!--              <th scope="col">Bevestigd</th>-->
+<!--              <th scope="col">Gevalideerd</th>-->
+<!--              <th scope="col"></th>-->
+<!--            </tr>-->
+<!--            </thead>-->
+<!--            <tbody>-->
+<!--            <tr v-for="i in 15" class="placeholder-glow" v-if="pending">-->
+<!--              <td><span class="placeholder w-100"></span></td>-->
+<!--              <td><span class="placeholder w-100"></span></td>-->
+<!--              <td><span class="placeholder w-100"></span></td>-->
+<!--              <td><span class="placeholder w-100"></span></td>-->
+<!--              <td><span class="placeholder w-100"></span></td>-->
+<!--              <td><span class="placeholder w-100"></span></td>-->
+<!--              <td><span class="placeholder w-100"></span></td>-->
+<!--            </tr>-->
+<!--            <tr v-for="item in lists" v-else>-->
+<!--              <th scope="row">{{ item.listNumber }}</th>-->
+<!--              <td>{{ item.user.firstname }}</td>-->
+<!--              <td>{{ item.user.lastname }}</td>-->
+<!--              <td>{{ emptyCheck(item.memberNumber) }}</td>-->
+<!--              <td>{{ item.isUserConfirmed }}</td>-->
+<!--              <td>{{ item.isEmployeeValidated }}</td>-->
+<!--              <td>-->
+<!--                <NuxtLink class="btn btn-primary btn-sm" :to="`/list-management/${item.id}`">-->
+<!--                  <i class="fas fa-eye"></i>-->
+<!--                </NuxtLink>-->
+<!--              </td>-->
+<!--            </tr>-->
+<!--            </tbody>-->
+<!--          </table>-->
+          <Pagination
+              :page="pagination.current_page"
+              :from="pagination.from"
+              :to="pagination.to"
+              :total="pagination.total"
+              :last-page="pagination.last_page"
+          />
+        </div>
+
+      </div>
+    </section>
   </div>
 </template>
 <script setup>
@@ -200,13 +160,13 @@ const page = computed(() => {
   return parseInt(useRoute().query.page) || 1;
 });
 
-const { pending, data } = myAsyncData(
-  () =>
-    `/api/productlist?page=${page.value}&includeUser=true&search=${search.value}${query.value}`,
-  {},
-  {
-    watch: [page, search, query],
-  }
+const {pending, data} = myAsyncData(
+    () =>
+        `/api/productlist?page=${page.value}&includeUser=true&search=${search.value}${query.value}`,
+    {},
+    {
+      watch: [page, search, query],
+    }
 );
 
 const pagination = computed(() => {
