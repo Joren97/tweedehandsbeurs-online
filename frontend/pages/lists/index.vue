@@ -21,7 +21,7 @@
               {{ list.id }} Lijst {{ list.listNumber }} ({{ list.memberNumber }})
             </div>
             <div class="item__actions">
-              <i class="fa-solid fa-trash"></i>
+              <button type="button"><i class="fa-solid fa-trash"></i></button>
             </div>
           </div>
         </div>
@@ -31,7 +31,7 @@
       </div>
     </div>
 
-    <div class="modal fade d-none" id="newListModal">
+    <div class="modal fade" id="newListModal">
       <NewListModal :active-edition="activeEdition" @list-created="onListCreated"/>
     </div>
   </section>

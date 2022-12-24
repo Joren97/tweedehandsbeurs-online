@@ -11,7 +11,7 @@
           </li>
           <li class="navigation__title">Gebruiker</li>
           <li>
-            <NuxtLink to="/lists" class="active">
+            <NuxtLink to="/lists">
               <i class="far fa-list-alt"></i>Mijn Lijsten
             </NuxtLink>
           </li>
