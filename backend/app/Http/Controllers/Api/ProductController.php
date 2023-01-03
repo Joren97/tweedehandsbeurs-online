@@ -46,7 +46,34 @@ class ProductController extends ApiController
      */
     public function store(StoreProductRequest $request)
     {
-        return new ProductResource(Product::create($request->all()));
+        // Find the productlist 
+        $productlist = Productlist::findOrFail($request->productlistId);
+
+        // If the productlist is is confirmed by the user, return a 403
+        if ($productlist->is_user_confirmed) {
+            return $this->errorResponse('Deze lijst is reeds bevestigd.', 403);
+        }
+
+        // If the productlist contains 20 products, return a 403
+        if ($productlist->products()->count() >= 20) {
+            return $this->errorResponse('Deze lijst bevat reeds 20 producten.', 403);
+        }
+
+        if ($productlist->products()->count() === 0) {
+            $product['product_number'] = 1;
+        } else {
+            $usedNumbers = $productlist->products()->pluck('product_number')->toArray();
+            $allNumbers = range(1, 20);
+            $remainingNumbers = array_diff($allNumbers, $usedNumbers);
+            // Get the first number of the remaining numbers
+            $product['product_number'] = reset($remainingNumbers);
+        }
+
+        $product['description'] = $request->description;
+        $product['price_id'] = $request->priceId;
+        $product['productlist_id'] = $request->productlistId;
+
+        return new ProductResource(Product::create($product));
     }
 
     /**
