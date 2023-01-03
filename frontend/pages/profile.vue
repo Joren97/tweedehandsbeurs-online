@@ -1,26 +1,45 @@
 <template>
-  <div>
-    <LayoutPageHeading>
-      <template v-slot:title>Profiel</template>
-    </LayoutPageHeading>
-    <p>
-      Op deze pagina kan je je persoonlijke gegevens aanpassen. We gebruiken deze gegevens
-      om je te kunnen contacteren mocht dit nodig zijn. Deze gegevens zijn niet publiek
-      zichtbaar voor andere gebruikers van de applicatie. Enkel medewerkers van de
-      Gezinsbond hebben toegang tot deze gegevens.
-    </p>
+  <section class="dashboard__profile">
+    <div class="profile__title">Profiel</div>
+    <div class="row">
+      <div class="col-8">
+        <p>
+          Op deze pagina kan je je persoonlijke gegevens aanpassen. We gebruiken deze
+          gegevens om je te kunnen contacteren mocht dit nodig zijn. Deze gegevens zijn
+          niet publiek zichtbaar voor andere gebruikers van de applicatie. Enkel
+          medewerkers van de Gezinsbond hebben toegang tot deze gegevens.
+        </p>
+      </div>
+      <div class="col-4">
+        <button type="button" class="btn btn-primary">Annuleren</button>
+        <button type="button" class="btn btn-secondary">Opslaan</button>
+      </div>
+    </div>
+
+    <hr class="my-4" />
+
     <VForm
+      class="profile__form"
       @submit="updateProfile"
       :validation-schema="validationSchema"
       :initial-values="user"
       v-slot="{ meta: formMeta, errors: formErrors }"
     >
       <div class="row">
-        <div class="col-12">
-          <p class="fw-semibold">Emailadres</p>
+        <div class="col-3">Naam</div>
+        <div class="col">
+          <input class="form-control" placeholder="Voornaam" />
+        </div>
+        <div class="col">
+          <input class="form-control" placeholder="Familienaam" />
+        </div>
+      </div>
+      <hr class="my-4" />
+      <div class="row">
+        <div class="col-3">Emailadres</div>
+        <div class="col-9">
           <VTextInput
             type="email"
-            label="Email"
             name="email"
             placeholder="Email"
             disabled
@@ -28,55 +47,45 @@
           />
         </div>
       </div>
+      <hr class="my-4" />
       <div class="row">
-        <div class="col-12"><p class="fw-semibold">Volledige naam</p></div>
-      </div>
-      <div class="row">
-        <div class="col-lg-6 col-sm-12">
-          <VTextInput label="Voornaam" name="firstname" placeholder="John" class="mb-3" />
-        </div>
-        <div class="col-lg-6 col-sm-12">
-          <VTextInput
-            label="Familienaam"
-            name="lastname"
-            placeholder="Doe"
-            class="mb-3"
-          />
+        <div class="col-3">Telefoon</div>
+        <div class="col-9">
+          <VTextInput name="phoneNumber" placeholder="Telefoon" />
         </div>
       </div>
-      <div class="row">
-        <div class="col-12">
-          <p class="fw-semibold">Adresgegevens</p>
-        </div>
-        <div class="col-lg-6 col-sm-12 mb-3">
-          <VTextInput label="Gemeente" name="city" />
-        </div>
-        <div class="col-lg-6 col-sm-12 mb-3">
-          <VTextInput label="Postcode" name="postalCode" />
-        </div>
-        <div class="col-12 mb-3">
-          <VTextInput label="Straat + nummer" name="address" />
+      <hr class="my-4" />
+      <div class="row mb-3">
+        <div class="col-3">Straat</div>
+        <div class="col">
+          <input class="form-control" placeholder="Straat" />
         </div>
       </div>
-      <div class="row">
-        <div class="col-12"><p class="fw-semibold">Extra info</p></div>
-        <div class="col-lg-6 col-sm-12 mb-3">
-          <VTextInput label="Lidnummer" name="memberNumber" />
-        </div>
-        <div class="col-lg-6 col-sm-12 mb-3">
-          <VTextInput label="Telefoon" name="phoneNumber" />
+      <div class="row mb-3">
+        <div class="col-3">Gemeente</div>
+        <div class="col">
+          <input class="form-control" placeholder="Gemeente" />
         </div>
       </div>
-      <button class="btn btn-primary" type="submit" :disabled="!formMeta.valid">
-        Submit
-      </button>
+      <div class="row mb-3">
+        <div class="col-3">Postcode</div>
+        <div class="col">
+          <input class="form-control" placeholder="Postcode" />
+        </div>
+      </div>
+      <hr class="my-4" />
+      <div class="row">
+        <div class="col-3">Lidnummer</div>
+        <div class="col">
+          <input class="form-control" placeholder="Lidnummer" />
+        </div>
+      </div>
       <TheNotification />
     </VForm>
-  </div>
+  </section>
 </template>
 <script setup>
 import { object, string } from "yup";
-import _ from "lodash";
 import { useNotificationStore } from "~~/store/notification";
 
 const notificationStore = useNotificationStore();
@@ -92,8 +101,6 @@ useHead({
   title: "Profiel",
 });
 const user = ref({});
-const alertMessage = ref("");
-const alertType = ref("");
 const { data: userData, pending, error, refresh } = await myLazyFetch(
   () => "/api/auth/userinfo",
   {

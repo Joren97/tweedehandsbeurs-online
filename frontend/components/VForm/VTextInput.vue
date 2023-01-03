@@ -1,22 +1,19 @@
 <template>
-  <div class="form-floating">
-    <VField :name="name" v-slot="{ field, meta, errors }">
-      <input
-        :id="name"
-        :disabled="disabled"
-        v-bind="field"
-        class="form-control"
-        :class="{
-          'is-valid': meta.valid && meta.touched,
-          'is-invalid': !meta.valid && meta.touched,
-        }"
-        :placeholder="placeholder"
-        :type="type"
-      />
-      <label :for="name" class="form-label">{{ label }}</label>
-      <VErrorMessage :name="name" as="div" class="invalid-feedback" />
-    </VField>
-  </div>
+  <VField :name="name" v-slot="{ field, meta, errors }">
+    <input
+      :id="name"
+      :disabled="disabled"
+      v-bind="field"
+      class="form-control"
+      :class="{
+        'is-valid': meta.valid && meta.touched,
+        'is-invalid': !meta.valid && meta.touched,
+      }"
+      :placeholder="placeholder"
+      :type="type"
+    />
+    <VErrorMessage :name="name" as="div" class="invalid-feedback" />
+  </VField>
 </template>
 
 <script setup>
