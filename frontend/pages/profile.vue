@@ -10,9 +10,13 @@
           medewerkers van de Gezinsbond hebben toegang tot deze gegevens.
         </p>
       </div>
-      <div class="col-4">
-        <button type="button" class="btn btn-primary">Annuleren</button>
-        <button type="button" class="btn btn-secondary">Opslaan</button>
+      <div class="col-4 d-flex justify-content-end">
+        <div>
+          <button type="button" class="btn btn-light me-2">Annuleren</button>
+        </div>
+        <div>
+          <button type="button" class="btn btn-primary">Opslaan</button>
+        </div>
       </div>
     </div>
 
