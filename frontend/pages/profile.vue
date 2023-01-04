@@ -34,10 +34,10 @@
       <div class="row">
         <div class="col-3">Naam</div>
         <div class="col">
-          <input class="form-control" placeholder="Voornaam" />
+          <VTextInput name="firstname" placeholder="Voornaam" />
         </div>
         <div class="col">
-          <input class="form-control" placeholder="Familienaam" />
+          <VTextInput name="lastname" placeholder="Familienaam" />
         </div>
       </div>
       <hr class="my-4" />
@@ -62,28 +62,28 @@
       </div>
       <hr class="my-4" />
       <div class="row mb-3">
-        <div class="col-3">Straat</div>
+        <div class="col-3">Adres</div>
         <div class="col">
-          <input class="form-control" placeholder="Straat" />
+          <VTextInput name="address" placeholder="Adres" />
         </div>
       </div>
       <div class="row mb-3">
         <div class="col-3">Gemeente</div>
         <div class="col">
-          <input class="form-control" placeholder="Gemeente" />
+          <VTextInput name="city" placeholder="Gemeente" />
         </div>
       </div>
       <div class="row mb-3">
         <div class="col-3">Postcode</div>
         <div class="col">
-          <input class="form-control" placeholder="Postcode" />
+          <VTextInput name="postalCode" placeholder="Postcode" />
         </div>
       </div>
       <hr class="my-4" />
       <div class="row">
         <div class="col-3">Lidnummer</div>
         <div class="col">
-          <input class="form-control" placeholder="Lidnummer" />
+          <VTextInput name="memberNumber" placeholder="Lidnummer" />
         </div>
       </div>
       <TheNotification />
