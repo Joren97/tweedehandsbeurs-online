@@ -12,10 +12,12 @@
       </div>
       <div class="col-4 d-flex justify-content-end">
         <div>
-          <button type="button" class="btn btn-light me-2">Annuleren</button>
+          <button type="button" class="btn btn-outline-secondary me-2">Annuleren</button>
         </div>
         <div>
-          <button type="button" class="btn btn-primary">Opslaan</button>
+          <LoadingButton @click="updateProfile" :loading="false" type="primary"
+            >Opslaan</LoadingButton
+          >
         </div>
       </div>
     </div>
