@@ -1,38 +1,38 @@
 <template>
   <section class="dashboard__profile">
     <div class="profile__title">Profiel</div>
-    <div class="row">
-      <div class="col-8">
-        <p>
-          Op deze pagina kan je je persoonlijke gegevens aanpassen. We gebruiken deze
-          gegevens om je te kunnen contacteren mocht dit nodig zijn. Deze gegevens zijn
-          niet publiek zichtbaar voor andere gebruikers van de applicatie. Enkel
-          medewerkers van de Gezinsbond hebben toegang tot deze gegevens.
-        </p>
-      </div>
-      <div class="col-4 d-flex justify-content-end">
-        <div>
-          <button type="button" class="btn btn-outline-secondary me-2">Annuleren</button>
-        </div>
-        <div>
-          <LoadingButton @click="updateProfile" :loading="false" type="primary"
-            >Opslaan</LoadingButton
-          >
-        </div>
-      </div>
-    </div>
-
-    <hr class="my-4" />
-
-    <VForm
-      class="profile__form"
-      @submit="updateProfile"
-      :validation-schema="validationSchema"
-      :initial-values="user"
-      v-slot="{ meta: formMeta, errors: formErrors }"
-    >
+    <form class="profile__form">
       <div class="row">
-        <div class="col-3">Naam</div>
+        <div class="col-8">
+          <p>
+            Op deze pagina kan je je persoonlijke gegevens aanvullen en bewerken. We
+            gebruiken deze gegevens om je te kunnen contacteren mocht dit nodig zijn. Deze
+            gegevens zijn niet publiek zichtbaar voor andere gebruikers van de applicatie.
+            Enkel medewerkers van de Gezinsbond hebben toegang tot deze gegevens.
+          </p>
+        </div>
+        <div class="col-4 d-flex justify-content-end">
+          <div>
+            <button
+              type="button"
+              class="btn btn-outline-secondary me-2"
+              @click="handleReset"
+            >
+              Annuleren
+            </button>
+          </div>
+          <div>
+            <LoadingButton @click="updateProfile" :loading="loading" type="primary"
+              >Opslaan</LoadingButton
+            >
+          </div>
+        </div>
+      </div>
+
+      <hr class="my-4" />
+
+      <div class="row">
+        <div class="col-3">Naam*</div>
         <div class="col">
           <VTextInput name="firstname" placeholder="Voornaam" />
         </div>
@@ -55,26 +55,26 @@
       </div>
       <hr class="my-4" />
       <div class="row">
-        <div class="col-3">Telefoon</div>
+        <div class="col-3">Telefoon*</div>
         <div class="col-9">
           <VTextInput name="phoneNumber" placeholder="Telefoon" />
         </div>
       </div>
       <hr class="my-4" />
       <div class="row mb-3">
-        <div class="col-3">Adres</div>
+        <div class="col-3">Adres*</div>
         <div class="col">
           <VTextInput name="address" placeholder="Adres" />
         </div>
       </div>
       <div class="row mb-3">
-        <div class="col-3">Gemeente</div>
+        <div class="col-3">Gemeente*</div>
         <div class="col">
           <VTextInput name="city" placeholder="Gemeente" />
         </div>
       </div>
       <div class="row mb-3">
-        <div class="col-3">Postcode</div>
+        <div class="col-3">Postcode*</div>
         <div class="col">
           <VTextInput name="postalCode" placeholder="Postcode" />
         </div>
@@ -87,12 +87,13 @@
         </div>
       </div>
       <TheNotification />
-    </VForm>
+    </form>
   </section>
 </template>
 <script setup>
 import { object, string } from "yup";
 import { useNotificationStore } from "~~/store/notification";
+import { useForm } from "vee-validate";
 
 const notificationStore = useNotificationStore();
 definePageMeta({
@@ -106,6 +107,7 @@ definePageMeta({
 useHead({
   title: "Profiel",
 });
+const loading = ref(false);
 const user = ref({});
 const { data: userData, pending, error, refresh } = await myLazyFetch(
   () => "/api/auth/userinfo",
@@ -116,18 +118,7 @@ const { data: userData, pending, error, refresh } = await myLazyFetch(
 watch(userData, (newVal) => {
   user.value = newVal.data;
 });
-const updateProfile = async (values, actions) => {
-  const { status, message, data } = await useApi("/api/auth/me", {
-    method: "PUT",
-    body: values,
-  });
-  notificationStore.message = message;
-  notificationStore.status = status;
-  if (status === "Success") {
-    user.value = data;
-    actions.resetForm();
-  }
-};
+
 const validationSchema = object({
   email: string().required().email().label("Email"),
   firstname: string().required().label("Voornaam"),
@@ -150,5 +141,26 @@ const validationSchema = object({
     .matches(/^\d{4}$/, {
       message: "Ongeldige postcode.",
     }),
+});
+const { handleSubmit, handleReset } = useForm({
+  initialValues: user,
+  validationSchema,
+});
+
+const updateProfile = handleSubmit(async (values, actions) => {
+  loading.value = true;
+  console.log("Submitting form");
+  const { status, message, data } = await useApi("/api/auth/me", {
+    method: "PUT",
+    body: values,
+  });
+  console.log("Form submitted");
+  notificationStore.message = message;
+  notificationStore.status = status;
+  if (status === "Success") {
+    user.value = data;
+    actions.resetForm();
+  }
+  loading.value = false;
 });
 </script>
