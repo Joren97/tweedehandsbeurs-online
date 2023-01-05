@@ -41,16 +41,10 @@
         </div>
       </div>
       <hr class="my-4" />
-      <div class="row">
+      <div class="row mb-3">
         <div class="col-3">Emailadres</div>
         <div class="col-9">
-          <VTextInput
-            type="email"
-            name="email"
-            placeholder="Email"
-            disabled
-            class="mb-3"
-          />
+          <VTextInput type="email" name="email" placeholder="Email" disabled />
         </div>
       </div>
       <hr class="my-4" />
@@ -80,13 +74,17 @@
         </div>
       </div>
       <hr class="my-4" />
-      <div class="row">
+      <div class="row mb-3">
         <div class="col-3">Lidnummer</div>
         <div class="col">
           <VTextInput name="memberNumber" placeholder="Lidnummer" />
         </div>
       </div>
-      <TheNotification />
+      <div class="row">
+        <div class="col">
+          <TheNotification />
+        </div>
+      </div>
     </form>
   </section>
 </template>
@@ -149,12 +147,11 @@ const { handleSubmit, handleReset } = useForm({
 
 const updateProfile = handleSubmit(async (values, actions) => {
   loading.value = true;
-  console.log("Submitting form");
-  const { status, message, data } = await useApi("/api/auth/me", {
+  const { data: resData } = await useApi("/api/auth/me", {
     method: "PUT",
     body: values,
   });
-  console.log("Form submitted");
+  const { data, message, status } = resData.value;
   notificationStore.message = message;
   notificationStore.status = status;
   if (status === "Success") {
