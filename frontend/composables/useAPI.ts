@@ -30,8 +30,8 @@ export const useApi = async (url: string, options?: FetchOptions) => {
 
     return useFetch(url, {
         baseURL: config.public.API_BASE_URL,
-        credentials: "include", // Allow browser to handle cookies
         headers,
         ...opts,
+        initialCache: false
     });
 };
