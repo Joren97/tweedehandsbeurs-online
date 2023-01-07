@@ -64,7 +64,13 @@
       </div>
     </div>
 
-    <a class="btn btn-primary" href="#add-product-modal">Product toevoegen</a>
+    <button
+      class="btn btn-primary"
+      href="#add-product-modal"
+      @click="newProductVisible = true"
+    >
+      Product toevoegen
+    </button>
     <button
       class="btn btn-primary"
       @click="confirmList"
@@ -72,34 +78,27 @@
     >
       Lijst bevestigen
     </button>
-    <div class="c-modal modal-window" id="add-product-modal">
-      <div class="modal__content">
-        <div class="modal__header">
-          <div class="modal__title">Nieuw product toevoegen</div>
-          <a href="#" title="Close" class="btn-close modal__close" />
-        </div>
-        <div class="modal__body">
-          <NewProductForm
-            ref="newProductForm"
-            @product-created="onProductCreated"
-            :price-data="prices"
-          />
-        </div>
-        <div class="modal__footer">
-          <button
-            type="button"
-            class="btn btn-secondary"
-            data-bs-dismiss="modal"
-            id="dismiss-button"
-          >
-            Sluiten
-          </button>
-          <button type="button" class="btn btn-primary" @click="submitProduct">
-            Product toevoegen
-          </button>
-        </div>
-      </div>
-    </div>
+    <Modal :visible="newProductVisible">
+      <template v-slot:title>Nieuw product toevoegen</template>
+      <template v-slot:content
+        ><NewProductForm
+          ref="newProductForm"
+          @product-created="onProductCreated"
+          :price-data="prices"
+      /></template>
+      <template v-slot:footer>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          @click="newProductVisible = false"
+        >
+          Sluiten
+        </button>
+        <button type="button" class="btn btn-primary" @click="submitProduct">
+          Product toevoegen
+        </button>
+      </template>
+    </Modal>
     <div
       class="modal fade"
       id="editProductModal"
@@ -126,6 +125,7 @@ definePageMeta({
 });
 
 const newProductForm = ref();
+const newProductVisible = ref(false);
 
 clearNuxtData();
 
@@ -222,62 +222,3 @@ useHead({
   title: pageTitle,
 });
 </script>
-<style scoped lang="scss">
-.modal-window {
-  position: fixed;
-  background-color: rgba(255, 255, 255, 0.25);
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 999;
-  visibility: hidden;
-  opacity: 0;
-  pointer-events: none;
-  transition: all 0.3s;
-  &:target {
-    visibility: visible;
-    opacity: 1;
-    pointer-events: auto;
-  }
-  & > div {
-    width: 500px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: white;
-  }
-
-  .modal__content {
-    display: flex;
-    flex-direction: column;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-  }
-
-  .modal__title {
-    font-size: 1.25rem;
-  }
-
-  .modal__header {
-    display: flex;
-    flex-shrink: 0;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1rem;
-  }
-
-  .modal__body {
-    border-top: 1px solid #ccc;
-    padding: 1rem;
-  }
-
-  .modal__footer {
-    border-top: 1px solid #ccc;
-    padding: 0.5rem;
-    display: flex;
-    justify-content: flex-end;
-  }
-}
-</style>
