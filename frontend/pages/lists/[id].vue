@@ -27,7 +27,12 @@
                   <!-- Delete icon -->
                   <i class="fa-regular fa-trash-can"></i>
                 </button>
-                <button class="btn btn-secondary" @click="productToEditId = item.id" data-bs-toggle="modal" data-bs-target="#editProductModal">
+                <button
+                  class="btn btn-secondary"
+                  @click="productToEditId = item.id"
+                  data-bs-toggle="modal"
+                  data-bs-target="#editProductModal"
+                >
                   <i class="fa-solid fa-pencil"></i>
                 </button>
               </td>
@@ -59,27 +64,74 @@
       </div>
     </div>
 
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newProductModal">Product toevoegen</button>
-    <button class="btn btn-primary" @click="confirmList" :disabled="listPending || (list && list.isUserConfirmed)">Lijst bevestigen</button>
-    <div class="modal fade" id="newProductModal" tabindex="-1" aria-labelledby="newProductModalLabel" aria-hidden="true">
-      <NewProductModal @product-created="onProductCreated" :price-data="prices" />
+    <a class="btn btn-primary" href="#add-product-modal">Product toevoegen</a>
+    <button
+      class="btn btn-primary"
+      @click="confirmList"
+      :disabled="listPending || (list && list.isUserConfirmed)"
+    >
+      Lijst bevestigen
+    </button>
+    <div class="c-modal modal-window" id="add-product-modal">
+      <div class="modal__content">
+        <div class="modal__header">
+          <div class="modal__title">Nieuw product toevoegen</div>
+          <a href="#" title="Close" class="btn-close modal__close" />
+        </div>
+        <div class="modal__body">
+          <NewProductForm
+            ref="newProductForm"
+            @product-created="onProductCreated"
+            :price-data="prices"
+          />
+        </div>
+        <div class="modal__footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+            id="dismiss-button"
+          >
+            Sluiten
+          </button>
+          <button type="button" class="btn btn-primary" @click="submitProduct">
+            Product toevoegen
+          </button>
+        </div>
+      </div>
     </div>
-    <div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModal" aria-hidden="true">
-      <EditProductModal @product-updated="onProductUpdated" :price-data="prices" :product-to-edit="productToEdit" />
+    <div
+      class="modal fade"
+      id="editProductModal"
+      tabindex="-1"
+      aria-labelledby="editProductModal"
+      aria-hidden="true"
+    >
+      <EditProductModal
+        @product-updated="onProductUpdated"
+        :price-data="prices"
+        :product-to-edit="productToEdit"
+      />
     </div>
   </div>
 </template>
 <script setup>
 const route = useRoute();
 definePageMeta({
-  layout: 'dashboard',
-  middleware: ['auth'],
+  layout: "dashboard",
+  middleware: ["auth"],
   meta: {
-    authLevel: 'user',
+    authLevel: "user",
   },
 });
 
+const newProductForm = ref();
+
 clearNuxtData();
+
+const submitProduct = () => {
+  newProductForm.value.submit();
+};
 
 const productToEditId = ref(0);
 const productToEdit = computed(() => {
@@ -89,31 +141,33 @@ const productToEdit = computed(() => {
   return products.value.find((p) => p.id === productToEditId.value);
 });
 
-const {
-  data: listData,
-  pending: listPending,
-  refresh,
-} = myLazyFetch(() => `/api/productlist/me/${route.params.id}`, {
-  key: 'productlist',
-  initialCache: false,
-  params: {
-    includeProducts: true,
-  },
-});
+const { data: listData, pending: listPending, refresh } = myLazyFetch(
+  () => `/api/productlist/me/${route.params.id}`,
+  {
+    key: "productlist",
+    initialCache: false,
+    params: {
+      includeProducts: true,
+    },
+  }
+);
 
 const { data: prices, pending: pricesPending } = myLazyFetch(() => `/api/price`, {
-  key: 'prices',
+  key: "prices",
   params: {
     perPage: 100,
   },
 });
 
 const confirmList = async () => {
-  const { pending, error } = await myFetch(() => `/api/productlist/me/confirm/${route.params.id}`, {
-    method: 'PUT',
-    key: 'confirm',
-    initialCache: false,
-  });
+  const { pending, error } = await myFetch(
+    () => `/api/productlist/me/confirm/${route.params.id}`,
+    {
+      method: "PUT",
+      key: "confirm",
+      initialCache: false,
+    }
+  );
 
   if (error.value != null) {
     console.log(error.value);
@@ -126,8 +180,8 @@ const confirmList = async () => {
 
 const deleteProduct = async (productId) => {
   const { pending, error } = await myFetch(() => `/api/product/me/${productId}`, {
-    method: 'DELETE',
-    key: 'delete',
+    method: "DELETE",
+    key: "delete",
     initialCache: false,
   });
 
@@ -149,7 +203,7 @@ const onProductUpdated = () => {
 };
 
 const pageTitle = computed(() => {
-  if (!list || !list.value) return 'Mijn lijsten';
+  if (!list || !list.value) return "Mijn lijsten";
   return `Mijn lijsten | Lijst ${list.value.listNumber}`;
 });
 
@@ -168,3 +222,62 @@ useHead({
   title: pageTitle,
 });
 </script>
+<style scoped lang="scss">
+.modal-window {
+  position: fixed;
+  background-color: rgba(255, 255, 255, 0.25);
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 999;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s;
+  &:target {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+  }
+  & > div {
+    width: 500px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+  }
+
+  .modal__content {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+  }
+
+  .modal__title {
+    font-size: 1.25rem;
+  }
+
+  .modal__header {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+  }
+
+  .modal__body {
+    border-top: 1px solid #ccc;
+    padding: 1rem;
+  }
+
+  .modal__footer {
+    border-top: 1px solid #ccc;
+    padding: 0.5rem;
+    display: flex;
+    justify-content: flex-end;
+  }
+}
+</style>
