@@ -83,7 +83,7 @@
       </div>
     </div>
 
-    <Modal :visible="newProductVisible" @close="newProductVisible = false">
+    <Modal :visible="newProductVisible" @close="closeNewProductModal()">
       <template v-slot:title>Nieuw product toevoegen</template>
       <template v-slot:content
         ><NewProductForm
@@ -223,6 +223,11 @@ const products = computed(() => {
   if (!list.value) return [];
   return list.value.products;
 });
+
+const closeNewProductModal = () => {
+  newProductVisible.value = false;
+  newProductForm.value.handleReset();
+};
 
 useHead({
   title: pageTitle,
