@@ -26,10 +26,6 @@ const props = defineProps({
     type: String,
     required: true,
   },
-  label: {
-    type: String,
-    required: true,
-  },
   placeholder: {
     type: String,
     default: "",
