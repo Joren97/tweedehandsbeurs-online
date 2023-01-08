@@ -18,4 +18,10 @@ const props = defineProps({
     default: false,
   },
 });
+
+const emit = defineEmits(["close"]);
+
+const close = () => {
+  emit("close");
+};
 </script>

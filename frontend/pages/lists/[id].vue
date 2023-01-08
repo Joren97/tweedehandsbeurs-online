@@ -1,12 +1,31 @@
 <template>
-  <div>
-    <LayoutPageHeading>
-      <template v-slot:title>{{ pageTitle }}</template>
-    </LayoutPageHeading>
-
+  <section class="section__lists-detail">
+    <div class="row">
+      <div class="col">
+        <div class="lists-detail__title">{{ pageTitle }}</div>
+      </div>
+      <div class="col">
+        <div class="lists-detail__buttons">
+          <button
+            class="btn btn-primary"
+            href="#add-product-modal"
+            @click="newProductVisible = true"
+          >
+            Product toevoegen
+          </button>
+          <button
+            class="btn btn-primary ms-2"
+            @click="confirmList"
+            :disabled="listPending || (list && list.isUserConfirmed)"
+          >
+            Lijst bevestigen
+          </button>
+        </div>
+      </div>
+    </div>
     <div class="row">
       <div class="col-8">
-        <table class="">
+        <table class="table table-striped">
           <thead>
             <tr>
               <th>#</th>
@@ -64,21 +83,7 @@
       </div>
     </div>
 
-    <button
-      class="btn btn-primary"
-      href="#add-product-modal"
-      @click="newProductVisible = true"
-    >
-      Product toevoegen
-    </button>
-    <button
-      class="btn btn-primary"
-      @click="confirmList"
-      :disabled="listPending || (list && list.isUserConfirmed)"
-    >
-      Lijst bevestigen
-    </button>
-    <Modal :visible="newProductVisible">
+    <Modal :visible="newProductVisible" @close="newProductVisible = false">
       <template v-slot:title>Nieuw product toevoegen</template>
       <template v-slot:content
         ><NewProductForm
@@ -89,7 +94,7 @@
       <template v-slot:footer>
         <button
           type="button"
-          class="btn btn-secondary"
+          class="btn btn-secondary mx-2"
           @click="newProductVisible = false"
         >
           Sluiten
@@ -112,7 +117,7 @@
         :product-to-edit="productToEdit"
       />
     </div>
-  </div>
+  </section>
 </template>
 <script setup>
 const route = useRoute();
@@ -196,6 +201,7 @@ const deleteProduct = async (productId) => {
 
 const onProductCreated = () => {
   refresh();
+  newProductVisible.value = false;
 };
 
 const onProductUpdated = () => {
