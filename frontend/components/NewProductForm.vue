@@ -1,44 +1,47 @@
 <template>
-  <form>
-    {{ selectedPriceId }}
-    {{ selectedPriceId == "" }}
-    <label for="description">Beschrijving:</label>
-    <VTextInput name="description" placeholder="Beschrijving" />
+  <form @submit="submit">
+    {{ values }}
+    {{ errors }}
+    <div class="row mb-2">
+      <div class="col">
+        <label for="description" class="form-label">Beschrijving:</label>
+        <VTextInput name="description" placeholder="Beschrijving" class="form-control" />
+      </div>
+    </div>
+    <div class="row mb-2">
+      <div class="col">
+        <label for="priceId" class="form-label">Vraagprijs:</label>
+        <VField name="priceId" as="select" v-model="selectedPriceId" class="form-select">
+          <option :value="0">-- Selecteer een vraagprijs --</option>
+          <option v-for="item in prices" :value="item.id">
+            {{ toEuro(item.askingPrice) }}
+          </option>
+        </VField>
+        <VErrorMessage name="priceId" as="div" class="invalid-feedback" />
+      </div>
+    </div>
 
-    <label for="asking-price" class="col-form-label">Vraagprijs:</label>
-    <VField name="priceId" as="select" v-model="selectedPriceId">
-      <option value="0">-- Selecteer een vraagprijs --</option>
-      <option v-for="item in prices" :value="item.id">
-        {{ toEuro(item.askingPrice) }}
-      </option>
-    </VField>
-    <VErrorMessage name="priceId" as="div" class="invalid-feedback" />
-    <VField name="priceId" as="select" v-model="selectedPriceId">
-      <option value="0">-- Selecteer een vraagprijs --</option>
-      <option v-for="item in prices" :value="item.id">
-        {{ toEuro(item.askingPrice) }}
-      </option>
-    </VField>
-    <select class="form-select" aria-label="Vraagprijs" v-model="selectedPriceId">
-      <option value="0">-- Selecteer een vraagprijs --</option>
-      <option v-for="item in prices" :value="item.id">
-        {{ toEuro(item.sellingPrice) }}
-      </option>
-    </select>
-    <p v-if="fieldErrors.price">{{ fieldErrors.price }}</p>
-
-    <label for="selling-price" class="col-form-label">Verkoopprijs:</label>
-    <input
-      type="text"
-      class="form-control"
-      id="selling-price"
-      disabled
-      :value="sellingPrice"
-    />
+    <div class="row">
+      <div class="col">
+        <label for="selling-price" class="form-label">Verkoopprijs:</label>
+        <select
+          name="selling-price"
+          id="selling-price"
+          v-model="selectedPriceId"
+          disabled
+          class="form-select"
+        >
+          <option :value="0">-- Selecteer een vraagprijs --</option>
+          <option v-for="item in prices" :value="item.id">
+            {{ toEuro(item.sellingPrice) }}
+          </option>
+        </select>
+      </div>
+    </div>
   </form>
 </template>
 <script setup>
-import { object, string } from "yup";
+import { number, object, string } from "yup";
 import { useForm } from "vee-validate";
 
 const props = defineProps({
@@ -51,10 +54,16 @@ const props = defineProps({
 
 const validationSchema = object({
   description: string().required().label("Beschrijving"),
-  priceId: string().required().label("Vraagprijs"),
+  priceId: number().min(1).required().label("Vraagprijs"),
 });
 
-const { handleSubmit, handleReset, meta } = useForm({
+const initialValues = {
+  description: "",
+  priceId: 0,
+};
+
+const { handleSubmit, handleReset, values, errors } = useForm({
+  initialValues,
   validationSchema,
 });
 
@@ -65,42 +74,32 @@ const prices = computed(() => {
 
 const emit = defineEmits(["product-created"]);
 
-const description = ref("");
 const selectedPriceId = ref(0);
 const fieldErrors = ref({});
 
-const sellingPrice = computed(() => {
-  if (!selectedPriceId.value) return "-- Selecteer een vraagprijs --";
-  if (selectedPriceId.value == 0 || selectedPriceId.value == "")
-    return "-- Selecteer een vraagprijs --";
-  const price = prices.value.find((p) => p.id === selectedPriceId.value);
-  return toEuro(price.sellingPrice);
-});
-
-const submit = async () => {
+const submit = handleSubmit(async (values, actions) => {
   const body = {
-    description: description.value,
-    priceId: selectedPriceId.value,
+    ...values,
     productlistId: useRoute().params.id,
   };
 
-  const { data, pending, error } = await useCustomFetch(`/api/product/me`, {
+  const { data: resData } = await useApi(`/api/product/me`, {
     method: "POST",
     body,
     initialCache: false,
   });
 
-  if (error.value != null) {
-    console.log(error.value);
-    fieldErrors.value = error.value.data.errors;
+  const { data, message, status } = resData.value;
+
+  if (status === "error") {
+    fieldErrors.value = data.errors;
     return;
   }
-  // Clear fields
-  description.value = "";
-  selectedPriceId.value = 0;
-  // Emit to parent
-  emit("product-created");
-};
 
-defineExpose({ submit });
+  emit("product-created");
+
+  actions.resetForm();
+});
+
+defineExpose({ submit, handleReset });
 </script>
