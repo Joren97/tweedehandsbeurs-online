@@ -95,13 +95,13 @@
         <button
           type="button"
           class="btn btn-secondary mx-2"
-          @click="newProductVisible = false"
+          @click="closeNewProductModal()"
         >
           Sluiten
         </button>
-        <button type="button" class="btn btn-primary" @click="submitProduct">
-          Product toevoegen
-        </button>
+        <LoadingButton @click="submitProduct" :loading="loading" type="primary"
+          >Product toevoegen</LoadingButton
+        >
       </template>
     </Modal>
     <div
@@ -129,13 +129,16 @@ definePageMeta({
   },
 });
 
+const loading = ref(false);
 const newProductForm = ref();
 const newProductVisible = ref(false);
 
 clearNuxtData();
 
-const submitProduct = () => {
-  newProductForm.value.submit();
+const submitProduct = async () => {
+  loading.value = true;
+  await newProductForm.value.submit();
+  loading.value = false;
 };
 
 const productToEditId = ref(0);
