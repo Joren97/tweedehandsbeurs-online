@@ -42,7 +42,7 @@
               <td>{{ toEuro(item.price.askingPrice) }}</td>
               <td>{{ toEuro(item.price.sellingPrice) }}</td>
               <td>
-                <button class="btn btn-primary" @click="deleteProduct(item.id)">
+                <button class="btn btn-primary" @click="confirmDeleteProduct(item.id)">
                   <!-- Delete icon -->
                   <i class="fa-regular fa-trash-can"></i>
                 </button>
@@ -124,6 +124,23 @@
         >
       </template>
     </Modal>
+    <Modal :visible="deleteProductVisible" @close="deleteProductVisible = false">
+      <template v-slot:title>Product verwijderen</template>
+      <template v-slot:content>Ben je zeker dat je dit product wil verwijderen?</template>
+      <template v-slot:footer>
+        <button
+          type="button"
+          class="btn btn-secondary mx-2"
+          @click="deleteProductVisible = false"
+        >
+          Annuleren
+        </button>
+
+        <LoadingButton type="primary" @click="deleteProduct" :loading="loading"
+          >Product verwijderen</LoadingButton
+        >
+      </template>
+    </Modal>
     <div
       class="modal fade"
       id="editProductModal"
@@ -157,6 +174,8 @@ const loading = ref(false);
 const newProductForm = ref();
 const newProductVisible = ref(false);
 const confirmListVisible = ref(false);
+const deleteProductVisible = ref(false);
+const selectedProductId = ref(null);
 
 clearNuxtData();
 
@@ -195,8 +214,8 @@ const { data: prices, pending: pricesPending } = myLazyFetch(() => `/api/price`,
 const confirmList = async () => {
   loading.value = true;
 
-  const { pending, error } = await myFetch(
-    () => `/api/productlist/me/confirm/${route.params.id}`,
+  const { pending, error } = await useApi(
+    `/api/productlist/me/confirm/${route.params.id}`,
     {
       method: "PUT",
       key: "confirm",
@@ -217,19 +236,28 @@ const confirmList = async () => {
   refresh();
 };
 
-const deleteProduct = async (productId) => {
-  const { pending, error } = await myFetch(() => `/api/product/me/${productId}`, {
+const confirmDeleteProduct = (productId) => {
+  selectedProductId.value = productId;
+  deleteProductVisible.value = true;
+};
+
+const deleteProduct = async () => {
+  loading.value = true;
+  const { pending, error } = await useApi(`/api/product/me/${selectedProductId.value}`, {
     method: "DELETE",
     key: "delete",
     initialCache: false,
   });
 
   if (error.value != null) {
-    console.log(error.value);
-    fieldErrors.value = error.value.data.errors;
-    return;
+    notificationStore.addNotification("Error", error.value.data.message);
+  } else {
+    notificationStore.addNotification("Success", "Product werd verwijderd");
   }
 
+  deleteProductVisible.value = false;
+  loading.value = false;
+  selectedProductId.value = null;
   refresh();
 };
 
