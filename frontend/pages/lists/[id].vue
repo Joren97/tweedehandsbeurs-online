@@ -80,6 +80,8 @@
             </tr>
           </tbody>
         </table>
+
+        <TheNotification />
       </div>
     </div>
 
@@ -89,6 +91,7 @@
         ><NewProductForm
           ref="newProductForm"
           @product-created="onProductCreated"
+          @error="onNewProductError"
           :price-data="prices"
       /></template>
       <template v-slot:footer>
@@ -137,6 +140,8 @@
   </section>
 </template>
 <script setup>
+import { useNotificationStore } from "~~/store/notification";
+
 const route = useRoute();
 definePageMeta({
   layout: "dashboard",
@@ -145,6 +150,8 @@ definePageMeta({
     authLevel: "user",
   },
 });
+
+const notificationStore = useNotificationStore();
 
 const loading = ref(false);
 const newProductForm = ref();
@@ -199,6 +206,7 @@ const confirmList = async () => {
 
   loading.value = false;
   confirmListVisible.value = false;
+  notificationStore.addNotification("Success", "De lijst werd bevestigd");
 
   if (error.value != null) {
     console.log(error.value);
@@ -225,7 +233,13 @@ const deleteProduct = async (productId) => {
   refresh();
 };
 
+const onNewProductError = (message) => {
+  notificationStore.addNotification("Error", message);
+  newProductVisible.value = false;
+};
+
 const onProductCreated = () => {
+  notificationStore.addNotification("Success", "Product werd toegevoegd");
   refresh();
   newProductVisible.value = false;
 };
