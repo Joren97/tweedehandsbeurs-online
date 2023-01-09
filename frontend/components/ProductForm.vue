@@ -42,7 +42,7 @@
   </form>
 </template>
 <script setup>
-import { number, object, string } from "yup";
+import { object, string } from "yup";
 import { useForm } from "vee-validate";
 
 const props = defineProps({
@@ -51,7 +51,22 @@ const props = defineProps({
     required: true,
     default: { data: [] },
   },
+  initialData: {
+    type: Object,
+    required: false,
+    default: () => ({}),
+  },
 });
+
+watch(
+  () => props.initialData,
+  (value) => {
+    console.log("initialData changed");
+    if (value) {
+      setValues(value);
+    }
+  }
+);
 
 const validationSchema = object({
   description: string().required().label("Beschrijving"),
@@ -63,7 +78,7 @@ const initialValues = {
   priceId: "",
 };
 
-const { handleSubmit, handleReset, values, errors } = useForm({
+const { handleSubmit, handleReset, values, setValues } = useForm({
   initialValues,
   validationSchema,
 });
@@ -73,32 +88,10 @@ const prices = computed(() => {
   return props.priceData.data;
 });
 
-const emit = defineEmits(["product-created", "error"]);
+const emit = defineEmits(["submit"]);
 
-const submit = handleSubmit(async (values, actions) => {
-  const body = {
-    ...values,
-    productlistId: useRoute().params.id,
-  };
-
-  const { data, error } = await useApi(`/api/product/me`, {
-    method: "POST",
-    body,
-    initialCache: false,
-  });
-
-  if (error && error.value) {
-    const {
-      value: {
-        data: { message },
-      },
-    } = error;
-    emit("error", message);
-  } else {
-    emit("product-created");
-  }
-
-  actions.resetForm();
+const submit = handleSubmit(async (values) => {
+  emit("submit", values);
 });
 
 defineExpose({ submit, handleReset });
