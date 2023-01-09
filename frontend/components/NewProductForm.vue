@@ -1,7 +1,5 @@
 <template>
   <form @submit="submit">
-    {{ values }}
-    {{ errors }}
     <div class="row mb-2">
       <div class="col">
         <label for="description" class="form-label">Beschrijving:</label>
@@ -11,13 +9,14 @@
     <div class="row mb-2">
       <div class="col">
         <label for="priceId" class="form-label">Vraagprijs:</label>
-        <VField name="priceId" as="select" v-model="selectedPriceId" class="form-select">
-          <option :value="0">-- Selecteer een vraagprijs --</option>
+        <VSelectInput name="priceId">
+          <option value="">
+            &dash;&dash;&nbsp;Selecteer een vraagprijs&nbsp;&dash;&dash;
+          </option>
           <option v-for="item in prices" :value="item.id">
             {{ toEuro(item.askingPrice) }}
           </option>
-        </VField>
-        <VErrorMessage name="priceId" as="div" class="invalid-feedback" />
+        </VSelectInput>
       </div>
     </div>
 
@@ -27,11 +26,13 @@
         <select
           name="selling-price"
           id="selling-price"
-          v-model="selectedPriceId"
+          v-model="values.priceId"
           disabled
           class="form-select"
         >
-          <option :value="0">-- Selecteer een vraagprijs --</option>
+          <option value="">
+            &dash;&dash;&nbsp;Selecteer een vraagprijs&nbsp;&dash;&dash;
+          </option>
           <option v-for="item in prices" :value="item.id">
             {{ toEuro(item.sellingPrice) }}
           </option>
@@ -54,12 +55,12 @@ const props = defineProps({
 
 const validationSchema = object({
   description: string().required().label("Beschrijving"),
-  priceId: number().min(1).required().label("Vraagprijs"),
+  priceId: string().ensure().required().label("Vraagprijs"),
 });
 
 const initialValues = {
   description: "",
-  priceId: 0,
+  priceId: "",
 };
 
 const { handleSubmit, handleReset, values, errors } = useForm({
@@ -73,9 +74,6 @@ const prices = computed(() => {
 });
 
 const emit = defineEmits(["product-created"]);
-
-const selectedPriceId = ref(0);
-const fieldErrors = ref({});
 
 const submit = handleSubmit(async (values, actions) => {
   const body = {
@@ -92,7 +90,6 @@ const submit = handleSubmit(async (values, actions) => {
   const { data, message, status } = resData.value;
 
   if (status === "error") {
-    fieldErrors.value = data.errors;
     return;
   }
 
