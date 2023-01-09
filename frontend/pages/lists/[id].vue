@@ -15,7 +15,7 @@
           </button>
           <button
             class="btn btn-primary ms-2"
-            @click="confirmList"
+            @click="confirmListVisible = true"
             :disabled="listPending || (list && list.isUserConfirmed)"
           >
             Lijst bevestigen
@@ -104,6 +104,23 @@
         >
       </template>
     </Modal>
+    <Modal :visible="confirmListVisible" @close="confirmListVisible = false">
+      <template v-slot:title>Lijst bevestigen</template>
+      <template v-slot:content>Ben je zeker dat je deze lijst wil bevestigen?</template>
+      <template v-slot:footer>
+        <button
+          type="button"
+          class="btn btn-secondary mx-2"
+          @click="confirmListVisible = false"
+        >
+          Annuleren
+        </button>
+
+        <LoadingButton type="primary" @click="confirmList" :loading="loading"
+          >Lijst bevestigen</LoadingButton
+        >
+      </template>
+    </Modal>
     <div
       class="modal fade"
       id="editProductModal"
@@ -132,6 +149,7 @@ definePageMeta({
 const loading = ref(false);
 const newProductForm = ref();
 const newProductVisible = ref(false);
+const confirmListVisible = ref(false);
 
 clearNuxtData();
 
@@ -168,6 +186,8 @@ const { data: prices, pending: pricesPending } = myLazyFetch(() => `/api/price`,
 });
 
 const confirmList = async () => {
+  loading.value = true;
+
   const { pending, error } = await myFetch(
     () => `/api/productlist/me/confirm/${route.params.id}`,
     {
@@ -176,6 +196,9 @@ const confirmList = async () => {
       initialCache: false,
     }
   );
+
+  loading.value = false;
+  confirmListVisible.value = false;
 
   if (error.value != null) {
     console.log(error.value);
