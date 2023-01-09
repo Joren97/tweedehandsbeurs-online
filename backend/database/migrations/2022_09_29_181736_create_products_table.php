@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->foreignIdFor(\App\Models\Price::class, 'price_id');
             $table->foreignIdFor(\App\Models\Productlist::class, 'productlist_id');
             $table->string("description");
-            $table->string("product_number");
+            $table->integer("product_number");
             $table->boolean("is_sold")->default(false);
             $table->timestamps();
         });
