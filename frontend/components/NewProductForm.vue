@@ -73,7 +73,7 @@ const prices = computed(() => {
   return props.priceData.data;
 });
 
-const emit = defineEmits(["product-created"]);
+const emit = defineEmits(["product-created", "error"]);
 
 const submit = handleSubmit(async (values, actions) => {
   const body = {
@@ -81,19 +81,22 @@ const submit = handleSubmit(async (values, actions) => {
     productlistId: useRoute().params.id,
   };
 
-  const { data: resData } = await useApi(`/api/product/me`, {
+  const { data, error } = await useApi(`/api/product/me`, {
     method: "POST",
     body,
     initialCache: false,
   });
 
-  const { data, message, status } = resData.value;
-
-  if (status === "error") {
-    return;
+  if (error && error.value) {
+    const {
+      value: {
+        data: { message },
+      },
+    } = error;
+    emit("error", message);
+  } else {
+    emit("product-created");
   }
-
-  emit("product-created");
 
   actions.resetForm();
 });
