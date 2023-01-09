@@ -108,8 +108,17 @@ class ProductlistController extends ApiController
      */
     public function storeForLoggedInUser(StoreProductListRequest $request)
     {
+        // Get the active edition
+        $edition = Edition::where('is_active', true)->first();
+
+        // If no active edition exists, return error
+        if (!$edition) {
+            $errors = ['edition' => ['Geen actieve editie gevonden']];
+            return $this->fieldErrorResponse($errors, 404);
+        }
+
         // Set edition id equal to active edition
-        $productlist['edition_id'] = Edition::where('is_active', true)->first()->id;
+        $productlist['edition_id'] = $edition->id;
         // Set user id equal to logged in user
         $productlist['user_id'] = auth()->user()->id;
         $productlist['list_number'] = $request->listNumber;
@@ -230,8 +239,14 @@ class ProductlistController extends ApiController
         $data["title"] = "From ItSolutionStuff.com";
         $data["body"] = "This is Demo";
 
-        MailController::sendMail('emails.myMail', $data, 'synaevejoren@gmail.com',
-            'Jouw productlijst', $pdf, 'productlijst.pdf');
+        MailController::sendMail(
+            'emails.myMail',
+            $data,
+            'synaevejoren@gmail.com',
+            'Jouw productlijst',
+            $pdf,
+            'productlijst.pdf'
+        );
 
         $list->is_user_confirmed = true;
         $list->save();

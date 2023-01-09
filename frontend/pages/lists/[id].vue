@@ -1,12 +1,31 @@
 <template>
-  <div>
-    <LayoutPageHeading>
-      <template v-slot:title>{{ pageTitle }}</template>
-    </LayoutPageHeading>
-
+  <section class="section__lists-detail">
+    <div class="row">
+      <div class="col">
+        <div class="lists-detail__title">{{ pageTitle }}</div>
+      </div>
+      <div class="col">
+        <div class="lists-detail__buttons">
+          <button
+            class="btn btn-primary"
+            href="#add-product-modal"
+            @click="newProductVisible = true"
+          >
+            Product toevoegen
+          </button>
+          <button
+            class="btn btn-primary ms-2"
+            @click="confirmList"
+            :disabled="listPending || (list && list.isUserConfirmed)"
+          >
+            Lijst bevestigen
+          </button>
+        </div>
+      </div>
+    </div>
     <div class="row">
       <div class="col-8">
-        <table class="">
+        <table class="table table-striped">
           <thead>
             <tr>
               <th>#</th>
@@ -27,7 +46,12 @@
                   <!-- Delete icon -->
                   <i class="fa-regular fa-trash-can"></i>
                 </button>
-                <button class="btn btn-secondary" @click="productToEditId = item.id" data-bs-toggle="modal" data-bs-target="#editProductModal">
+                <button
+                  class="btn btn-secondary"
+                  @click="productToEditId = item.id"
+                  data-bs-toggle="modal"
+                  data-bs-target="#editProductModal"
+                >
                   <i class="fa-solid fa-pencil"></i>
                 </button>
               </td>
@@ -59,27 +83,63 @@
       </div>
     </div>
 
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newProductModal">Product toevoegen</button>
-    <button class="btn btn-primary" @click="confirmList" :disabled="listPending || (list && list.isUserConfirmed)">Lijst bevestigen</button>
-    <div class="modal fade" id="newProductModal" tabindex="-1" aria-labelledby="newProductModalLabel" aria-hidden="true">
-      <NewProductModal @product-created="onProductCreated" :price-data="prices" />
+    <Modal :visible="newProductVisible" @close="closeNewProductModal()">
+      <template v-slot:title>Nieuw product toevoegen</template>
+      <template v-slot:content
+        ><NewProductForm
+          ref="newProductForm"
+          @product-created="onProductCreated"
+          :price-data="prices"
+      /></template>
+      <template v-slot:footer>
+        <button
+          type="button"
+          class="btn btn-secondary mx-2"
+          @click="closeNewProductModal()"
+        >
+          Sluiten
+        </button>
+        <LoadingButton @click="submitProduct" :loading="loading" type="primary"
+          >Product toevoegen</LoadingButton
+        >
+      </template>
+    </Modal>
+    <div
+      class="modal fade"
+      id="editProductModal"
+      tabindex="-1"
+      aria-labelledby="editProductModal"
+      aria-hidden="true"
+    >
+      <EditProductModal
+        @product-updated="onProductUpdated"
+        :price-data="prices"
+        :product-to-edit="productToEdit"
+      />
     </div>
-    <div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModal" aria-hidden="true">
-      <EditProductModal @product-updated="onProductUpdated" :price-data="prices" :product-to-edit="productToEdit" />
-    </div>
-  </div>
+  </section>
 </template>
 <script setup>
 const route = useRoute();
 definePageMeta({
-  layout: 'dashboard',
-  middleware: ['auth'],
+  layout: "dashboard",
+  middleware: ["auth"],
   meta: {
-    authLevel: 'user',
+    authLevel: "user",
   },
 });
 
+const loading = ref(false);
+const newProductForm = ref();
+const newProductVisible = ref(false);
+
 clearNuxtData();
+
+const submitProduct = async () => {
+  loading.value = true;
+  await newProductForm.value.submit();
+  loading.value = false;
+};
 
 const productToEditId = ref(0);
 const productToEdit = computed(() => {
@@ -89,31 +149,33 @@ const productToEdit = computed(() => {
   return products.value.find((p) => p.id === productToEditId.value);
 });
 
-const {
-  data: listData,
-  pending: listPending,
-  refresh,
-} = myLazyFetch(() => `/api/productlist/me/${route.params.id}`, {
-  key: 'productlist',
-  initialCache: false,
-  params: {
-    includeProducts: true,
-  },
-});
+const { data: listData, pending: listPending, refresh } = myLazyFetch(
+  () => `/api/productlist/me/${route.params.id}`,
+  {
+    key: "productlist",
+    initialCache: false,
+    params: {
+      includeProducts: true,
+    },
+  }
+);
 
 const { data: prices, pending: pricesPending } = myLazyFetch(() => `/api/price`, {
-  key: 'prices',
+  key: "prices",
   params: {
     perPage: 100,
   },
 });
 
 const confirmList = async () => {
-  const { pending, error } = await myFetch(() => `/api/productlist/me/confirm/${route.params.id}`, {
-    method: 'PUT',
-    key: 'confirm',
-    initialCache: false,
-  });
+  const { pending, error } = await myFetch(
+    () => `/api/productlist/me/confirm/${route.params.id}`,
+    {
+      method: "PUT",
+      key: "confirm",
+      initialCache: false,
+    }
+  );
 
   if (error.value != null) {
     console.log(error.value);
@@ -126,8 +188,8 @@ const confirmList = async () => {
 
 const deleteProduct = async (productId) => {
   const { pending, error } = await myFetch(() => `/api/product/me/${productId}`, {
-    method: 'DELETE',
-    key: 'delete',
+    method: "DELETE",
+    key: "delete",
     initialCache: false,
   });
 
@@ -142,6 +204,7 @@ const deleteProduct = async (productId) => {
 
 const onProductCreated = () => {
   refresh();
+  newProductVisible.value = false;
 };
 
 const onProductUpdated = () => {
@@ -149,7 +212,7 @@ const onProductUpdated = () => {
 };
 
 const pageTitle = computed(() => {
-  if (!list || !list.value) return 'Mijn lijsten';
+  if (!list || !list.value) return "Mijn lijsten";
   return `Mijn lijsten | Lijst ${list.value.listNumber}`;
 });
 
@@ -163,6 +226,11 @@ const products = computed(() => {
   if (!list.value) return [];
   return list.value.products;
 });
+
+const closeNewProductModal = () => {
+  newProductVisible.value = false;
+  newProductForm.value.handleReset();
+};
 
 useHead({
   title: pageTitle,

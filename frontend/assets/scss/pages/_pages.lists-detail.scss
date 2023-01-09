@@ -1,0 +1,11 @@
+.section__lists-detail {
+  .lists-detail__title {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .lists-detail__buttons {
+    display: flex;
+    justify-content: flex-end;
+  }
+}

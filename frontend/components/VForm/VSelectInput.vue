@@ -1,17 +1,19 @@
 <template>
   <VField :name="name" v-slot="{ field, meta, errors }">
-    <input
+    <select
       :id="name"
       :disabled="disabled"
       v-bind="field"
-      class="form-control"
+      class="form-select"
       :class="{
         'is-valid': meta.valid && meta.touched,
         'is-invalid': !meta.valid && meta.touched,
       }"
       :placeholder="placeholder"
-      :type="type"
-    />
+    >
+      <slot></slot>
+    </select>
+
     <VErrorMessage :name="name" as="div" class="invalid-feedback" />
   </VField>
 </template>
