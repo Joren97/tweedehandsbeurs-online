@@ -46,12 +46,7 @@
                   <!-- Delete icon -->
                   <i class="fa-regular fa-trash-can"></i>
                 </button>
-                <button
-                  class="btn btn-secondary"
-                  @click="productToEditId = item.id"
-                  data-bs-toggle="modal"
-                  data-bs-target="#editProductModal"
-                >
+                <button class="btn btn-secondary" @click="openEditProductModal(item.id)">
                   <i class="fa-solid fa-pencil"></i>
                 </button>
               </td>
@@ -87,13 +82,13 @@
 
     <Modal :visible="newProductVisible" @close="closeNewProductModal()">
       <template v-slot:title>Nieuw product toevoegen</template>
-      <template v-slot:content
-        ><NewProductForm
+      <template v-slot:content>
+        <ProductForm
           ref="newProductForm"
-          @product-created="onProductCreated"
-          @error="onNewProductError"
+          @submit="onNewProductSubmit"
           :price-data="prices"
-      /></template>
+        />
+      </template>
       <template v-slot:footer>
         <button
           type="button"
@@ -102,7 +97,7 @@
         >
           Sluiten
         </button>
-        <LoadingButton @click="submitProduct" :loading="loading" type="primary"
+        <LoadingButton @click="submitNewProduct" :loading="loading" type="primary"
           >Product toevoegen</LoadingButton
         >
       </template>
@@ -141,60 +136,48 @@
         >
       </template>
     </Modal>
-    <div
-      class="modal fade"
-      id="editProductModal"
-      tabindex="-1"
-      aria-labelledby="editProductModal"
-      aria-hidden="true"
-    >
-      <EditProductModal
-        @product-updated="onProductUpdated"
-        :price-data="prices"
-        :product-to-edit="productToEdit"
-      />
-    </div>
+    <Modal :visible="editProductVisible" @close="closeEditProductModal()">
+      <template v-slot:title>Product bewerken</template>
+      <template v-slot:content>
+        <ProductForm
+          ref="editProductForm"
+          @submit="onEditProductSubmit"
+          :price-data="prices"
+          :initial-data="productToEdit"
+        />
+      </template>
+      <template v-slot:footer>
+        <button
+          type="button"
+          class="btn btn-secondary mx-2"
+          @click="closeEditProductModal()"
+        >
+          Sluiten
+        </button>
+        <LoadingButton @click="submitEditProduct" :loading="loading" type="primary"
+          >Wijzigingen opslaan</LoadingButton
+        >
+      </template>
+    </Modal>
   </section>
 </template>
 <script setup>
 import { useNotificationStore } from "~~/store/notification";
+const notificationStore = useNotificationStore();
+const loading = ref(false);
 
-const route = useRoute();
-definePageMeta({
-  layout: "dashboard",
-  middleware: ["auth"],
-  meta: {
-    authLevel: "user",
+/* Initial data */
+clearNuxtData();
+
+const { data: prices, pending: pricesPending } = myLazyFetch(() => `/api/price`, {
+  key: "prices",
+  params: {
+    perPage: 100,
   },
 });
 
-const notificationStore = useNotificationStore();
-
-const loading = ref(false);
-const newProductForm = ref();
-const newProductVisible = ref(false);
-const confirmListVisible = ref(false);
-const deleteProductVisible = ref(false);
-const selectedProductId = ref(null);
-
-clearNuxtData();
-
-const submitProduct = async () => {
-  loading.value = true;
-  await newProductForm.value.submit();
-  loading.value = false;
-};
-
-const productToEditId = ref(0);
-const productToEdit = computed(() => {
-  if (productToEditId.value === 0) {
-    return null;
-  }
-  return products.value.find((p) => p.id === productToEditId.value);
-});
-
 const { data: listData, pending: listPending, refresh } = myLazyFetch(
-  () => `/api/productlist/me/${route.params.id}`,
+  () => `/api/productlist/me/${useRoute().params.id}`,
   {
     key: "productlist",
     initialCache: false,
@@ -204,37 +187,126 @@ const { data: listData, pending: listPending, refresh } = myLazyFetch(
   }
 );
 
-const { data: prices, pending: pricesPending } = myLazyFetch(() => `/api/price`, {
-  key: "prices",
-  params: {
-    perPage: 100,
+const list = computed(() => {
+  if (!listData) return null;
+  if (!listData.value) return null;
+  return listData.value.data;
+});
+
+const products = computed(() => {
+  if (!list.value) return [];
+  return list.value.products;
+});
+/* End initial data */
+
+/* Page info */
+definePageMeta({
+  layout: "dashboard",
+  middleware: ["auth"],
+  meta: {
+    authLevel: "user",
   },
 });
 
-const confirmList = async () => {
+const pageTitle = computed(() => {
+  if (!list || !list.value) return "Mijn lijsten";
+  return `Mijn lijsten | Lijst ${list.value.listNumber}`;
+});
+
+useHead({
+  title: pageTitle,
+});
+/* End page info */
+
+/* Add new product */
+const newProductForm = ref();
+const newProductVisible = ref(false);
+
+const submitNewProduct = async () => {
+  await newProductForm.value.submit();
+};
+
+const onNewProductSubmit = async (values) => {
   loading.value = true;
+  const body = {
+    ...values,
+    productlistId: useRoute().params.id,
+  };
 
-  const { pending, error } = await useApi(
-    `/api/productlist/me/confirm/${route.params.id}`,
-    {
-      method: "PUT",
-      key: "confirm",
-      initialCache: false,
-    }
-  );
+  const { data, error } = await useApi(`/api/product/me`, {
+    method: "POST",
+    body,
+    initialCache: false,
+  });
 
-  loading.value = false;
-  confirmListVisible.value = false;
-  notificationStore.addNotification("Success", "De lijst werd bevestigd");
-
-  if (error.value != null) {
-    console.log(error.value);
-    fieldErrors.value = error.value.data.errors;
-    return;
+  if (error && error.value) {
+    notificationStore.addNotification("Error", error.value.data.message);
+  } else {
+    notificationStore.addNotification("Success", "Product werd toegevoegd");
+    refresh();
   }
 
-  refresh();
+  newProductVisible.value = false;
+  newProductForm.value.handleReset();
+  loading.value = false;
 };
+
+const closeNewProductModal = () => {
+  newProductVisible.value = false;
+  newProductForm.value.handleReset();
+};
+/* End add new product */
+
+/* Edit product */
+const productToEdit = ref(null);
+const editProductForm = ref();
+const editProductVisible = ref(false);
+
+const openEditProductModal = (productId) => {
+  productToEdit.value = products.value.find((p) => p.id === productId);
+  editProductVisible.value = true;
+};
+
+const submitEditProduct = async () => {
+  await editProductForm.value.submit();
+};
+
+const onEditProductSubmit = async (values) => {
+  loading.value = true;
+  const body = {
+    ...values,
+    productlistId: useRoute().params.id,
+  };
+
+  const { data, error } = await useApi(`/api/product/me/${productToEdit.value.id}`, {
+    method: "PUT",
+    body,
+    initialCache: false,
+  });
+
+  editProductVisible.value = false;
+  editProductForm.value.handleReset();
+  loading.value = false;
+
+  await nextTick();
+
+  if (error && error.value) {
+    notificationStore.addNotification("Error", error.value.data.message);
+  } else {
+    notificationStore.addNotification("Success", "Product werd bewerkt");
+    refresh();
+  }
+};
+
+const closeEditProductModal = () => {
+  editProductVisible.value = false;
+  productToEdit.value = null;
+};
+/* End edit product */
+
+/* Delete product */
+const deleteProductVisible = ref(false);
+const selectedProductId = ref(null);
 
 const confirmDeleteProduct = (productId) => {
   selectedProductId.value = productId;
@@ -260,44 +332,34 @@ const deleteProduct = async () => {
   selectedProductId.value = null;
   refresh();
 };
+/* End delete product */
 
-const onNewProductError = (message) => {
-  notificationStore.addNotification("Error", message);
-  newProductVisible.value = false;
-};
+/* Confirm list */
+const confirmListVisible = ref(false);
 
-const onProductCreated = () => {
-  notificationStore.addNotification("Success", "Product werd toegevoegd");
+const confirmList = async () => {
+  loading.value = true;
+
+  const { pending, error } = await useApi(
+    `/api/productlist/me/confirm/${useRoute().params.id}`,
+    {
+      method: "PUT",
+      key: "confirm",
+      initialCache: false,
+    }
+  );
+
+  loading.value = false;
+  confirmListVisible.value = false;
+  notificationStore.addNotification("Success", "De lijst werd bevestigd");
+
+  if (error.value != null) {
+    console.log(error.value);
+    fieldErrors.value = error.value.data.errors;
+    return;
+  }
+
   refresh();
-  newProductVisible.value = false;
 };
-
-const onProductUpdated = () => {
-  refresh();
-};
-
-const pageTitle = computed(() => {
-  if (!list || !list.value) return "Mijn lijsten";
-  return `Mijn lijsten | Lijst ${list.value.listNumber}`;
-});
-
-const list = computed(() => {
-  if (!listData) return null;
-  if (!listData.value) return null;
-  return listData.value.data;
-});
-
-const products = computed(() => {
-  if (!list.value) return [];
-  return list.value.products;
-});
-
-const closeNewProductModal = () => {
-  newProductVisible.value = false;
-  newProductForm.value.handleReset();
-};
-
-useHead({
-  title: pageTitle,
-});
+/* End confirm list */
 </script>
