@@ -5,21 +5,20 @@
     </LayoutPageHeading>
     <div class="row">
       <div class="col-4">
-        <VForm
-          ref="searchForm"
-          @submit="searchProduct"
-          :validation-schema="validationSchema"
-          :initial-values="form"
-          v-slot="{ meta: formMeta, errors: formErrors }"
-        >
-          <div class="col-12">
-            <VTextInput label="Productnummer" name="productNumber" @keyup.enter="next" />
-          </div>
-          <div class="col-12">
-            <VTextInput label="Lijstnummer" name="listNumber" @keyup.enter="next" />
-          </div>
-          <button id="searchProduct" class="btn btn-primary" type="submit">Zoeken</button>
-        </VForm>
+        <form>
+          {{ meta }}
+          {{ values }}
+          {{ errors }}
+          <label for="productNumber">Productnummer</label>
+          <VField name="productNumber" @keyup.enter="next" ref="productNumber" />
+          <VErrorMessage name="productNumber" as="div" class="invalid-feedback" />
+          <label for="listNumber">Lijstnummer</label>
+          <VField name="listNumber" @keyup.enter="next" ref="listNumber" />
+          <VErrorMessage name="listNumber" as="div" class="invalid-feedback" />
+          <LoadingButton @click="searchProduct" :loading="false" type="primary"
+            >Opslaan</LoadingButton
+          >
+        </form>
       </div>
       <div class="col-8">
         <div v-if="product == null">
@@ -67,7 +66,6 @@ import { object, string } from "yup";
 import { useNotificationStore } from "~~/store/notification";
 import { useForm } from "vee-validate";
 const notificationStore = useNotificationStore();
-const { handleSubmit, resetForm } = useForm();
 
 definePageMeta({
   layout: "dashboard",
@@ -90,40 +88,37 @@ const validationSchema = object({
   }),
 });
 
-const product = ref(null);
-const form = ref({
-  productNumber: "",
-  listNumber: "",
+const { handleSubmit, handleReset, meta, values, errors } = useForm({
+  validationSchema,
 });
 
-const searchProduct = async (values, actions) => {
-  const x = await useCustomLazyFetch(
-    `/api/product?listNumber[eq]=${values.listNumber}&productNumber[eq]=${values.productNumber}`
-  );
+const product = ref(null);
 
-  console.log(x);
-
-  const { status, message, data } = await useApi(
-    `/api/product?listNumber[eq]=${values.listNumber}&productNumber[eq]=${values.productNumber}`
-  );
-
-  if (status === "Error") {
-    notificationStore.message = message;
-    notificationStore.status = status;
-  } else if (data.length === 0) {
-    notificationStore.message = "Product niet gevonden";
-    notificationStore.status = "Error";
-  } else {
-    product.value = data[0];
-    await nextTick();
-    document.getElementById("sell").focus();
-  }
-
-  actions.resetForm();
-  if (status === "Error") document.getElementById("productNumber").focus();
-  if (data.length === 0) document.getElementById("productNumber").focus();
-  if (data[0].isSold) document.getElementById("productNumber").focus();
-};
+const searchProduct = handleSubmit(async (values, actions) => {
+  console.log(values);
+  // const x = await useCustomLazyFetch(
+  //   `/api/product?listNumber[eq]=${values.listNumber}&productNumber[eq]=${values.productNumber}`
+  // );
+  // console.log(x);
+  // const { status, message, data } = await useApi(
+  //   `/api/product?listNumber[eq]=${values.listNumber}&productNumber[eq]=${values.productNumber}`
+  // );
+  // if (status === "Error") {
+  //   notificationStore.message = message;
+  //   notificationStore.status = status;
+  // } else if (data.length === 0) {
+  //   notificationStore.message = "Product niet gevonden";
+  //   notificationStore.status = "Error";
+  // } else {
+  //   product.value = data[0];
+  //   await nextTick();
+  //   document.getElementById("sell").focus();
+  // }
+  // actions.resetForm();
+  // if (status === "Error") document.getElementById("productNumber").focus();
+  // if (data.length === 0) document.getElementById("productNumber").focus();
+  // if (data[0].isSold) document.getElementById("productNumber").focus();
+});
 
 const sellProduct = async (p) => {
   const { status, message, data } = await useApi(`/api/product/${p.id}`, {
@@ -143,15 +138,17 @@ const sellProduct = async (p) => {
 };
 
 const next = (e) => {
-  let nextElement = null;
-  e.preventDefault();
-  const {
-    target: { id },
-  } = e;
-  if (id === "productNumber") {
-    nextElement = document.getElementById("listNumber");
-  }
+  const fieldName = e.srcElement.name;
+  console.log(fieldName);
+  // let nextElement = null;
+  // e.preventDefault();
+  // const {
+  //   target: { id },
+  // } = e;
+  // if (id === "productNumber") {
+  //   nextElement = document.getElementById("listNumber");
+  // }
 
-  nextElement?.focus();
+  // nextElement?.focus();
 };
 </script>
