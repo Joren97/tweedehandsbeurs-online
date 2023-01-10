@@ -25,58 +25,80 @@
     </div>
     <div class="row">
       <div class="col-8">
-        <table class="table table-striped">
+        <table class="table__products">
           <thead>
             <tr>
-              <th>#</th>
-              <th>Beschrijving</th>
-              <th>Vraagprijs</th>
-              <th>Verkoopprijs</th>
+              <th class="product__number">#</th>
+              <th class="product__data">Beschrijving</th>
+              <th class="product__data">Vraagprijs</th>
+              <th class="product__data">Verkoopprijs</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="item in products" :key="item.id">
-              <td>{{ item.productNumber }}</td>
-              <td>{{ item.description }}</td>
-              <td>{{ toEuro(item.price.askingPrice) }}</td>
-              <td>{{ toEuro(item.price.sellingPrice) }}</td>
-              <td>
-                <button class="btn btn-primary" @click="confirmDeleteProduct(item.id)">
+              <td class="product__number">{{ item.productNumber }}</td>
+              <td class="product__data">{{ item.description }}</td>
+              <td class="product__data">{{ toEuro(item.price.askingPrice) }}</td>
+              <td class="product__data">{{ toEuro(item.price.sellingPrice) }}</td>
+              <td class="product__buttons">
+                <button
+                  class="btn btn-primary btn-sm"
+                  @click="confirmDeleteProduct(item.id)"
+                >
                   <!-- Delete icon -->
                   <i class="fa-regular fa-trash-can"></i>
                 </button>
-                <button class="btn btn-secondary" @click="openEditProductModal(item.id)">
+                <button
+                  class="btn btn-secondary btn-sm"
+                  @click="openEditProductModal(item.id)"
+                >
                   <i class="fa-solid fa-pencil"></i>
                 </button>
               </td>
             </tr>
           </tbody>
+          <tfoot>
+            <tr>
+              <th></th>
+              <th>Totaal</th>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tfoot>
         </table>
       </div>
       <div class="col-4">
-        <table class="table">
-          <tbody v-if="list">
-            <tr>
-              <th>Lijstnummer</th>
-              <td>{{ list.listNumber }}</td>
-            </tr>
-            <tr>
-              <th>Lidnummer</th>
-              <td>{{ emptyCheck(list.memberNumber) }}</td>
-            </tr>
-            <tr>
-              <th>Bevestigd</th>
-              <td>{{ list.isUserConfirmed }}</td>
-            </tr>
-            <tr>
-              <th>Gevalideerd</th>
-              <td>{{ list.isEmployeeValidated }}</td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="list__information">
+          <div class="information__title">
+            <span>Lijstinfo</span>
+          </div>
+          <div class="information__content placeholder-glow">
+            <div class="information__item mb-2">
+              <span class="item__title">Lijstnummer</span>
+              <span v-if="listPending" class="placeholder col-4"></span>
+              <span v-else>{{ list.listNumber }}</span>
+            </div>
+            <div class="information__item mb-2">
+              <span class="item__title">Lidnummer</span>
+              <span v-if="listPending" class="placeholder col-4"></span>
+              <span v-else>{{ emptyCheck(list.memberNumber) }}</span>
+            </div>
+            <div class="information__item mb-2">
+              <span class="item__title">Bevestigd</span>
+              <span v-if="listPending" class="placeholder col-4"></span>
+              <span v-else>{{ list.isUserConfirmed }}</span>
+            </div>
+            <div class="information__item">
+              <span class="item__title">Gevalideerd</span>
+              <span v-if="listPending" class="placeholder col-4"></span>
+              <span v-else>{{ list.isEmployeeValidated }}</span>
+            </div>
+          </div>
+        </div>
 
-        <TheNotification />
+        <TheNotification class="mt-3" />
       </div>
     </div>
 
