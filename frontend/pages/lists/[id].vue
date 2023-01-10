@@ -7,6 +7,7 @@
       <div class="col">
         <div class="lists-detail__buttons">
           <button
+            :disabled="listPending || (list && list.isUserConfirmed)"
             class="btn btn-primary"
             href="#add-product-modal"
             @click="newProductVisible = true"
@@ -32,7 +33,9 @@
               <th class="product__data">Beschrijving</th>
               <th class="product__data">Vraagprijs</th>
               <th class="product__data">Verkoopprijs</th>
-              <th></th>
+              <th class="product__data">
+                <span v-if="list && list.isUserConfirmed">Product is verkocht</span>
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -41,7 +44,11 @@
               <td class="product__data">{{ item.description }}</td>
               <td class="product__data">{{ toEuro(item.price.askingPrice) }}</td>
               <td class="product__data">{{ toEuro(item.price.sellingPrice) }}</td>
-              <td class="product__buttons">
+              <td class="product__data" v-if="list && list.isUserConfirmed">
+                <span v-if="item.isSold"><i class="fa-regular fa-circle-check"></i></span>
+                <span v-else><i class="fa-regular fa-circle-xmark"></i></span>
+              </td>
+              <td class="product__buttons" v-if="list && !list.isUserConfirmed">
                 <button
                   class="btn btn-primary btn-sm"
                   @click="confirmDeleteProduct(item.id)"
