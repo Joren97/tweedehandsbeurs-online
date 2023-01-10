@@ -35,6 +35,10 @@ class ProductController extends ApiController
             $products = $products->whereRelation('productList', 'id', '=', $productList->id);
         }
 
+        if ($request->query('includeProductlist')) {
+            $products = $products->with('productList');
+        }
+
         return new ProductCollection($products->paginate($filter->perPage($request))->appends($request->query()));
     }
 
