@@ -2,7 +2,12 @@
   <section class="dashboard__lists">
     <div class="lists__title">Mijn lijsten</div>
     <div class="lists__buttons">
-      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newListModal">
+      <button
+        type="button"
+        class="btn btn-primary"
+        data-bs-toggle="modal"
+        data-bs-target="#newListModal"
+      >
         <i class="fa-solid fa-circle-plus"></i>Lijst toevoegen
       </button>
     </div>
@@ -16,9 +21,16 @@
       <div class="grid__item" v-for="item in editionsWithLists" :key="item.id" v-else>
         <div class="item__title">{{ item.year }} - {{ item.name }}</div>
         <div class="item__lists" v-if="item.lists.length > 0">
-          <div class="lists__item" v-for="list in item.lists" :key="list.id" @click="openList(list.id)">
+          <div
+            class="lists__item"
+            v-for="list in item.lists"
+            :key="list.id"
+            @click="openList(list.id)"
+          >
             <div class="item__content">
-              {{ list.id }} Lijst {{ list.listNumber }} ({{ list.memberNumber }})
+              Lijst {{ list.listNumber }}&nbsp;&dash;&nbsp;({{
+                list.memberNumber ?? "Geen lidnummer"
+              }})
             </div>
             <div class="item__actions">
               <button type="button"><i class="fa-solid fa-trash"></i></button>
@@ -32,7 +44,7 @@
     </div>
 
     <div class="modal fade" id="newListModal">
-      <NewListModal :active-edition="activeEdition" @list-created="onListCreated"/>
+      <NewListModal :active-edition="activeEdition" @list-created="onListCreated" />
     </div>
   </section>
 </template>
@@ -49,15 +61,15 @@ definePageMeta({
   },
 });
 
-const {pending: editionsPending, data: editionsData} = myLazyFetch(
-    () => `/api/edition`,
-    {key: "edition", initialCache: false}
+const { pending: editionsPending, data: editionsData } = myLazyFetch(
+  () => `/api/edition`,
+  { key: "edition", initialCache: false }
 );
 const {
   pending: listsPending,
   data: listsData,
   refresh: listsRefresh,
-} = myLazyFetch(() => `/api/productlist/me`, {key: "productlist", initialCache: false});
+} = myLazyFetch(() => `/api/productlist/me`, { key: "productlist", initialCache: false });
 
 const pending = computed(() => {
   return editionsPending.value || listsPending.value;
