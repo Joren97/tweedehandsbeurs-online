@@ -38,7 +38,26 @@
               </th>
             </tr>
           </thead>
-          <tbody>
+          <tbody class="placeholder-glow" v-if="listPending">
+            <tr v-for="i in 5">
+              <td class="placeholder-glow">
+                <div class="placeholder w-100"></div>
+              </td>
+              <td class="placeholder-glow">
+                <div class="placeholder w-100"></div>
+              </td>
+              <td class="placeholder-glow">
+                <div class="placeholder w-100"></div>
+              </td>
+              <td class="placeholder-glow">
+                <div class="placeholder w-100"></div>
+              </td>
+              <td class="placeholder-glow">
+                <div class="placeholder w-100"></div>
+              </td>
+            </tr>
+          </tbody>
+          <tbody v-else>
             <tr v-for="item in products" :key="item.id">
               <td class="product__number">{{ item.productNumber }}</td>
               <td class="product__data">{{ item.description }}</td>
