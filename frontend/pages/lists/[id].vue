@@ -7,6 +7,7 @@
       <div class="col">
         <div class="lists-detail__buttons">
           <button
+            :disabled="listPending || (list && list.isUserConfirmed)"
             class="btn btn-primary"
             href="#add-product-modal"
             @click="newProductVisible = true"
@@ -15,7 +16,7 @@
           </button>
           <button
             class="btn btn-primary ms-2"
-            @click="confirmList"
+            @click="confirmListVisible = true"
             :disabled="listPending || (list && list.isUserConfirmed)"
           >
             Lijst bevestigen
@@ -25,72 +26,117 @@
     </div>
     <div class="row">
       <div class="col-8">
-        <table class="table table-striped">
+        <table class="table__products">
           <thead>
             <tr>
-              <th>#</th>
-              <th>Beschrijving</th>
-              <th>Vraagprijs</th>
-              <th>Verkoopprijs</th>
-              <th></th>
+              <th class="product__number">#</th>
+              <th class="product__data">Beschrijving</th>
+              <th class="product__data">Vraagprijs</th>
+              <th class="product__data">Verkoopprijs</th>
+              <th class="product__data">
+                <span v-if="list && list.isUserConfirmed">Product is verkocht</span>
+              </th>
             </tr>
           </thead>
-          <tbody>
+          <tbody class="placeholder-glow" v-if="listPending">
+            <tr v-for="i in 5">
+              <td class="placeholder-glow">
+                <div class="placeholder w-100"></div>
+              </td>
+              <td class="placeholder-glow">
+                <div class="placeholder w-100"></div>
+              </td>
+              <td class="placeholder-glow">
+                <div class="placeholder w-100"></div>
+              </td>
+              <td class="placeholder-glow">
+                <div class="placeholder w-100"></div>
+              </td>
+              <td class="placeholder-glow">
+                <div class="placeholder w-100"></div>
+              </td>
+            </tr>
+          </tbody>
+          <tbody v-else>
             <tr v-for="item in products" :key="item.id">
-              <td>{{ item.productNumber }}</td>
-              <td>{{ item.description }}</td>
-              <td>{{ toEuro(item.price.askingPrice) }}</td>
-              <td>{{ toEuro(item.price.sellingPrice) }}</td>
-              <td>
-                <button class="btn btn-primary" @click="deleteProduct(item.id)">
+              <td class="product__number">{{ item.productNumber }}</td>
+              <td class="product__data">{{ item.description }}</td>
+              <td class="product__data">{{ toEuro(item.price.askingPrice) }}</td>
+              <td class="product__data">{{ toEuro(item.price.sellingPrice) }}</td>
+              <td class="product__data" v-if="list && list.isUserConfirmed">
+                <span v-if="item.isSold"><i class="fa-regular fa-circle-check"></i></span>
+                <span v-else><i class="fa-regular fa-circle-xmark"></i></span>
+              </td>
+              <td class="product__buttons" v-if="list && !list.isUserConfirmed">
+                <button
+                  class="btn btn-primary btn-sm"
+                  @click="confirmDeleteProduct(item.id)"
+                >
                   <!-- Delete icon -->
                   <i class="fa-regular fa-trash-can"></i>
                 </button>
                 <button
-                  class="btn btn-secondary"
-                  @click="productToEditId = item.id"
-                  data-bs-toggle="modal"
-                  data-bs-target="#editProductModal"
+                  class="btn btn-secondary btn-sm"
+                  @click="openEditProductModal(item.id)"
                 >
                   <i class="fa-solid fa-pencil"></i>
                 </button>
               </td>
             </tr>
           </tbody>
+          <tfoot>
+            <tr>
+              <th></th>
+              <th>Totaal</th>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tfoot>
         </table>
       </div>
       <div class="col-4">
-        <table class="table">
-          <tbody v-if="list">
-            <tr>
-              <th>Lijstnummer</th>
-              <td>{{ list.listNumber }}</td>
-            </tr>
-            <tr>
-              <th>Lidnummer</th>
-              <td>{{ emptyCheck(list.memberNumber) }}</td>
-            </tr>
-            <tr>
-              <th>Bevestigd</th>
-              <td>{{ list.isUserConfirmed }}</td>
-            </tr>
-            <tr>
-              <th>Gevalideerd</th>
-              <td>{{ list.isEmployeeValidated }}</td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="list__information">
+          <div class="information__title">
+            <span>Lijstinfo</span>
+          </div>
+          <div class="information__content placeholder-glow">
+            <div class="information__item mb-2">
+              <span class="item__title">Lijstnummer</span>
+              <span v-if="listPending" class="placeholder col-4"></span>
+              <span v-else>{{ list.listNumber }}</span>
+            </div>
+            <div class="information__item mb-2">
+              <span class="item__title">Lidnummer</span>
+              <span v-if="listPending" class="placeholder col-4"></span>
+              <span v-else>{{ emptyCheck(list.memberNumber) }}</span>
+            </div>
+            <div class="information__item mb-2">
+              <span class="item__title">Bevestigd</span>
+              <span v-if="listPending" class="placeholder col-4"></span>
+              <span v-else>{{ list.isUserConfirmed }}</span>
+            </div>
+            <div class="information__item">
+              <span class="item__title">Gevalideerd</span>
+              <span v-if="listPending" class="placeholder col-4"></span>
+              <span v-else>{{ list.isEmployeeValidated }}</span>
+            </div>
+          </div>
+        </div>
+
+        <TheNotification class="mt-3" />
       </div>
     </div>
 
     <Modal :visible="newProductVisible" @close="closeNewProductModal()">
       <template v-slot:title>Nieuw product toevoegen</template>
-      <template v-slot:content
-        ><NewProductForm
+      <template v-slot:content>
+        <ProductForm
           ref="newProductForm"
-          @product-created="onProductCreated"
+          @submit="onNewProductSubmit"
           :price-data="prices"
-      /></template>
+        />
+      </template>
       <template v-slot:footer>
         <button
           type="button"
@@ -99,66 +145,77 @@
         >
           Sluiten
         </button>
-        <LoadingButton @click="submitProduct" :loading="loading" type="primary"
+        <LoadingButton @click="submitNewProduct" :loading="loading" type="primary"
           >Product toevoegen</LoadingButton
         >
       </template>
     </Modal>
-    <div
-      class="modal fade"
-      id="editProductModal"
-      tabindex="-1"
-      aria-labelledby="editProductModal"
-      aria-hidden="true"
-    >
-      <EditProductModal
-        @product-updated="onProductUpdated"
-        :price-data="prices"
-        :product-to-edit="productToEdit"
-      />
-    </div>
+    <Modal :visible="confirmListVisible" @close="confirmListVisible = false">
+      <template v-slot:title>Lijst bevestigen</template>
+      <template v-slot:content>Ben je zeker dat je deze lijst wil bevestigen?</template>
+      <template v-slot:footer>
+        <button
+          type="button"
+          class="btn btn-secondary mx-2"
+          @click="confirmListVisible = false"
+        >
+          Annuleren
+        </button>
+
+        <LoadingButton type="primary" @click="confirmList" :loading="loading"
+          >Lijst bevestigen</LoadingButton
+        >
+      </template>
+    </Modal>
+    <Modal :visible="deleteProductVisible" @close="deleteProductVisible = false">
+      <template v-slot:title>Product verwijderen</template>
+      <template v-slot:content>Ben je zeker dat je dit product wil verwijderen?</template>
+      <template v-slot:footer>
+        <button
+          type="button"
+          class="btn btn-secondary mx-2"
+          @click="deleteProductVisible = false"
+        >
+          Annuleren
+        </button>
+
+        <LoadingButton type="primary" @click="deleteProduct" :loading="loading"
+          >Product verwijderen</LoadingButton
+        >
+      </template>
+    </Modal>
+    <Modal :visible="editProductVisible" @close="closeEditProductModal()">
+      <template v-slot:title>Product bewerken</template>
+      <template v-slot:content>
+        <ProductForm
+          ref="editProductForm"
+          @submit="onEditProductSubmit"
+          :price-data="prices"
+          :initial-data="productToEdit"
+        />
+      </template>
+      <template v-slot:footer>
+        <button
+          type="button"
+          class="btn btn-secondary mx-2"
+          @click="closeEditProductModal()"
+        >
+          Sluiten
+        </button>
+        <LoadingButton @click="submitEditProduct" :loading="loading" type="primary"
+          >Wijzigingen opslaan</LoadingButton
+        >
+      </template>
+    </Modal>
   </section>
 </template>
 <script setup>
-const route = useRoute();
-definePageMeta({
-  layout: "dashboard",
-  middleware: ["auth"],
-  meta: {
-    authLevel: "user",
-  },
-});
-
+import { useNotificationStore } from "~~/store/notification";
+const notificationStore = useNotificationStore();
 const loading = ref(false);
-const newProductForm = ref();
-const newProductVisible = ref(false);
 
+/* Initial data */
 clearNuxtData();
-
-const submitProduct = async () => {
-  loading.value = true;
-  await newProductForm.value.submit();
-  loading.value = false;
-};
-
-const productToEditId = ref(0);
-const productToEdit = computed(() => {
-  if (productToEditId.value === 0) {
-    return null;
-  }
-  return products.value.find((p) => p.id === productToEditId.value);
-});
-
-const { data: listData, pending: listPending, refresh } = myLazyFetch(
-  () => `/api/productlist/me/${route.params.id}`,
-  {
-    key: "productlist",
-    initialCache: false,
-    params: {
-      includeProducts: true,
-    },
-  }
-);
 
 const { data: prices, pending: pricesPending } = myLazyFetch(() => `/api/price`, {
   key: "prices",
@@ -167,54 +224,16 @@ const { data: prices, pending: pricesPending } = myLazyFetch(() => `/api/price`,
   },
 });
 
-const confirmList = async () => {
-  const { pending, error } = await myFetch(
-    () => `/api/productlist/me/confirm/${route.params.id}`,
-    {
-      method: "PUT",
-      key: "confirm",
-      initialCache: false,
-    }
-  );
-
-  if (error.value != null) {
-    console.log(error.value);
-    fieldErrors.value = error.value.data.errors;
-    return;
-  }
-
-  refresh();
-};
-
-const deleteProduct = async (productId) => {
-  const { pending, error } = await myFetch(() => `/api/product/me/${productId}`, {
-    method: "DELETE",
-    key: "delete",
+const { data: listData, pending: listPending, refresh } = myLazyFetch(
+  () => `/api/productlist/me/${useRoute().params.id}`,
+  {
+    key: "productlist",
     initialCache: false,
-  });
-
-  if (error.value != null) {
-    console.log(error.value);
-    fieldErrors.value = error.value.data.errors;
-    return;
+    params: {
+      includeProducts: true,
+    },
   }
-
-  refresh();
-};
-
-const onProductCreated = () => {
-  refresh();
-  newProductVisible.value = false;
-};
-
-const onProductUpdated = () => {
-  refresh();
-};
-
-const pageTitle = computed(() => {
-  if (!list || !list.value) return "Mijn lijsten";
-  return `Mijn lijsten | Lijst ${list.value.listNumber}`;
-});
+);
 
 const list = computed(() => {
   if (!listData) return null;
@@ -226,13 +245,169 @@ const products = computed(() => {
   if (!list.value) return [];
   return list.value.products;
 });
+/* End initial data */
+
+/* Page info */
+definePageMeta({
+  layout: "dashboard",
+  middleware: ["auth"],
+  meta: {
+    authLevel: "user",
+  },
+});
+
+const pageTitle = computed(() => {
+  if (!list || !list.value) return "Mijn lijsten";
+  return `Mijn lijsten | Lijst ${list.value.listNumber}`;
+});
+
+useHead({
+  title: pageTitle,
+});
+/* End page info */
+
+/* Add new product */
+const newProductForm = ref();
+const newProductVisible = ref(false);
+
+const submitNewProduct = async () => {
+  await newProductForm.value.submit();
+};
+
+const onNewProductSubmit = async (values) => {
+  loading.value = true;
+  const body = {
+    ...values,
+    productlistId: useRoute().params.id,
+  };
+
+  const { data, error } = await useApi(`/api/product/me`, {
+    method: "POST",
+    body,
+    initialCache: false,
+  });
+
+  if (error && error.value) {
+    notificationStore.addNotification("Error", error.value.data.message);
+  } else {
+    notificationStore.addNotification("Success", "Product werd toegevoegd");
+    refresh();
+  }
+
+  newProductVisible.value = false;
+  newProductForm.value.handleReset();
+  loading.value = false;
+};
 
 const closeNewProductModal = () => {
   newProductVisible.value = false;
   newProductForm.value.handleReset();
 };
+/* End add new product */
 
-useHead({
-  title: pageTitle,
-});
+/* Edit product */
+const productToEdit = ref(null);
+const editProductForm = ref();
+const editProductVisible = ref(false);
+
+const openEditProductModal = (productId) => {
+  productToEdit.value = products.value.find((p) => p.id === productId);
+  editProductVisible.value = true;
+};
+
+const submitEditProduct = async () => {
+  await editProductForm.value.submit();
+};
+
+const onEditProductSubmit = async (values) => {
+  loading.value = true;
+  const body = {
+    ...values,
+    productlistId: useRoute().params.id,
+  };
+
+  const { data, error } = await useApi(`/api/product/me/${productToEdit.value.id}`, {
+    method: "PUT",
+    body,
+    initialCache: false,
+  });
+
+  editProductVisible.value = false;
+  editProductForm.value.handleReset();
+  loading.value = false;
+
+  await nextTick();
+
+  if (error && error.value) {
+    notificationStore.addNotification("Error", error.value.data.message);
+  } else {
+    notificationStore.addNotification("Success", "Product werd bewerkt");
+    refresh();
+  }
+};
+
+const closeEditProductModal = () => {
+  editProductVisible.value = false;
+  productToEdit.value = null;
+};
+/* End edit product */
+
+/* Delete product */
+const deleteProductVisible = ref(false);
+const selectedProductId = ref(null);
+
+const confirmDeleteProduct = (productId) => {
+  selectedProductId.value = productId;
+  deleteProductVisible.value = true;
+};
+
+const deleteProduct = async () => {
+  loading.value = true;
+  const { pending, error } = await useApi(`/api/product/me/${selectedProductId.value}`, {
+    method: "DELETE",
+    key: "delete",
+    initialCache: false,
+  });
+
+  if (error.value != null) {
+    notificationStore.addNotification("Error", error.value.data.message);
+  } else {
+    notificationStore.addNotification("Success", "Product werd verwijderd");
+  }
+
+  deleteProductVisible.value = false;
+  loading.value = false;
+  selectedProductId.value = null;
+  refresh();
+};
+/* End delete product */
+
+/* Confirm list */
+const confirmListVisible = ref(false);
+
+const confirmList = async () => {
+  loading.value = true;
+
+  const { pending, error } = await useApi(
+    `/api/productlist/me/confirm/${useRoute().params.id}`,
+    {
+      method: "PUT",
+      key: "confirm",
+      initialCache: false,
+    }
+  );
+
+  loading.value = false;
+  confirmListVisible.value = false;
+  notificationStore.addNotification("Success", "De lijst werd bevestigd");
+
+  if (error.value != null) {
+    console.log(error.value);
+    fieldErrors.value = error.value.data.errors;
+    return;
+  }
+
+  refresh();
+};
+/* End confirm list */
 </script>

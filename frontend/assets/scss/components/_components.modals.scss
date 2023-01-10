@@ -32,9 +32,9 @@
 
   & > div {
     width: 500px;
-    position: absolute;
+    position: sticky;
     top: 50%;
-    left: 50%;
+    left: calc(50% - 8.75rem); // 8.75rem is half of the sidebar width
     transform: translate(-50%, -50%);
     background: white;
   }

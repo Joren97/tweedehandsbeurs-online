@@ -1,16 +1,21 @@
-import { defineStore } from 'pinia'
+import { defineStore } from "pinia";
 
 export const useNotificationStore = defineStore({
-    id: 'notification-store',
+    id: "notification-store",
     state: () => {
         return {
             status: "",
             message: "",
-        }
+        };
     },
-    actions: {},
+    actions: {
+        addNotification(status: string, message: string) {
+            this.status = status;
+            this.message = message;
+        },
+    },
     getters: {
-        getStatus: state => state.status,
-        getMessage: state => state.message,
-    }
-})
+        getStatus: (state) => state.status,
+        getMessage: (state) => state.message,
+    },
+});
