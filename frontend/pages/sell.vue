@@ -8,12 +8,7 @@
         <form>
           <div class="row mb-3">
             <label for="productNumber" class="form-label">Productnummer</label>
-            <VField
-              name="productNumber"
-              @keyup.enter="next"
-              as="div"
-              v-slot="{ field, meta }"
-            >
+            <VField name="productNumber" as="div" v-slot="{ field, meta }">
               <input
                 v-bind="field"
                 type="text"
@@ -31,12 +26,7 @@
           </div>
           <div class="row mb-3">
             <label for="listNumber" class="form-label">Lijstnummer</label>
-            <VField
-              name="listNumber"
-              @keyup.enter="next"
-              as="div"
-              v-slot="{ field, meta }"
-            >
+            <VField name="listNumber" as="div" v-slot="{ field, meta }">
               <input
                 v-bind="field"
                 type="text"
