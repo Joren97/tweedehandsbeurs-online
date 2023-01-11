@@ -68,8 +68,7 @@
                 {{ item && item.price && toEuro(item.price.sellingPrice) }}
               </td>
               <td class="product__data" v-if="list && list.isUserConfirmed">
-                <span v-if="item.isSold"><i class="fa-regular fa-circle-check"></i></span>
-                <span v-else><i class="fa-regular fa-circle-xmark"></i></span>
+                <YesNoIcon :value="item.isSold" />
               </td>
               <td class="product__buttons" v-if="list && !list.isUserConfirmed">
                 <button
@@ -88,15 +87,6 @@
               </td>
             </tr>
           </tbody>
-          <tfoot>
-            <tr>
-              <th></th>
-              <th>Totaal</th>
-              <td></td>
-              <td></td>
-              <td></td>
-            </tr>
-          </tfoot>
         </table>
       </div>
       <div class="col-4">
@@ -118,12 +108,22 @@
             <div class="information__item mb-2">
               <span class="item__title">Bevestigd</span>
               <span v-if="listPending" class="placeholder col-4"></span>
-              <span v-else>{{ list.isUserConfirmed }}</span>
+              <span v-else><YesNoIcon :value="list.isUserConfirmed" /></span>
             </div>
-            <div class="information__item">
+            <div class="information__item mb-2">
               <span class="item__title">Gevalideerd</span>
               <span v-if="listPending" class="placeholder col-4"></span>
-              <span v-else>{{ list.isEmployeeValidated }}</span>
+              <span v-else><YesNoIcon :value="list.isEmployeeValidated" /></span>
+            </div>
+            <div class="information__item mb-2">
+              <span class="item__title">Opbrengst uitbetaald</span>
+              <span v-if="listPending" class="placeholder col-4"></span>
+              <span v-else><YesNoIcon :value="list.isPaidToUser" /></span>
+            </div>
+            <div class="information__item">
+              <span class="item__title">Jouw opbrengst</span>
+              <span v-if="listPending" class="placeholder col-4"></span>
+              <span v-else>{{ toEuro(totalSold) }}</span>
             </div>
           </div>
         </div>
@@ -248,6 +248,17 @@ const list = computed(() => {
 const products = computed(() => {
   if (!list.value) return [];
   return list.value.products;
+});
+
+const totalSold = computed(() => {
+  if (!products.value) return 0;
+  if (products.value.length < 1) return 0;
+  // Return the total price of all products sold
+  let sum = 0;
+  products.value.forEach((product) => {
+    if (product.isSold) sum += product.price.askingPrice;
+  });
+  return sum;
 });
 /* End initial data */
 
