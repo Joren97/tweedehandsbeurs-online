@@ -234,18 +234,23 @@ class ProductlistController extends ApiController
         // Get PDF of productlist
         $pdf = PDFController::generateProductlistPdf($list->id);
 
+        // To email address
+        $to = auth()->user()->email;
+
+        if (env('APP_DEBUG')) {
+            $to = env('MAIL_TO_ADDRESS');
+        }
+
         // Send an email to the user
-        $data["email"] = "aatmaninfotech@gmail.com";
-        $data["title"] = "From ItSolutionStuff.com";
-        $data["body"] = "This is Demo";
+        $data["number"] = $list->list_number;
 
         MailController::sendMail(
-            'emails.myMail',
+            'emails.confirmList',
             $data,
-            'synaevejoren@gmail.com',
-            'Jouw productlijst',
+            $to,
+            'Lijst ' . $list->list_number . ' werd zojuist bevestigd',
             $pdf,
-            'productlijst.pdf'
+            'lijst-' . $list->list_number . '.pdf'
         );
 
         $list->is_user_confirmed = true;
@@ -261,9 +266,12 @@ class ProductlistController extends ApiController
      * @param  \App\Models\ProductList  $productList
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateProductListRequest $request, ProductList $productList)
+    public function update(UpdateProductListRequest $request, int $listId)
     {
-        //
+        $list = ProductList::findOrFail($listId);
+        $list->is_user_confirmed = $request->isUserConfirmed;
+        $list->save();
+        return new ProductListResource($list);
     }
 
     /**
