@@ -1,73 +1,133 @@
 <template>
-  <div>
+  <section class="section__sell">
     <LayoutPageHeading>
       <template v-slot:title>Verkopen</template>
     </LayoutPageHeading>
     <div class="row">
       <div class="col-4">
-        <VForm
-          ref="searchForm"
-          @submit="searchProduct"
-          :validation-schema="validationSchema"
-          :initial-values="form"
-          v-slot="{ meta: formMeta, errors: formErrors }"
-        >
-          <div class="col-12">
-            <VTextInput label="Productnummer" name="productNumber" @keyup.enter="next" />
+        <form>
+          <div class="row mb-3">
+            <label for="productNumber" class="form-label">Productnummer</label>
+            <VField name="productNumber" as="div" v-slot="{ field, meta }">
+              <input
+                v-bind="field"
+                type="text"
+                name="productNumber"
+                @keyup.enter="next"
+                ref="productNumberField"
+                class="form-control"
+                :class="{
+                  'is-valid': meta.valid && meta.touched,
+                  'is-invalid': !meta.valid && meta.touched,
+                }"
+              />
+              <div class="invalid-feedback">{{ errors.productNumber }}</div>
+            </VField>
           </div>
-          <div class="col-12">
-            <VTextInput label="Lijstnummer" name="listNumber" @keyup.enter="next" />
+          <div class="row mb-3">
+            <label for="listNumber" class="form-label">Lijstnummer</label>
+            <VField name="listNumber" as="div" v-slot="{ field, meta }">
+              <input
+                v-bind="field"
+                type="text"
+                name="listNumber"
+                @keyup.enter="next"
+                ref="listNumberField"
+                class="form-control"
+                :class="{
+                  'is-valid': meta.valid && meta.touched,
+                  'is-invalid': !meta.valid && meta.touched,
+                }"
+              />
+              <div class="invalid-feedback">{{ errors.listNumber }}</div>
+            </VField>
           </div>
-          <button id="searchProduct" class="btn btn-primary" type="submit">Zoeken</button>
-        </VForm>
+          <button
+            type="button"
+            class="btn btn-loading btn-primary"
+            :class="{ loading: searchLoading }"
+            ref="submitButton"
+            @click="searchProduct"
+          >
+            <span class="btn-text">Zoeken</span>
+            <span
+              class="spinner-border spinner-border-sm"
+              role="status"
+              aria-hidden="true"
+            ></span>
+          </button>
+        </form>
       </div>
       <div class="col-8">
-        <div v-if="product == null">
-          <p>Zoek een product door de lijstnummer en productnummer in te geven.</p>
+        <div class="product__information">
+          <div class="information__title">
+            <span>Productinfo</span>
+          </div>
+          <div class="information__content placeholder-glow">
+            <div class="information__item mb-2">
+              <span class="item__title">Beschrijving</span>
+              <span v-if="!product">&dash;</span>
+              <span v-else>{{ product && product.description }}</span>
+            </div>
+            <div class="information__item mb-2">
+              <span class="item__title">Vraagprijs</span>
+              <span v-if="!product">&dash;</span>
+              <span v-else>{{ product && toEuro(product.price.askingPrice) }}</span>
+            </div>
+            <div class="information__item mb-2">
+              <span class="item__title">Verkoopprijs</span>
+              <span v-if="!product">&dash;</span>
+              <span v-else>{{ product && toEuro(product.price.sellingPrice) }}</span>
+            </div>
+            <div class="information__item mb-2">
+              <span class="item__title">Productnummer</span>
+              <span v-if="!product">&dash;</span>
+              <span v-else>{{ product && product.productNumber }}</span>
+            </div>
+            <div class="information__item mb-2">
+              <span class="item__title">Lijstnummer</span>
+              <span v-if="!product">&dash;</span>
+              <span v-else>{{
+                product && product.productlist && product.productlist.listNumber
+              }}</span>
+            </div>
+          </div>
         </div>
-        <div v-else>
-          <table class="table">
-            <tr>
-              <td>Beschrijving:</td>
-              <td>{{ product.description }}</td>
-            </tr>
-            <tr>
-              <td>Vraagprijs:</td>
-              <td>
-                {{ product.price && product.price.askingPrice | toEuro }}
-              </td>
-            </tr>
-            <tr>
-              <td>Verkoopprijs:</td>
-              <td>
-                {{ product.price && product.price.sellingPrice | toEuro }}
-              </td>
-            </tr>
-          </table>
+        <div class="mt-3">
           <button
-            id="sell"
-            class="btn btn-primary"
-            :disabled="product.isSold"
+            type="button"
+            :disabled="!product || product.isSold"
+            class="btn btn-loading btn-primary"
+            :class="{ loading: sellLoading }"
+            ref="sellButton"
             @click="sellProduct(product)"
           >
-            {{ product.isSold ? "Reeds verkocht" : "Verkoop" }}
+            <span class="btn-text" v-if="!product">Verkoop</span>
+            <span class="btn-text" v-else-if="product && product.isSold"
+              >Product is verkocht</span
+            >
+            <span v-else class="btn-text">Verkoop</span>
+            <span
+              class="spinner-border spinner-border-sm"
+              role="status"
+              aria-hidden="true"
+            ></span>
           </button>
         </div>
       </div>
     </div>
-    <div class="row">
+    <div class="row mt-3">
       <div class="col-12">
         <TheNotification />
       </div>
     </div>
-  </div>
+  </section>
 </template>
 <script setup>
 import { object, string } from "yup";
 import { useNotificationStore } from "~~/store/notification";
 import { useForm } from "vee-validate";
 const notificationStore = useNotificationStore();
-const { handleSubmit, resetForm } = useForm();
 
 definePageMeta({
   layout: "dashboard",
@@ -90,68 +150,78 @@ const validationSchema = object({
   }),
 });
 
-const product = ref(null);
-const form = ref({
-  productNumber: "",
-  listNumber: "",
+const { handleSubmit, errors } = useForm({
+  validationSchema,
 });
 
-const searchProduct = async (values, actions) => {
-  const x = await useCustomLazyFetch(
-    `/api/product?listNumber[eq]=${values.listNumber}&productNumber[eq]=${values.productNumber}`
-  );
+const productNumberField = ref();
+const listNumberField = ref();
+const submitButton = ref();
 
-  console.log(x);
+const next = (e) => {
+  const fieldName = e.srcElement.name;
 
-  const { status, message, data } = await useApi(
-    `/api/product?listNumber[eq]=${values.listNumber}&productNumber[eq]=${values.productNumber}`
-  );
+  if (errors.value[fieldName]) return;
+
+  if (fieldName === "productNumber") {
+    listNumberField.value.focus();
+  } else if (fieldName === "listNumber") {
+    console.log("submit");
+    searchProduct();
+  }
+};
+
+const product = ref(null);
+const searchLoading = ref(false);
+const sellLoading = ref(false);
+const sellButton = ref();
+
+const searchProduct = handleSubmit(async (values, actions) => {
+  searchLoading.value = true;
+  const { data: resData } = await useApi(`/api/product`, {
+    method: "GET",
+    params: {
+      "listNumber[eq]": values.listNumber,
+      "productNumber[eq]": values.productNumber,
+      includeProductlist: true,
+    },
+  });
+  const { data, message, status } = resData.value;
+  searchLoading.value = false;
 
   if (status === "Error") {
-    notificationStore.message = message;
-    notificationStore.status = status;
+    notificationStore.addNotification(status, message);
   } else if (data.length === 0) {
-    notificationStore.message = "Product niet gevonden";
-    notificationStore.status = "Error";
+    notificationStore.addNotification("Error", "Product niet gevonden");
   } else {
     product.value = data[0];
     await nextTick();
-    document.getElementById("sell").focus();
+    sellButton.value.focus();
   }
 
   actions.resetForm();
-  if (status === "Error") document.getElementById("productNumber").focus();
-  if (data.length === 0) document.getElementById("productNumber").focus();
-  if (data[0].isSold) document.getElementById("productNumber").focus();
-};
+
+  if (status === "Error") productNumberField.value.focus();
+  else if (data.length === 0) productNumberField.value.focus();
+  else if (data[0].isSold) productNumberField.value.focus();
+});
 
 const sellProduct = async (p) => {
-  const { status, message, data } = await useApi(`/api/product/${p.id}`, {
+  sellLoading.value = true;
+  const { data: resData } = await useApi(`/api/product/${p.id}`, {
     method: "PUT",
     body: {
       ...p,
       isSold: true,
     },
   });
+  const { data, message, status } = resData.value;
+  sellLoading.value = false;
 
   if (status === "Success") {
-    notificationStore.message = message;
-    notificationStore.status = status;
-    document.getElementById("productNumber").focus();
+    notificationStore.addNotification(status, message);
+    productNumberField.value.focus();
     product.value = data;
   }
-};
-
-const next = (e) => {
-  let nextElement = null;
-  e.preventDefault();
-  const {
-    target: { id },
-  } = e;
-  if (id === "productNumber") {
-    nextElement = document.getElementById("listNumber");
-  }
-
-  nextElement?.focus();
 };
 </script>

@@ -61,8 +61,12 @@
             <tr v-for="item in products" :key="item.id">
               <td class="product__number">{{ item.productNumber }}</td>
               <td class="product__data">{{ item.description }}</td>
-              <td class="product__data">{{ toEuro(item.price.askingPrice) }}</td>
-              <td class="product__data">{{ toEuro(item.price.sellingPrice) }}</td>
+              <td class="product__data">
+                {{ item && item.price && toEuro(item.price.askingPrice) }}
+              </td>
+              <td class="product__data">
+                {{ item && item.price && toEuro(item.price.sellingPrice) }}
+              </td>
               <td class="product__data" v-if="list && list.isUserConfirmed">
                 <span v-if="item.isSold"><i class="fa-regular fa-circle-check"></i></span>
                 <span v-else><i class="fa-regular fa-circle-xmark"></i></span>
