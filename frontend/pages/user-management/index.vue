@@ -2,7 +2,7 @@
   <section class="section__user-management">
     <div class="row">
       <div class="col-9">
-        <div class="user-management__title">Gebruikersoverzicht</div>
+        <div class="user-management__title">Gebruikeroverzicht</div>
       </div>
       <div class="col">
         <div class="user-management__search">
