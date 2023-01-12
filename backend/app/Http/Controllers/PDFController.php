@@ -14,7 +14,7 @@ class PDFController extends Controller
      */
     public static function generateProductlistPdf($id)
     {
-        $list = Productlist::findOrFail($id)->with('products.price')->first();
+        $list = Productlist::where('id', $id)->with('products.price')->first();
 
         $data['list'] = $list;
         $pdf = PDF::loadView('pdfs.list', $data);

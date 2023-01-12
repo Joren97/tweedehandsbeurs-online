@@ -232,7 +232,7 @@ class ProductlistController extends ApiController
         }
 
         // Get PDF of productlist
-        $pdf = PDFController::generateProductlistPdf($list->id);
+        $pdf = PDFController::generateProductlistPdf($id);
 
         // To email address
         $to = auth()->user()->email;
