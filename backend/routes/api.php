@@ -29,6 +29,7 @@ Route::group(
         Route::post('productlist/me', [ProductlistController::class, 'storeForLoggedInUser']);
         Route::put('productlist/me/confirm/{productlist}', [ProductlistController::class, 'confirmListForLoggedInUser']);
         Route::get('productlist/me/{productlist}', [ProductlistController::class, 'showForLoggedInUser']);
+        Route::delete('productlist/me/{productlist}', [ProductlistController::class, 'destroyForLoggedInUser']);
 
         Route::post('product/me', [ProductController::class, 'storeForLoggedInUser']);
         Route::delete('product/me/{product}', [ProductController::class, 'destroyForLoggedInUser']);
