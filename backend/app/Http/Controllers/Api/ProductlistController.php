@@ -114,14 +114,16 @@ class ProductlistController extends ApiController
         // If no active edition exists, return error
         if (!$edition) {
             $errors = ['edition' => ['Geen actieve editie gevonden']];
-            return $this->fieldErrorResponse($errors, 404);
+            return $this->fieldErrorResponse($errors, 500);
         }
 
         // Set edition id equal to active edition
         $productlist['edition_id'] = $edition->id;
         // Set user id equal to logged in user
         $productlist['user_id'] = auth()->user()->id;
+        // Set list number
         $productlist['list_number'] = $request->listNumber;
+        // Set the member number if present
         if ($request->has('memberNumber')) {
             $productlist['member_number'] = $request->memberNumber;
         }
@@ -132,20 +134,22 @@ class ProductlistController extends ApiController
 
         if ($existingProductList) {
             $errors = ['listNumber' => ['Lijstnummer is reeds in gebruik.']];
-            return $this->fieldErrorResponse($errors, 404);
+            return $this->fieldErrorResponse($errors, 422);
         }
 
-        // Check if list number already exists on current edition for current user
-        $existingProductList = ProductList::where('edition_id', $productlist['edition_id'])
-            ->where('user_id', $productlist['user_id'])
-            ->where('list_number', $productlist['list_number'])->first();
+        // Get all lists with the same member number for the current edition, if the member number is present
+        if ($productlist['member_number'] != null && $productlist['member_number'] != '') {
+            $sameMemberNumberLists = ProductList::where('edition_id', $productlist['edition_id'])
+                ->where('member_number', $productlist['member_number'])->get();
 
-        if ($existingProductList) {
-            $errors = ['listNumber' => ['Lijstnummer is reeds in gebruik.']];
-            return $this->fieldErrorResponse($errors, 404);
+            // If there are 2 lists with the same member number, return error
+            if ($sameMemberNumberLists->count() >= 2) {
+                $errors = ['memberNumber' => ['Lidnummer is reeds gebruikt voor 2 lijsten.']];
+                return $this->fieldErrorResponse($errors, 422);
+            }
         }
 
-        // Create the productlist
+        // All checks ok, create the productlist
         return new ProductListResource(ProductList::create($productlist));
     }
 
