@@ -1,6 +1,5 @@
 <template>
   <form @submit="submit">
-    {{ meta }}
     <div class="row mb-2">
       <div class="col">
         <label for="listNumber" class="form-label">Lijstnummer*</label>
