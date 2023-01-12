@@ -1,0 +1,77 @@
+.datatable {
+  $border-width: 1px;
+  $header-color: #eaf0f6;
+  $border-color: #d7dfe8;
+
+  width: 100%;
+  border-collapse: separate !important;
+  overflow: hidden;
+  border-radius: 0.35rem 0.35rem 0 0;
+  border-spacing: 0;
+  border: 1px solid #e9ecef;
+
+  thead {
+    background-color: $header-color;
+
+    th {
+      border-bottom: $border-width solid $border-color;
+      border-top: $border-width solid $border-color;
+    }
+
+    th:last-child {
+      border-right: $border-width solid $border-color;
+      border-top-right-radius: 0.35rem;
+    }
+
+    th:first-child {
+      border-left: $border-width solid $border-color;
+    }
+  }
+
+  tbody {
+    td {
+      border-bottom: 1px solid $border-color;
+    }
+
+    td:last-child {
+      border-right: $border-width solid $border-color;
+    }
+
+    td:first-child {
+      border-left: $border-width solid $border-color;
+    }
+
+    tr:last-child {
+      td {
+        border-bottom: $border-width solid $border-color;
+      }
+    }
+  }
+
+  th {
+    padding: 0.5rem 1rem;
+    text-transform: uppercase;
+    font-weight: 500;
+    letter-spacing: 0.05rem;
+  }
+
+  td {
+    padding: 0.5rem 1rem;
+  }
+
+  .datatable__actions {
+    text-align: right;
+    .divider {
+      border-left: 2px solid $border-color;
+      height: 80%;
+      border-radius: 1rem;
+      margin-right: 1rem;
+    }
+    .action {
+      cursor: pointer;
+      &:hover {
+        color: $primary;
+      }
+    }
+  }
+}
