@@ -1,15 +1,16 @@
 <template>
   <section class="dashboard__lists">
-    <div class="lists__title">Mijn lijsten</div>
-    <div class="lists__buttons">
-      <button
-        type="button"
-        class="btn btn-primary"
-        data-bs-toggle="modal"
-        data-bs-target="#newListModal"
-      >
-        <i class="fa-solid fa-circle-plus"></i>Lijst toevoegen
-      </button>
+    <div class="row">
+      <div class="col">
+        <div class="lists__title">Mijn lijsten</div>
+      </div>
+      <div class="col">
+        <div class="lists__buttons">
+          <button type="button" class="btn btn-primary" @click="addListVisible = true">
+            <i class="fa-solid fa-circle-plus"></i>Lijst toevoegen
+          </button>
+        </div>
+      </div>
     </div>
     <div class="lists__grid">
       <div class="grid__item placeholder-glow" v-if="pending" v-for="i in 4">
@@ -43,9 +44,24 @@
       </div>
     </div>
 
-    <div class="modal fade" id="newListModal">
-      <NewListModal :active-edition="activeEdition" @list-created="onListCreated" />
-    </div>
+    <Modal :visible="addListVisible" @close="closeNewListModal()">
+      <template v-slot:title>Nieuw lijst toevoegen</template>
+      <template v-slot:content>
+        <ListForm
+          ref="newListForm"
+          @submit="onNewListSubmit"
+          :active-edition="activeEdition"
+        />
+      </template>
+      <template v-slot:footer>
+        <button type="button" class="btn btn-secondary mx-2" @click="closeNewListModal()">
+          Sluiten
+        </button>
+        <LoadingButton @click="submitNewList" :loading="loading" type="primary"
+          >Product toevoegen</LoadingButton
+        >
+      </template>
+    </Modal>
   </section>
 </template>
 
@@ -97,11 +113,42 @@ const activeEdition = computed(() => {
   return editionsData.value.data.find((edition) => edition.isActive);
 });
 
-const onListCreated = () => {
-  listsRefresh();
-};
-
 const openList = (id) => {
   useRouter().push(`/lists/${id}`);
+};
+
+/* Add new list */
+const loading = ref(false);
+const newListForm = ref();
+const addListVisible = ref(false);
+
+const submitNewList = async () => {
+  await newListForm.value.submit();
+};
+
+const closeNewListModal = () => {
+  newListForm.value.handleReset();
+  addListVisible.value = false;
+};
+
+const onNewListSubmit = async (values) => {
+  loading.value = true;
+  console.log(values);
+  const { data: resData, error: errorData } = await useApi(`/api/productlist/me`, {
+    method: "POST",
+    body: values,
+  });
+
+  if (errorData.value) {
+    const {
+      data: { errors },
+    } = errorData.value;
+    newListForm.value.setErrors(errors);
+  } else {
+    addListVisible.value = false;
+    newListForm.value.handleReset();
+    listsRefresh();
+  }
+  loading.value = false;
 };
 </script>
