@@ -1,53 +1,55 @@
 <template>
-  <div>
-    <span>{{ from }}</span
-    >&nbsp;&dash;&nbsp;<span>{{ to }}</span
-    >&nbsp;&sol;&nbsp;<span>{{ total }}</span>
-    <button
-      class="btn btn-primary"
-      type="button"
-      :disabled="page == 1"
-      @click="previousPage()"
-    >
-      <i class="fas fa-chevron-left"></i>
-    </button>
-    <button
-      class="btn btn-primary"
-      type="button"
-      :disabled="page == lastPage"
-      @click="nextPage()"
-    >
-      <i class="fas fa-chevron-right"></i>
-    </button>
+  <div class="datatable__pagination">
+    <div class="previous action" @click="previousPage()">
+      <span class="me-3"><i class="fa-solid fa-chevron-left fa-lg"></i></span>
+      <span>Vorige</span>
+    </div>
+    <div class="info">
+      <span>{{ from }}</span
+      >&nbsp;&dash;&nbsp;<span>{{ to }}</span
+      >&nbsp;&sol;&nbsp;<span>{{ total }}</span>
+    </div>
+    <div class="next action" @click="nextPage()">
+      <span>Volgende</span>
+      <span class="ms-3"><i class="fa-solid fa-chevron-right fa-lg"></i></span>
+    </div>
   </div>
 </template>
 <script setup>
 const props = defineProps({
-  from: {
-    type: Number,
+  pagination: {
+    type: Object,
     required: true,
-    default: 1,
+    default: () => {
+      return {
+        from: 1,
+        to: 1,
+        total: 0,
+        page: 1,
+        lastPage: 1,
+      };
+    },
   },
-  to: {
-    type: Number,
-    required: true,
-    default: 1,
-  },
-  total: {
-    type: Number,
-    required: true,
-    default: 0,
-  },
-  page: {
-    type: Number,
-    required: true,
-    default: 1,
-  },
-  lastPage: {
-    type: Number,
-    required: true,
-    default: 1,
-  },
+});
+
+const from = computed(() => {
+  return props.pagination.from;
+});
+
+const to = computed(() => {
+  return props.pagination.to;
+});
+
+const total = computed(() => {
+  return props.pagination.total;
+});
+
+const page = computed(() => {
+  return props.pagination.current_page;
+});
+
+const lastPage = computed(() => {
+  return props.pagination.last_page;
 });
 
 // TODO: Make pagination appear in url query
@@ -57,18 +59,22 @@ const router = useRouter();
 const emit = defineEmits(["previous-page", "next-page"]);
 
 const previousPage = () => {
+  if (page.value == 1) return;
+
   router.push({
     query: {
-      page: props.page - 1,
+      page: page.value - 1,
     },
   });
   emit("previous-page");
 };
 
 const nextPage = () => {
+  if (page.value == lastPage.value) return;
+
   router.push({
     query: {
-      page: props.page + 1,
+      page: page.value + 1,
     },
   });
   emit("next-page");

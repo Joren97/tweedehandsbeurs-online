@@ -61,8 +61,8 @@
             <div class="table__items">
               <div class="item" v-for="item in lists">
                 <div class="item__number">{{ item.listNumber }}</div>
-                <div class="item__first-name">{{ item.user.firstname }}</div>
-                <div class="item__last-name">{{ item.user.lastname }}</div>
+                <div class="item__first-name">{{ item.user && item.user.firstname }}</div>
+                <div class="item__last-name">{{ item.user && item.user.lastname }}</div>
                 <div class="item__member-number">{{ emptyCheck(item.memberNumber) }}</div>
                 <div class="item__confirmed">{{ item.isUserConfirmed }}</div>
                 <div class="item__validated">{{ item.isEmployeeValidated }}</div>

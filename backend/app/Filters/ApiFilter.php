@@ -17,6 +17,7 @@ class ApiFilter
         'lte' => '<=',
         'gt' => '>',
         'gte' => '>=',
+        'like' => 'like',
     ];
 
     public function perPage(Request $request)
@@ -39,7 +40,13 @@ class ApiFilter
 
             foreach ($operators as $operator) {
                 if (isset($query[$operator])) {
-                    $eloQuery[] = [$column, $this->operatorMap[$operator], $query[$operator]];
+                    $value = $query[$operator];
+
+                    if ($this->operatorMap[$operator] == 'like') {
+                        $value = "%$value%";
+                    }
+
+                    $eloQuery[] = [$column, $this->operatorMap[$operator], $value];
                 }
             }
         }
