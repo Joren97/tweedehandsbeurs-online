@@ -288,4 +288,28 @@ class ProductlistController extends ApiController
     {
 
     }
+
+    /**
+     * Remove the specified resource from storage for the logged in user.
+     *
+     * @param  integer  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroyForLoggedInUser($id)
+    {
+        $list = Productlist::findOrFail($id);
+
+        // If the productlist does not belong to the logged in user, return a 403
+        if ($list->user_id !== auth()->user()->id) {
+            return $this->errorResponse('Deze lijst behoort tot een andere gebruiker.', 403);
+        }
+
+        // If the productlist is is confirmed by the user, return a 403
+        if ($list->is_user_confirmed) {
+            return $this->errorResponse('Deze lijst is reeds bevestigd.', 403);
+        }
+
+        $list->delete();
+        return $this->successResponse('Lijst verwijderd.', 200);
+    }
 }
