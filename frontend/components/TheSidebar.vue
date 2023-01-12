@@ -41,6 +41,11 @@
               ><i class="far fa-address-book"></i> Gebruikers
             </NuxtLink>
           </li>
+          <li>
+            <NuxtLink to="/product-management" :class="active('/product-management')"
+              ><i class="fa-solid fa-shirt"></i> Producten
+            </NuxtLink>
+          </li>
           <li class="navigation__title">Admin</li>
           <li>
             <NuxtLink to="/editions" :class="active('/editions')"
