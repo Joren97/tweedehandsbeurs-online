@@ -65,7 +65,7 @@
 <script setup lang="ts">
 const active = (path: string) => {
   const route = useRoute();
-  if (path === "/") return route.path === "/" ? "active" : "";
-  return route.path.includes(path) ? "active" : "";
+  if (path === "/") return route.path === "/" ? "router-link-active" : "";
+  return route.path.includes(path) ? "router-link-active" : "";
 };
 </script>
