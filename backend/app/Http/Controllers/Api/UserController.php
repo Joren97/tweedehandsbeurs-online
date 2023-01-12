@@ -21,6 +21,14 @@ class UserController extends ApiController
 
         $users = User::where($filterItems);
 
+        if ($request->has('search')) {
+            $users = $users->orWhere('firstname', 'like', '%' . $request->search . '%')
+                ->orWhere('lastname', 'like', '%' . $request->search . '%')
+                ->orWhere('email', 'like', '%' . $request->search . '%')
+                ->orWhere('member_number', 'like', '%' . $request->search . '%')
+                ->orWhere('phone_number', 'like', '%' . $request->search . '%');
+        }
+
         return new UserCollection($users->orderBy('lastname')->paginate()->appends($request->query()));
     }
 

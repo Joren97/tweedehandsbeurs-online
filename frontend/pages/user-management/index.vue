@@ -1,8 +1,21 @@
 <template>
   <section class="dashboard__users">
-    <LayoutPageHeading>
-      <template v-slot:title>Gebruikers</template>
-    </LayoutPageHeading>
+    <div class="row mb-3">
+      <div class="col-9">
+        <div class="users__title">Gebruikersoverzicht</div>
+      </div>
+      <div class="col">
+        <div class="users__search">
+          <input
+            class="form-control"
+            name="search"
+            id="search"
+            @input="keywordChange"
+            placeholder="Zoeken"
+          />
+        </div>
+      </div>
+    </div>
     <div class="row mb-3">
       <div class="col">
         <table class="users__table datatable">
@@ -65,15 +78,17 @@ const query = computed(() => {
   return "";
 });
 
+const search = ref("");
+
 const page = computed(() => {
   return parseInt(useRoute().query.page) || 1;
 });
 
 const { pending, data } = myAsyncData(
-  () => `/api/user?page=${page.value}`,
+  () => `/api/user?page=${page.value}&search=${search.value}`,
   {},
   {
-    watch: [page, query],
+    watch: [page, query, search],
     initialCache: false,
     key: "user-management",
   }
@@ -105,4 +120,13 @@ const pagination = computed(() => {
   if (!data.value) return {};
   return data.value.meta;
 });
+
+const debounce = ref(null);
+
+const keywordChange = (e) => {
+  clearTimeout(debounce.value);
+  debounce.value = setTimeout(() => {
+    search.value = e.target.value;
+  }, 500);
+};
 </script>
