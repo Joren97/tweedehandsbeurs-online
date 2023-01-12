@@ -48,6 +48,8 @@ const prices = computed(() => {
 });
 
 const pricesAsThreeArrays = computed(() => {
+  if (!prices.value) return [];
+
   const x = [];
   const chunkSize = 25;
   for (let i = 0; i < prices.value.length; i += chunkSize) {
