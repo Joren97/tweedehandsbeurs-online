@@ -1,11 +1,11 @@
 <template>
-  <section class="dashboard__users">
-    <div class="row mb-3">
+  <section class="section__user-management">
+    <div class="row">
       <div class="col-9">
-        <div class="users__title">Gebruikersoverzicht</div>
+        <div class="user-management__title">Gebruikersoverzicht</div>
       </div>
       <div class="col">
-        <div class="users__search">
+        <div class="user-management__search">
           <input
             class="form-control"
             name="search"
