@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Price;
 use App\Models\Productlist;
 use PDF;
-use Mail;
 
 class PDFController extends Controller
 {
@@ -14,7 +14,9 @@ class PDFController extends Controller
      */
     public static function generateProductlistPdf($id)
     {
-        $data['productlist'] = Productlist::findOrFail($id)->with('products')->first();
+        $list = Productlist::where('id', $id)->with('products.price')->first();
+
+        $data['list'] = $list;
         $pdf = PDF::loadView('pdfs.list', $data);
         return $pdf;
     }
