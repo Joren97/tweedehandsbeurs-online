@@ -6,10 +6,20 @@
       </div>
       <div class="col">
         <div class="lists__buttons">
-          <button type="button" class="btn btn-primary" @click="addListVisible = true">
+          <button
+            type="button"
+            class="btn btn-primary"
+            @click="addListVisible = true"
+            :disabled="pending"
+          >
             <i class="fa-solid fa-circle-plus"></i>Lijst toevoegen
           </button>
         </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <TheNotification class="mb-3" />
       </div>
     </div>
     <div class="lists__grid">
@@ -22,18 +32,13 @@
       <div class="grid__item" v-for="item in editionsWithLists" :key="item.id" v-else>
         <div class="item__title">{{ item.year }} - {{ item.name }}</div>
         <div class="item__lists" v-if="item.lists.length > 0">
-          <div
-            class="lists__item"
-            v-for="list in item.lists"
-            :key="list.id"
-            @click="openList(list.id)"
-          >
-            <div class="item__content">
+          <div class="lists__item" v-for="list in item.lists" :key="list.id">
+            <div class="item__content" @click="openList(list.id)">
               Lijst {{ list.listNumber }}&nbsp;&dash;&nbsp;({{
                 list.memberNumber ?? "Geen lidnummer"
               }})
             </div>
-            <div class="item__actions">
+            <div class="item__actions" @click="confirmDeleteList(list.id)">
               <button type="button"><i class="fa-solid fa-trash"></i></button>
             </div>
           </div>
@@ -58,7 +63,28 @@
           Sluiten
         </button>
         <LoadingButton @click="submitNewList" :loading="loading" type="primary"
-          >Product toevoegen</LoadingButton
+          >Lijst toevoegen</LoadingButton
+        >
+      </template>
+    </Modal>
+
+    <Modal :visible="deleteListVisible" @close="deleteListVisible = false">
+      <template v-slot:title>Lijst verwijderen</template>
+      <template v-slot:content
+        >Ben je zeker dat je deze lijst en alle bijhorende producten wil
+        verwijderen?</template
+      >
+      <template v-slot:footer>
+        <button
+          type="button"
+          class="btn btn-secondary mx-2"
+          @click="deleteListVisible = false"
+        >
+          Annuleren
+        </button>
+
+        <LoadingButton type="primary" @click="deleteList" :loading="loading"
+          >Lijst verwijderen</LoadingButton
         >
       </template>
     </Modal>
@@ -66,6 +92,9 @@
 </template>
 
 <script setup>
+import { useNotificationStore } from "~~/store/notification";
+const notificationStore = useNotificationStore();
+
 useHead({
   title: "Mijn lijsten",
 });
@@ -150,5 +179,32 @@ const onNewListSubmit = async (values) => {
     listsRefresh();
   }
   loading.value = false;
+};
+
+/* Delete list */
+const deleteListVisible = ref(false);
+const selectedListId = ref(null);
+const deleteList = async () => {
+  loading.value = true;
+  const { pending, error } = await useApi(`/api/productlist/me/${selectedListId.value}`, {
+    method: "DELETE",
+    key: "delete",
+    initialCache: false,
+  });
+
+  if (error.value != null) {
+    notificationStore.addNotification("Error", error.value.data.message);
+  } else {
+    notificationStore.addNotification("Success", "Lijst werd verwijderd");
+    selectedListId.value = null;
+    listsRefresh();
+  }
+
+  deleteListVisible.value = false;
+  loading.value = false;
+};
+const confirmDeleteList = (id) => {
+  selectedListId.value = id;
+  deleteListVisible.value = true;
 };
 </script>
