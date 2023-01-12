@@ -75,3 +75,16 @@
     }
   }
 }
+
+.datatable__pagination {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  .action {
+    cursor: pointer;
+    &:hover {
+      color: $primary;
+    }
+  }
+}
