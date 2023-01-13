@@ -26,11 +26,14 @@
               <th>Beschrijving</th>
               <th>Vraagprijs</th>
               <th>Verkoopprijs</th>
+              <th>Verkocht</th>
               <th></th>
             </tr>
           </thead>
           <tbody v-if="pending" class="placeholder-glow">
             <tr v-for="i in 15">
+              <td><span class="placeholder w-100"></span></td>
+              <td><span class="placeholder w-100"></span></td>
               <td><span class="placeholder w-100"></span></td>
               <td><span class="placeholder w-100"></span></td>
               <td><span class="placeholder w-100"></span></td>
@@ -45,6 +48,7 @@
               <td>{{ item.description }}</td>
               <td>{{ item.price && toEuro(item.price.askingPrice) }}</td>
               <td>{{ item.price && toEuro(item.price.sellingPrice) }}</td>
+              <td class="text-center"><YesNoIcon :value="item.isSold" /></td>
               <td class="datatable__actions">
                 <span class="divider"></span>
                 <span class="action"><i class="fa-regular fa-eye fa-lg"></i></span>
