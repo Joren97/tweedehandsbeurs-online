@@ -48,10 +48,14 @@
               <td>{{ item.description }}</td>
               <td>{{ item.price && toEuro(item.price.askingPrice) }}</td>
               <td>{{ item.price && toEuro(item.price.sellingPrice) }}</td>
-              <td class="text-center"><YesNoIcon :value="item.isSold" /></td>
+              <td><YesNoIcon :value="item.isSold" /></td>
               <td class="datatable__actions">
                 <span class="divider"></span>
-                <span class="action"><i class="fa-regular fa-eye fa-lg"></i></span>
+                <span class="action" @click="openList(item)">
+                  <NuxtLink :to="`/list-management/${item.id}`">
+                    <i class="fa-regular fa-eye fa-lg"></i>
+                  </NuxtLink>
+                </span>
               </td>
             </tr>
           </tbody>
