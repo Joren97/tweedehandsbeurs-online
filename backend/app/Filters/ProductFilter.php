@@ -16,5 +16,6 @@ class ProductFilter extends ApiFilter
     protected $safeParms = [
         'productNumber' => ['eq'],
         'productlistId' => ['eq'],
+        'description' => ['like'],
     ];
 }
