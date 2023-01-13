@@ -72,6 +72,10 @@
       &:hover {
         color: $primary;
       }
+
+      a {
+        display: inline;
+      }
     }
   }
 }
