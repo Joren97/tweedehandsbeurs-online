@@ -25,6 +25,8 @@ class UserResource extends JsonResource
             'city' => $this->city,
             'postalCode' => $this->postal_code,
             'role' => $this->role,
+            'productlists' => ProductlistResource::collection($this->productlists),
+            'listHistory' => ProductlistResource::collection($this->listHistory),
         ];
     }
 }

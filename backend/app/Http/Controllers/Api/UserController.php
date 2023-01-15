@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Filters\UserFilter;
 use App\Http\Resources\UserCollection;
+use App\Http\Resources\UserResource;
+use App\Models\Edition;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -49,9 +51,41 @@ class UserController extends ApiController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        //
+        $user = User::findOrFail($id);
+
+        // Get the current edition
+        $currentEdition = Edition::where('is_active', true)->first();
+        // Get all the editions for the last 5 years
+        $editions = Edition::whereBetween('year', [$currentEdition->year - 5, $currentEdition->year])->get();
+
+        if ($request->query('includeList')) {
+
+            // Load all productlist for this user for the current edition and include the products and the prices for each product
+            $user->load([
+                'productlists' => function ($query) use ($currentEdition) {
+                    $query->where('edition_id', $currentEdition->id);
+                },
+                'productlists.products',
+                'productlists.products.price',
+                'productlists.edition'
+            ]);
+        }
+
+        if ($request->query('includeListHistory')) {
+            // Get all the productlists for this user for the last 5 years
+            $user->load([
+                'listHistory' => function ($query) use ($editions) {
+                    $query->whereIn('edition_id', $editions->pluck('id'));
+                },
+                'listHistory.products',
+                'listHistory.products.price',
+                'listHistory.edition'
+            ]);
+        }
+
+        return new UserResource($user);
     }
 
     /**
