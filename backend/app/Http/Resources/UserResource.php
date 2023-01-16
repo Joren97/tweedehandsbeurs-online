@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Resources\HistoryResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class UserResource extends JsonResource
@@ -25,8 +26,8 @@ class UserResource extends JsonResource
             'city' => $this->city,
             'postalCode' => $this->postal_code,
             'role' => $this->role,
-            'productlists' => ProductlistResource::collection($this->productlists),
-            'listHistory' => ProductlistResource::collection($this->listHistory),
+            'history' => HistoryResource::collection($this->whenLoaded('history')),
+            'currentEdition' => new EditionResource($this->whenLoaded('currentEdition')),
         ];
     }
 }
