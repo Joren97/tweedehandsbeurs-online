@@ -1,127 +1,168 @@
 <template>
-  <div>
-    <LayoutPageHeading>
-      <template v-slot:title
-        ><p class="placeholder-glow">
-          <span v-if="listPending" class="placeholder">Lijst xxx</span>
+  <section class="section__list-management-detail">
+    <div class="row">
+      <div class="col">
+        <div class="list__title placeholder-glow">
+          Lijstoverzicht | <span v-if="listPending" class="placeholder">Lijst xxx</span>
           <span v-else>Lijst {{ list.listNumber }}</span>
-        </p></template
-      >
-    </LayoutPageHeading>
+        </div>
+      </div>
+      <div class="col">
+        <div class="list__buttons">
+          <button
+            :disabled="listPending || (list && list.isUserConfirmed)"
+            class="btn btn-primary"
+            href="#add-product-modal"
+            @click="newProductVisible = true"
+          >
+            Product toevoegen
+          </button>
+          <button
+            class="btn btn-primary ms-2"
+            @click="confirmListVisible = true"
+            :disabled="listPending || (list && list.isUserConfirmed)"
+          >
+            Lijst bevestigen
+          </button>
+        </div>
+      </div>
+    </div>
     <div class="row">
       <div class="col-8">
-        <EmployeeProductTable
+        <!-- <EmployeeProductTable
           :prices="prices"
           :products="products"
           @refresh="refreshProducts"
           :loading="productsPending || pricesPending"
-        />
-      </div>
-      <div class="col-4">
-        <table class="table">
+        /> -->
+        <table class="datatable">
           <thead>
             <tr>
-              <th colspan="2">Lijstinfo</th>
+              <th class="product__number">#</th>
+              <th>Beschrijving</th>
+              <th>Vraagprijs</th>
+              <th>Verkoopprijs</th>
+              <th>
+                <span v-if="list && list.isUserConfirmed">Product is verkocht</span>
+              </th>
+              <th></th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <td>Lijstnummer</td>
+          <tbody class="placeholder-glow" v-if="listPending">
+            <tr v-for="i in 5">
               <td class="placeholder-glow">
-                <span class="w-100 placeholder" v-if="listPending"></span>
-                <span v-else>{{ list.listNumber }}</span>
+                <div class="placeholder w-100"></div>
               </td>
-            </tr>
-            <tr>
-              <td>Lidnummer</td>
               <td class="placeholder-glow">
-                <span class="w-100 placeholder" v-if="listPending"></span>
-                <span v-else>{{ emptyCheck(list.memberNumber) }}</span>
+                <div class="placeholder w-100"></div>
               </td>
-            </tr>
-            <tr>
-              <td>Bevestigd</td>
-              <td>
-                <span class="w-100 placeholder" v-if="listPending"></span>
-                <span v-else>
-                  <span v-if="list.isEmployeeValidated">
-                    <i class="fa-solid fa-check" /></span
-                  ><span v-else> <i class="fa-solid fa-xmark" /></span
-                ></span>
+              <td class="placeholder-glow">
+                <div class="placeholder w-100"></div>
               </td>
-            </tr>
-            <tr>
-              <td>Gevalideerd</td>
-              <td>
-                <span class="w-100 placeholder" v-if="listPending"></span>
-                <span v-else>
-                  <span v-if="list.isValidatedByEmployee">
-                    <i class="fa-solid fa-check" /></span
-                  ><span v-else> <i class="fa-solid fa-xmark" /></span
-                ></span>
+              <td class="placeholder-glow">
+                <div class="placeholder w-100"></div>
               </td>
-            </tr>
-            <tr>
-              <td>Uitbetaald</td>
-              <td>
-                <span class="w-100 placeholder" v-if="listPending"></span>
-                <span v-else>TODO</span>
-              </td>
-            </tr>
-            <tr>
-              <td>Te betalen:</td>
-              <td>
-                <span class="w-100 placeholder" v-if="listPending"></span>
-                <span v-else>{{ toEuro(totalSold) }}</span>
+              <td class="placeholder-glow">
+                <div class="placeholder w-100"></div>
               </td>
             </tr>
           </tbody>
-        </table>
-        <table class="table">
-          <tbody>
-            <tr>
-              <th colspan="2">Gebruikersinfo</th>
-            </tr>
-            <tr>
-              <td>Naam</td>
-              <td class="placeholder-glow">
-                <span class="w-100 placeholder" v-if="listPending"></span>
-                <span v-else>{{ user.firstname }} {{ user.lastname }}</span>
+          <tbody v-else>
+            <tr v-for="item in products" :key="item.id">
+              <td>{{ item.productNumber }}</td>
+              <td>{{ item.description }}</td>
+              <td>
+                {{ item && item.price && toEuro(item.price.askingPrice) }}
               </td>
-            </tr>
-            <tr>
-              <td>Email</td>
-              <td class="placeholder-glow w-100">
-                <span class="w-100 placeholder" v-if="listPending"></span>
-                <span v-else> {{ user.email }}</span>
+              <td>
+                {{ item && item.price && toEuro(item.price.sellingPrice) }}
               </td>
-            </tr>
-            <tr>
-              <td>Lidnummer</td>
-              <td class="placeholder-glow">
-                <span class="w-100 placeholder" v-if="listPending"></span>
-                <span v-else> {{ emptyCheck(user.memberNumber) }}</span>
+              <td>
+                <YesNoIcon :value="item.isSold" />
               </td>
-            </tr>
-            <tr>
-              <td>Telefoon</td>
-              <td class="placeholder-glow">
-                <span class="w-100 placeholder" v-if="listPending"></span>
-                <span v-else> {{ emptyCheck(user.phoneNumber) }}</span>
-              </td>
-            </tr>
-            <tr>
-              <td>Adres</td>
-              <td class="placeholder-glow">
-                <span class="w-100 placeholder" v-if="listPending"></span>
-                <span v-else> {{ emptyCheck(fullAddress) }}</span>
+              <td class="datatable__actions">
+                <span class="divider"></span>
+                <span class="action"><i class="fa-solid fa-pencil fa-lg"></i></span>
+                <span class="action"><i class="fa-solid fa-trash fa-lg"></i></span>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
+      <div class="col-4">
+        <div class="list__information mb-3">
+          <div class="information__title">
+            <span>Lijstinfo</span>
+          </div>
+          <div class="information__content placeholder-glow">
+            <div class="information__item mb-2">
+              <span class="item__title">Lijstnummer</span>
+              <span v-if="listPending" class="placeholder col-4"></span>
+              <span v-else>{{ list.listNumber }}</span>
+            </div>
+            <div class="information__item mb-2">
+              <span class="item__title">Lidnummer op lijst</span>
+              <span v-if="listPending" class="placeholder col-4"></span>
+              <span v-else>{{ emptyCheck(list.memberNumber) }}</span>
+            </div>
+            <div class="information__item mb-2">
+              <span class="item__title">Bevestigd</span>
+              <span v-if="listPending" class="placeholder col-4"></span>
+              <span v-else><YesNoIcon :value="list.isUserConfirmed" /></span>
+            </div>
+            <div class="information__item mb-2">
+              <span class="item__title">Gevalideerd</span>
+              <span v-if="listPending" class="placeholder col-4"></span>
+              <span v-else><YesNoIcon :value="list.isEmployeeValidated" /></span>
+            </div>
+            <div class="information__item mb-2">
+              <span class="item__title">Opbrengst uitbetaald</span>
+              <span v-if="listPending" class="placeholder col-4"></span>
+              <span v-else><YesNoIcon :value="list.isPaidToUser" /></span>
+            </div>
+            <div class="information__item">
+              <span class="item__title">Te betalen</span>
+              <span v-if="listPending" class="placeholder col-4"></span>
+              <span v-else>{{ toEuro(totalSold) }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="user__information">
+          <div class="information__title">
+            <span>Gebruikersinfo</span>
+          </div>
+          <div class="information__content placeholder-glow">
+            <div class="information__item mb-2">
+              <span class="item__title">Naam</span>
+              <span v-if="listPending" class="placeholder col-4"></span>
+              <span v-else>{{ user.firstname }} {{ user.lastname }}</span>
+            </div>
+            <div class="information__item mb-2">
+              <span class="item__title">Email</span>
+              <span v-if="listPending" class="placeholder col-4"></span>
+              <span v-else>{{ emptyCheck(user.email) }}</span>
+            </div>
+            <div class="information__item mb-2">
+              <span class="item__title">Lidnummer</span>
+              <span v-if="listPending" class="placeholder col-4"></span>
+              <span v-else>{{ emptyCheck(user.memberNumber) }}</span>
+            </div>
+            <div class="information__item mb-2">
+              <span class="item__title">Telefoon</span>
+              <span v-if="listPending" class="placeholder col-4"></span>
+              <span v-else>{{ emptyCheck(user.phoneNumber) }}</span>
+            </div>
+            <div class="information__item mb-2">
+              <span class="item__title">Adres</span>
+              <span v-if="listPending" class="placeholder col-4"></span>
+              <span v-else>{{ formatAdress(user) }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
+  </section>
 </template>
 <script setup>
 definePageMeta({

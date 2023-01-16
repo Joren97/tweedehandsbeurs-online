@@ -61,14 +61,17 @@
 
   .datatable__actions {
     text-align: right;
+
     .divider {
       border-left: 2px solid $border-color;
       height: 80%;
       border-radius: 1rem;
-      margin-right: 1rem;
     }
+
     .action {
       cursor: pointer;
+      margin-left: 1rem;
+
       &:hover {
         color: $primary;
       }
