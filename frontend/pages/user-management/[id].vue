@@ -41,6 +41,7 @@
             <th>Gevalideerd</th>
             <th>Uitbetaald</th>
             <th>Opbrengst</th>
+            <th></th>
           </thead>
           <tbody>
             <tr v-for="item in current" :key="item.id">
@@ -50,6 +51,24 @@
               <td><YesNoIcon :value="item.isEmployeeValidated" /></td>
               <td><YesNoIcon :value="item.isPaidToUser" /></td>
               <td>{{ toEuro(item.userProfit) }}</td>
+              <td class="datatable__actions">
+                <span class="divider"></span>
+                <span class="action">
+                  <NuxtLink :to="`/list-management/${item.id}`">
+                    <i class="fa-regular fa-eye fa-lg"></i>
+                  </NuxtLink>
+                </span>
+                <span class="action"><i class="fa-solid fa-coins"></i> </span>
+              </td>
+            </tr>
+            <tr>
+              <td>Totaal</td>
+              <td colspan="4"></td>
+              <td>{{ toEuro(totalSold) }}</td>
+              <td class="datatable__actions">
+                <span class="divider"></span>
+                <span class="action"><i class="fa-solid fa-coins"></i> </span>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -159,5 +178,13 @@ const editionHistory = computed(() => {
   });
 
   return editions;
+});
+
+const totalSold = computed(() => {
+  if (!currentData) return 0;
+  if (!currentData.value) return 0;
+  return currentData.value.data.reduce((acc, item) => {
+    return acc + item.userProfit;
+  }, 0);
 });
 </script>
