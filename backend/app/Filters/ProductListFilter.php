@@ -8,5 +8,12 @@ use App\Filters\ApiFilter;
 
 class ProductListFilter extends ApiFilter
 {
-    protected $safeParms = [];
+    protected $columnMap = [
+        'userId' => 'user_id',
+    ];
+
+    protected $safeParms = [
+        'userId' => ['eq'],
+    ];
+
 }

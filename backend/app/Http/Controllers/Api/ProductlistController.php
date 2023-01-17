@@ -63,6 +63,21 @@ class ProductlistController extends ApiController
             $productLists = $productLists->whereIn('is_paid_to_user', $request->query('isPaidToUser'));
         }
 
+        if ($request->query('history')) {
+            // Get only productlists that are linked to the editions where the year is between the year of the current edition and 4 years ago 
+            // and include the edition and products with price ine the response
+            $productLists = $productLists->whereHas('edition', function ($query) {
+                $query->where('year', '>=', Edition::where('is_active', true)->first()->year - 4);
+            })->with('edition')->with('products.price');
+        }
+
+        if ($request->query('current')) {
+            // Get only productlists that are linked to the current edition and include the edition and products with price ine the response
+            $productLists = $productLists->whereHas('edition', function ($query) {
+                $query->where('is_active', true);
+            })->with('edition')->with('products.price');
+        }
+
         return new ProductListCollection($productLists->paginate()->appends($request->query()));
     }
 
