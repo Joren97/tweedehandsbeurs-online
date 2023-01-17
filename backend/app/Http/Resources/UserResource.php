@@ -25,9 +25,7 @@ class UserResource extends JsonResource
             'address' => $this->address,
             'city' => $this->city,
             'postalCode' => $this->postal_code,
-            'role' => $this->role,
-            'history' => HistoryResource::collection($this->whenLoaded('history')),
-            'currentEdition' => new EditionResource($this->whenLoaded('currentEdition')),
+            'role' => $this->role
         ];
     }
 }

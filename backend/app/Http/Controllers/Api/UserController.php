@@ -55,24 +55,7 @@ class UserController extends ApiController
     public function show(Request $request, $id)
     {
         $user = User::findOrFail($id);
-
-        // Get the current edition
-        $currentEdition = Edition::where('is_active', true)->first();
-        // Get all the editions for the last 5 years
-        $previousEditions = Edition::whereBetween('year', [$currentEdition->year - 5, $currentEdition->year - 1])->get();
-
-        if ($request->query('includeCurrentEdition')) {
-            // Set the current edition including all lists for the user, with products, with price
-            $user->currentEdition = $currentEdition;
-            $user->currentEdition->productlists = Productlist::where('edition_id', $currentEdition->id)
-                ->where('user_id', $user->id)
-                ->with('products', 'products.price')
-                ->get();
-        }
-
-        // return $user;
-
-        return new UserResource($user);
+        return $this->successResponse(new UserResource($user));
     }
 
     /**
