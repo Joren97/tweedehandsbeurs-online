@@ -91,14 +91,36 @@
       </div>
     </div>
     <TheNotification class="mt-3" />
+    <!-- History blocks -->
     <div class="row mt-3">
       <div class="col">
         <p class="subtitle">Geschiedenis</p>
       </div>
     </div>
-    <div class="row list__accordion">
+    <!-- Placeholder history -->
+    <div class="row placeholder-glow" v-if="historyPending">
+      <div class="col-4">
+        <div class="placeholder w-100"></div>
+      </div>
+      <div class="col-4">
+        <div class="placeholder w-100"></div>
+      </div>
+      <div class="col-4">
+        <div class="placeholder w-100"></div>
+      </div>
+    </div>
+
+    <!-- History is empty -->
+    <div class="row" v-else-if="editionHistory.length == 0">
+      <div class="col">
+        <p>Geen geschiedenis gevonden</p>
+      </div>
+    </div>
+
+    <!-- History data -->
+    <div class="row list__accordion" v-else>
       <div class="accordion__item col-4" v-for="item in editionHistory">
-        <div class="collapsible-accordion col">
+        <div class="collapsible-accordion">
           <div class="collapsible-item">
             <input type="checkbox" :id="`item-${item.id}`" />
             <label class="collapsible-item-label" :for="`item-${item.id}`"
@@ -119,6 +141,7 @@
       </div>
     </div>
 
+    <!-- Confirm modal -->
     <Modal :visible="confirmPayVisible" @close="closeConfirmPay()">
       <template v-slot:title>Lijst uitbetalen</template>
       <template v-slot:content>
