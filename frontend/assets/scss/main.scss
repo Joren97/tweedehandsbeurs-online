@@ -4,6 +4,9 @@
 // Vendors
 @import "~/node_modules/bootstrap/scss/bootstrap";
 
+// Utilities
+@import "utilities";
+
 // Elements
 @import "elements/elements.page";
 @import "elements/elements.datatable";

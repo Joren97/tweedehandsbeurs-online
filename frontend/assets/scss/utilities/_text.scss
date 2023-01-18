@@ -1,7 +1,7 @@
 // Grayscale Text Utilities
 
 .text-xs {
-  font-size: .7rem;
+  font-size: 0.7rem;
 }
 
 .text-lg {
@@ -51,4 +51,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.text-bold {
+  font-weight: bold;
 }
