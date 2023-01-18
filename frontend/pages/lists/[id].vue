@@ -26,14 +26,14 @@
     </div>
     <div class="row">
       <div class="col-8">
-        <table class="table__products">
+        <table class="datatable">
           <thead>
             <tr>
-              <th class="product__number">#</th>
-              <th class="product__data">Beschrijving</th>
-              <th class="product__data">Vraagprijs</th>
-              <th class="product__data">Verkoopprijs</th>
-              <th class="product__data">
+              <th>#</th>
+              <th>Beschrijving</th>
+              <th>Vraagprijs</th>
+              <th>Verkoopprijs</th>
+              <th>
                 <span v-if="list && list.isUserConfirmed">Product is verkocht</span>
               </th>
             </tr>
@@ -60,30 +60,24 @@
           <tbody v-else>
             <tr v-for="item in products" :key="item.id">
               <td class="product__number">{{ item.productNumber }}</td>
-              <td class="product__data">{{ item.description }}</td>
-              <td class="product__data">
+              <td>{{ item.description }}</td>
+              <td>
                 {{ item && item.price && toEuro(item.price.askingPrice) }}
               </td>
-              <td class="product__data">
+              <td>
                 {{ item && item.price && toEuro(item.price.sellingPrice) }}
               </td>
-              <td class="product__data" v-if="list && list.isUserConfirmed">
+              <td v-if="list && list.isUserConfirmed">
                 <YesNoIcon :value="item.isSold" />
               </td>
-              <td class="product__buttons" v-if="list && !list.isUserConfirmed">
-                <button
-                  class="btn btn-primary btn-sm"
-                  @click="confirmDeleteProduct(item.id)"
-                >
-                  <!-- Delete icon -->
-                  <i class="fa-regular fa-trash-can"></i>
-                </button>
-                <button
-                  class="btn btn-secondary btn-sm"
-                  @click="openEditProductModal(item.id)"
-                >
-                  <i class="fa-solid fa-pencil"></i>
-                </button>
+              <td class="datatable__actions" v-if="list && !list.isUserConfirmed">
+                <span class="divider"></span>
+                <span class="action" @click="openEditProductModal(item.id)"
+                  ><i class="fa-solid fa-pencil fa-lg"></i
+                ></span>
+                <span class="action" @click="confirmDeleteProduct(item.id)"
+                  ><i class="fa-solid fa-trash fa-lg"></i
+                ></span>
               </td>
             </tr>
           </tbody>
