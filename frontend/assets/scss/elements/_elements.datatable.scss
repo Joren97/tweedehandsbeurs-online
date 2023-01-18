@@ -71,13 +71,19 @@
     .action {
       cursor: pointer;
       margin-left: 1rem;
+      color: $primary;
 
       &:hover {
-        color: $primary;
+        color: $primary-dark;
       }
 
       a {
         display: inline;
+      }
+
+      &.disabled {
+        pointer-events: none;
+        opacity: 0.5;
       }
     }
   }
