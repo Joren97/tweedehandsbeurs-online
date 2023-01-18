@@ -1,43 +1,59 @@
 <template>
-  <div>
-    <LayoutPageHeading> <template v-slot:title>Edities</template> </LayoutPageHeading
-    >{{ pending }}
-    <table class="table">
-      <thead>
-        <tr>
-          <th scope="col">Voornaam</th>
-          <th scope="col">Naam</th>
-          <th scope="col">Lidnummer</th>
-          <th scope="col"></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="item in editions">
-          <td>{{ item.name }}</td>
-          <td>{{ item.year }}</td>
-          <td>
-            <span v-if="item.isActive"> <i class="fa-solid fa-check" /></span
-            ><span v-else> <i class="fa-solid fa-xmark" /></span>
-          </td>
-          <td>
-            <button class="btn btn-primary btn-sm" @click="activate(item, true)">
-              Activate
-            </button>
-            <button class="btn btn-primary btn-sm" @click="activate(item, false)">
-              Deactivate
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <Pagination
-      :page="pagination.current_page"
-      :from="pagination.from"
-      :to="pagination.to"
-      :total="pagination.total"
-      :last-page="pagination.last_page"
-    />
-  </div>
+  <section>
+    <LayoutPageHeading> <template v-slot:title>Edities</template> </LayoutPageHeading>
+
+    <div class="row mb-3">
+      <div class="col">
+        <div class="datatable" :class="{ 'is-loading': loading || pending }">
+          <div class="datatable__loading">
+            <div class="loading__background"></div>
+            <div class="sp sp-wave"></div>
+          </div>
+          <table class="datatable__table">
+            <thead>
+              <tr>
+                <th>Naam</th>
+                <th>Jaar</th>
+                <th>Actief</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="item in editions">
+                <td>{{ item.name }}</td>
+                <td>{{ item.year }}</td>
+                <td>
+                  <YesNoIcon :value="item.isActive" />
+                </td>
+                <td class="datatable__actions">
+                  <span class="divider"></span>
+                  <span
+                    class="action"
+                    :class="{ disabled: item.isActive }"
+                    @click="activate(item, true)"
+                    ><i class="fa-solid fa-turn-up"></i
+                  ></span>
+                  <span
+                    class="action"
+                    :class="{ disabled: !item.isActive }"
+                    @click="activate(item, false)"
+                  >
+                    <i class="fa-solid fa-arrow-turn-down"></i
+                  ></span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <Pagination :pagination="pagination" />
+      </div>
+    </div>
+  </section>
 </template>
 <script setup>
 definePageMeta({
@@ -48,13 +64,19 @@ definePageMeta({
   },
 });
 
+useHead({
+  title: "Edities",
+});
+
 const page = computed(() => {
   return parseInt(useRoute().query.page) || 1;
 });
 
 const { pending, data, refresh: refreshEditions } = myAsyncData(
   () => `/api/edition?page=${page.value}`,
-  {},
+  {
+    key: "editions",
+  },
   {
     watch: [page],
   }
@@ -71,16 +93,23 @@ const editions = computed(() => {
   if (!data.value) return [];
   return data.value.data;
 });
+
+const loading = ref(false);
+
 const activate = async (edition, isActive) => {
-  const res = await useApi(`/api/edition/${edition.id}`, {
+  loading.value = true;
+  const { data: resData } = await useApi(`/api/edition/${edition.id}`, {
     method: "PUT",
     body: {
       ...edition,
       isActive,
     },
   });
-  if (res.status === "Success") {
+  const { data, message, status } = resData.value;
+
+  if (status === "Success") {
     refreshEditions();
   }
+  loading.value = false;
 };
 </script>
