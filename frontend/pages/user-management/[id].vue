@@ -1,8 +1,7 @@
 <template>
   <section class="section__user-management-detail">
     <div class="title">Gebruikersinfo</div>
-    <div class="row">
-      <div class="subtitle">Huidige editie</div>
+    <div class="row mb-3">
       <div class="col-4">
         <div class="list__information">
           <div class="information__title">
@@ -32,7 +31,10 @@
           </div>
         </div>
       </div>
-      <div class="col-8">
+    </div>
+    <div class="row">
+      <div class="subtitle">Huidige editie</div>
+      <div class="col">
         <table class="datatable">
           <thead>
             <th>Lijstnummer</th>
@@ -62,7 +64,10 @@
                     <i class="fa-regular fa-eye fa-lg"></i>
                   </NuxtLink>
                 </span>
-                <span class="action" @click="confirmPayList(item)"
+                <span
+                  class="action"
+                  :class="{ disabled: item.isPaidToUser }"
+                  @click="confirmPayList(item)"
                   ><i class="fa-solid fa-coins"></i>
                 </span>
               </td>
@@ -81,7 +86,10 @@
               </td>
               <td class="datatable__actions">
                 <span class="divider"></span>
-                <span class="action" @click="confirmPayAll()"
+                <span
+                  class="action"
+                  :class="{ disabled: allPaid }"
+                  @click="confirmPayAll()"
                   ><i class="fa-solid fa-coins"></i>
                 </span>
               </td>
@@ -271,6 +279,12 @@ const totalWithholding = computed(() => {
   }, 0);
 });
 
+const allPaid = computed(() => {
+  if (!currentData) return false;
+  if (!currentData.value) return false;
+  return currentData.value.data.every((item) => item.isPaidToUser);
+});
+
 /* Pay list */
 const confirmPayVisible = ref(false);
 const selectedLists = ref([]);
@@ -318,4 +332,5 @@ const paySelectedLists = async () => {
   confirmPayVisible.value = false;
   loading.value = false;
 };
+/* End pay list */
 </script>
