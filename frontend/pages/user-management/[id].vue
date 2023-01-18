@@ -50,7 +50,11 @@
               <td><YesNoIcon :value="item.isUserConfirmed" /></td>
               <td><YesNoIcon :value="item.isEmployeeValidated" /></td>
               <td><YesNoIcon :value="item.isPaidToUser" /></td>
-              <td>{{ toEuro(item.userProfit) }}</td>
+              <td>
+                {{ toEuro(item.userProfit) }}&nbsp;<span v-if="!item.memberNumber"
+                  >(&nbsp;&dash;&nbsp;&euro;5 = {{ toEuro(item.userProfit - 5) }})</span
+                >
+              </td>
               <td class="datatable__actions">
                 <span class="divider"></span>
                 <span class="action">
@@ -64,9 +68,17 @@
               </td>
             </tr>
             <tr>
-              <td>Totaal</td>
+              <td class="text-bold">Totaal</td>
               <td colspan="4"></td>
-              <td>{{ toEuro(totalSold) }}</td>
+              <td>
+                <span v-if="totalWithholding != 0">
+                  {{ toEuro(totalSold) }} - {{ toEuro(totalWithholding) }} =
+                  <span class="text-bold">{{
+                    toEuro(totalSold - totalWithholding)
+                  }}</span></span
+                >
+                <span v-else class="text-bold">{{ toEuro(totalSold) }}</span>
+              </td>
               <td class="datatable__actions">
                 <span class="divider"></span>
                 <span class="action" @click="confirmPayAll()"
@@ -220,6 +232,15 @@ const totalSold = computed(() => {
   if (!currentData.value) return 0;
   return currentData.value.data.reduce((acc, item) => {
     return acc + item.userProfit;
+  }, 0);
+});
+
+const totalWithholding = computed(() => {
+  if (!currentData) return 0;
+  if (!currentData.value) return 0;
+  return currentData.value.data.reduce((acc, item) => {
+    if (!item.memberNumber) return acc + 5;
+    return acc;
   }, 0);
 });
 
