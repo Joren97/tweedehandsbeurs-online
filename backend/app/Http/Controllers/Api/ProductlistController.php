@@ -161,7 +161,7 @@ class ProductlistController extends ApiController
 
             // If there are 2 lists with the same member number, return error
             if ($sameMemberNumberLists->count() >= 2) {
-                $errors = ['memberNumber' => ['Lidnummer is reeds gebruikt voor 2 lijsten.']];
+                $errors = ['memberNumber' => ['Lidnummer is reeds gebruikt voor 2 lijsten. Gelieve een ander lidnummer in te vullen of dit veld leeg te laten.']];
                 return $this->fieldErrorResponse($errors, 422);
             }
         }
