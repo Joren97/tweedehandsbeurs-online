@@ -123,7 +123,11 @@
             <div class="information__item">
               <span class="item__title">Jouw opbrengst</span>
               <span v-if="listPending" class="placeholder col-4"></span>
-              <span v-else>{{ toEuro(totalSold) }}</span>
+              <span v-else
+                >{{ toEuro(totalSold) }}&nbsp;<span v-if="!list.memberNumber"
+                  >(&nbsp;&dash;&nbsp;&euro;5 = {{ toEuro(totalSold - 5) }})</span
+                ></span
+              >
             </div>
           </div>
         </div>
