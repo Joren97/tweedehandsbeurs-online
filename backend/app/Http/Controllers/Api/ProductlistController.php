@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Filters\ProductListFilter;
+use App\Http\Requests\PayProductlistRequest;
 use App\Models\Productlist;
 use App\Http\Requests\StoreProductlistRequest;
 use App\Http\Requests\UpdateProductlistRequest;
@@ -291,6 +292,33 @@ class ProductlistController extends ApiController
         $list->is_user_confirmed = $request->isUserConfirmed;
         $list->save();
         return new ProductListResource($list);
+    }
+
+    public function payProductlists(PayProductlistRequest $request)
+    {
+        // Get all ids from the $request
+        $ids = $request->productlistIds;
+
+        $lists = [];
+
+        // Check every id if it exists, if so add it to the $lists
+        foreach ($ids as $id) {
+            $list = ProductList::where('id', $id)->first();
+            if ($list == null) {
+                return $this->errorResponse('Productlijst met id ' . $id . ' bestaat niet.', 404);
+            }
+            array_push($lists, $list);
+        }
+
+        // Set the is_paid_to_user to true for every list
+        foreach ($lists as $list) {
+            $list->is_paid_to_user = true;
+            $list->save();
+        }
+
+        $message = count($ids) === 1 ? 'Productlijst is betaald.' : 'Productlijsten zijn betaald.';
+
+        return $this->successResponse($message);
     }
 
     /**

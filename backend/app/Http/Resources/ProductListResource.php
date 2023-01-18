@@ -36,6 +36,7 @@ class ProductListResource extends JsonResource
             'products' => ProductResource::collection($this->whenLoaded('products')),
             'user' => new UserResource($this->whenLoaded('user')),
             'edition' => new EditionResource($this->whenLoaded('edition')),
+            'isPaidToUser' => $this->is_paid_to_user ? true : false,
             'userProfit' => $profit
         ];
     }

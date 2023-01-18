@@ -3,7 +3,7 @@
     <div class="title">Gebruikersinfo</div>
     <div class="row">
       <div class="subtitle">Huidige editie</div>
-      <div class="col-3">
+      <div class="col-4">
         <div class="list__information">
           <div class="information__title">
             <span>{{ user.firstname }} {{ user.lastname }}</span>
@@ -32,7 +32,7 @@
           </div>
         </div>
       </div>
-      <div class="col">
+      <div class="col-8">
         <table class="datatable">
           <thead>
             <th>Lijstnummer</th>
@@ -58,7 +58,9 @@
                     <i class="fa-regular fa-eye fa-lg"></i>
                   </NuxtLink>
                 </span>
-                <span class="action"><i class="fa-solid fa-coins"></i> </span>
+                <span class="action" @click="confirmPayList(item)"
+                  ><i class="fa-solid fa-coins"></i>
+                </span>
               </td>
             </tr>
             <tr>
@@ -67,7 +69,9 @@
               <td>{{ toEuro(totalSold) }}</td>
               <td class="datatable__actions">
                 <span class="divider"></span>
-                <span class="action"><i class="fa-solid fa-coins"></i> </span>
+                <span class="action" @click="confirmPayAll()"
+                  ><i class="fa-solid fa-coins"></i>
+                </span>
               </td>
             </tr>
           </tbody>
@@ -77,24 +81,53 @@
     <div class="row mt-3">
       <div class="col">
         <p class="subtitle">Geschiedenis</p>
-        <div class="list__accordion">
-          <div class="collapsible-accordion" v-for="item in editionHistory">
-            <div class="collapsible-item">
-              <input type="checkbox" :id="`item-${item.id}`" />
-              <label class="collapsible-item-label" :for="`item-${item.id}`"
-                >{{ item.name }}&nbsp;{{ item.year }}</label
-              >
-              <div class="collapsible-item-content">
-                <p v-for="list in item.productlists">Lijst {{ list.listNumber }}</p>
-              </div>
-            </div>
+      </div>
+    </div>
+    <div class="list__accordion">
+      <div class="collapsible-accordion col" v-for="item in editionHistory">
+        <div class="collapsible-item">
+          <input type="checkbox" :id="`item-${item.id}`" />
+          <label class="collapsible-item-label" :for="`item-${item.id}`"
+            >{{ item.name }}&nbsp;{{ item.year }}</label
+          >
+          <div class="collapsible-item-content">
+            <p v-for="list in item.productlists">
+              <!-- {{ list }} -->
+              <span>Lijst {{ list.listNumber }}</span>
+              <span> {{ toEuro(list.userProfit) }}</span>
+              <span
+                ><NuxtLink :to="`/list-management/${item.id}`">
+                  <i class="fa-regular fa-eye fa-lg"></i>
+                </NuxtLink>
+              </span>
+            </p>
           </div>
         </div>
       </div>
     </div>
+
+    <Modal :visible="confirmPayVisible" @close="closeConfirmPay()">
+      <template v-slot:title>Lijst uitbetalen</template>
+      <template v-slot:content>
+        <p>Ben je zeker dat je volgende lijsten wil uitbetalen:</p>
+        <ul>
+          <li v-for="item in selectedLists">Lijst {{ item.listNumber }}</li>
+        </ul>
+      </template>
+      <template v-slot:footer>
+        <button type="button" class="btn btn-secondary mx-2" @click="closeConfirmPay()">
+          Annuleren
+        </button>
+
+        <LoadingButton type="primary" @click="paySelectedLists" :loading="loading"
+          >Uitbetalen</LoadingButton
+        >
+      </template>
+    </Modal>
   </section>
 </template>
 <script setup>
+import { useNotificationStore } from "~~/store/notification";
 definePageMeta({
   layout: "dashboard",
   middleware: ["auth"],
@@ -102,6 +135,9 @@ definePageMeta({
     authLevel: "employee",
   },
 });
+
+const loading = ref(false);
+const notificationStore = useNotificationStore();
 
 const { data: userData, pending: userPending } = myLazyFetch(
   () => `/api/user/${useRoute().params.id}`,
@@ -121,16 +157,17 @@ const { data: historyData, pending: historyPending } = myLazyFetch(
   }
 );
 
-const { data: currentData, pending: currentPending } = myLazyFetch(
-  () => `/api/productlist`,
-  {
-    key: "current",
-    params: {
-      "userId[eq]": useRoute().params.id,
-      current: true,
-    },
-  }
-);
+const {
+  data: currentData,
+  pending: currentPending,
+  refresh: currentRefresh,
+} = myLazyFetch(() => `/api/productlist`, {
+  key: "current",
+  params: {
+    "userId[eq]": useRoute().params.id,
+    current: true,
+  },
+});
 
 const user = computed(() => {
   if (!userData) return {};
@@ -170,9 +207,7 @@ const editionHistory = computed(() => {
   editions.forEach((edition) => {
     history.forEach((item) => {
       if (item.editionId === edition.id) {
-        edition.productlists.push({
-          listNumber: item.listNumber,
-        });
+        edition.productlists.push(item);
       }
     });
   });
@@ -187,4 +222,52 @@ const totalSold = computed(() => {
     return acc + item.userProfit;
   }, 0);
 });
+
+/* Pay list */
+const confirmPayVisible = ref(false);
+const selectedLists = ref([]);
+
+const confirmPayList = (list) => {
+  confirmPayVisible.value = true;
+  selectedLists.value = [list];
+};
+
+const confirmPayAll = () => {
+  confirmPayVisible.value = true;
+  selectedLists.value = current.value;
+};
+
+const closeConfirmPay = () => {
+  confirmPayVisible.value = false;
+  selectedLists.value = [];
+};
+
+const paySelectedLists = async () => {
+  console.log("paySelectedLists");
+  console.log(selectedLists.value);
+  loading.value = true;
+
+  const listIds = selectedLists.value.map((item) => item.id);
+
+  loading.value = true;
+  const { pending, error } = await useApi(`/api/productlist/pay`, {
+    method: "POST",
+    key: "payLists",
+    initialCache: false,
+    body: {
+      productlistIds: listIds,
+    },
+  });
+
+  if (error.value != null) {
+    notificationStore.addNotification("Error", error.value.data.message);
+  } else {
+    notificationStore.addNotification("Success", "Lijsten uitbetaald");
+    selectedLists.value = [];
+    currentRefresh();
+  }
+
+  confirmPayVisible.value = false;
+  loading.value = false;
+};
 </script>
