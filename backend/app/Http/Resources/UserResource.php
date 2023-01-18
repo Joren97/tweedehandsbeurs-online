@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Resources\HistoryResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class UserResource extends JsonResource
@@ -24,7 +25,7 @@ class UserResource extends JsonResource
             'address' => $this->address,
             'city' => $this->city,
             'postalCode' => $this->postal_code,
-            'role' => $this->role,
+            'role' => $this->role
         ];
     }
 }

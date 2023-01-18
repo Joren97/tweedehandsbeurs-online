@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Filters\ProductListFilter;
+use App\Http\Requests\PayProductlistRequest;
 use App\Models\Productlist;
 use App\Http\Requests\StoreProductlistRequest;
 use App\Http\Requests\UpdateProductlistRequest;
@@ -61,6 +62,22 @@ class ProductlistController extends ApiController
 
         if ($request->query('isPaidToUser')) {
             $productLists = $productLists->whereIn('is_paid_to_user', $request->query('isPaidToUser'));
+        }
+
+        if ($request->query('history')) {
+            // Get only productlists that are linked to the editions where the year is between the year of the current edition and 4 years ago 
+            // and include the edition and products with price ine the response
+            // Excluse the current edition
+            $productLists = $productLists->whereHas('edition', function ($query) {
+                $query->where('year', '>=', Edition::where('is_active', true)->first()->year - 4)->where('id', '!=', Edition::where('is_active', true)->first()->id);
+            })->with('edition')->with('products.price');
+        }
+
+        if ($request->query('current')) {
+            // Get only productlists that are linked to the current edition and include the edition and products with price ine the response
+            $productLists = $productLists->whereHas('edition', function ($query) {
+                $query->where('is_active', true);
+            })->with('edition')->with('products.price');
         }
 
         return new ProductListCollection($productLists->paginate()->appends($request->query()));
@@ -144,7 +161,7 @@ class ProductlistController extends ApiController
 
             // If there are 2 lists with the same member number, return error
             if ($sameMemberNumberLists->count() >= 2) {
-                $errors = ['memberNumber' => ['Lidnummer is reeds gebruikt voor 2 lijsten.']];
+                $errors = ['memberNumber' => ['Lidnummer is reeds gebruikt voor 2 lijsten. Gelieve een ander lidnummer in te vullen of dit veld leeg te laten.']];
                 return $this->fieldErrorResponse($errors, 422);
             }
         }
@@ -276,6 +293,33 @@ class ProductlistController extends ApiController
         $list->is_user_confirmed = $request->isUserConfirmed;
         $list->save();
         return new ProductListResource($list);
+    }
+
+    public function payProductlists(PayProductlistRequest $request)
+    {
+        // Get all ids from the $request
+        $ids = $request->productlistIds;
+
+        $lists = [];
+
+        // Check every id if it exists, if so add it to the $lists
+        foreach ($ids as $id) {
+            $list = ProductList::where('id', $id)->first();
+            if ($list == null) {
+                return $this->errorResponse('Productlijst met id ' . $id . ' bestaat niet.', 404);
+            }
+            array_push($lists, $list);
+        }
+
+        // Set the is_paid_to_user to true for every list
+        foreach ($lists as $list) {
+            $list->is_paid_to_user = true;
+            $list->save();
+        }
+
+        $message = count($ids) === 1 ? 'Productlijst is betaald.' : 'Productlijsten zijn betaald.';
+
+        return $this->successResponse($message);
     }
 
     /**

@@ -14,6 +14,17 @@ class ProductListResource extends JsonResource
      */
     public function toArray($request)
     {
+        $profit = 0;
+
+        // If the products are loaded, calculate the profit
+        if ($this->relationLoaded('products')) {
+            foreach ($this->products as $product) {
+                if ($product->is_sold) {
+                    $profit += $product->price->asking_price;
+                }
+            }
+        }
+
         return [
             'id' => $this->id,
             'listNumber' => $this->list_number,
@@ -25,6 +36,8 @@ class ProductListResource extends JsonResource
             'products' => ProductResource::collection($this->whenLoaded('products')),
             'user' => new UserResource($this->whenLoaded('user')),
             'edition' => new EditionResource($this->whenLoaded('edition')),
+            'isPaidToUser' => $this->is_paid_to_user ? true : false,
+            'userProfit' => $profit
         ];
     }
 }

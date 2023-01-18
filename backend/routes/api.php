@@ -50,6 +50,7 @@ Route::group(
         Route::apiResource('productlist', ProductlistController::class);
         Route::apiResource('product', ProductController::class);
         Route::apiResource('user', UserController::class);
+        Route::post('productlist/pay', [ProductlistController::class, 'payProductlists']);
     }
 );
 

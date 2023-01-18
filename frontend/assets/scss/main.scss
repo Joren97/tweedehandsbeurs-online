@@ -4,6 +4,9 @@
 // Vendors
 @import "~/node_modules/bootstrap/scss/bootstrap";
 
+// Utilities
+@import "utilities";
+
 // Elements
 @import "elements/elements.page";
 @import "elements/elements.datatable";
@@ -23,6 +26,7 @@
 @import "pages/pages.list-management";
 @import "pages/pages.list-management-detail";
 @import "pages/pages.user-management";
+@import "pages/pages.user-management-detail";
 @import "pages/pages.product-management";
 @import "pages/pages.login";
 @import "pages/pages.profile";

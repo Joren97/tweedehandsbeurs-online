@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Filters\UserFilter;
 use App\Http\Resources\UserCollection;
+use App\Http\Resources\UserResource;
+use App\Models\Edition;
+use App\Models\Productlist;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -49,9 +52,10 @@ class UserController extends ApiController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        //
+        $user = User::findOrFail($id);
+        return $this->successResponse(new UserResource($user));
     }
 
     /**

@@ -51,7 +51,10 @@
               <td>{{ formatAdress(user) }}</td>
               <td class="datatable__actions">
                 <span class="divider"></span>
-                <span class="action"><i class="fa-regular fa-eye fa-lg"></i></span>
+                <span class="action"
+                  ><NuxtLink :to="`/user-management/${user.id}`">
+                    <i class="fa-regular fa-eye fa-lg"></i> </NuxtLink
+                ></span>
               </td>
             </tr>
           </tbody>
@@ -129,4 +132,8 @@ const keywordChange = (e) => {
     search.value = e.target.value;
   }, 500);
 };
+
+useHead({
+  title: "Gebruikeroverzicht",
+});
 </script>
