@@ -8,7 +8,29 @@
         <p>Hier vind je een overzicht van alle prijzen met bijhorende verkoopprijs.</p>
       </div>
     </div>
-    <div class="row">
+    <div class="row" v-if="pending">
+      <div class="col-3" v-for="i in 4">
+        <table class="table table-striped table-bordered">
+          <thead>
+            <tr>
+              <th>Vraagprijs</th>
+              <th>Verkoopprijs</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="i in 5">
+              <td class="placeholder-glow">
+                <div class="placeholder w-100"></div>
+              </td>
+              <td class="placeholder-glow">
+                <div class="placeholder w-100"></div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="row" v-else>
       <div class="col-3" v-for="array in pricesAsThreeArrays">
         <table class="table table-striped table-bordered">
           <thead>
@@ -37,7 +59,8 @@ definePageMeta({
   },
 });
 
-const { data, pending } = myFetch(() => `/api/price`, {
+const { data, pending } = myLazyFetch(() => `/api/price`, {
+  key: "prices",
   params: {
     perPage: 100,
   },
