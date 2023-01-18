@@ -35,67 +35,73 @@
     <div class="row">
       <div class="subtitle">Huidige editie</div>
       <div class="col">
-        <table class="datatable">
-          <thead>
-            <th>Lijstnummer</th>
-            <th>Lidnummer</th>
-            <th>Bevestigd</th>
-            <th>Gevalideerd</th>
-            <th>Uitbetaald</th>
-            <th>Opbrengst</th>
-            <th></th>
-          </thead>
-          <tbody>
-            <tr v-for="item in current" :key="item.id">
-              <td>{{ emptyCheck(item.listNumber) }}</td>
-              <td>{{ emptyCheck(item.memberNumber) }}</td>
-              <td><YesNoIcon :value="item.isUserConfirmed" /></td>
-              <td><YesNoIcon :value="item.isEmployeeValidated" /></td>
-              <td><YesNoIcon :value="item.isPaidToUser" /></td>
-              <td>
-                {{ toEuro(item.userProfit) }}&nbsp;<span v-if="!item.memberNumber"
-                  >(&nbsp;&dash;&nbsp;&euro;5 = {{ toEuro(item.userProfit - 5) }})</span
-                >
-              </td>
-              <td class="datatable__actions">
-                <span class="divider"></span>
-                <span class="action">
-                  <NuxtLink :to="`/list-management/${item.id}`">
-                    <i class="fa-regular fa-eye fa-lg"></i>
-                  </NuxtLink>
-                </span>
-                <span
-                  class="action"
-                  :class="{ disabled: item.isPaidToUser }"
-                  @click="confirmPayList(item)"
-                  ><i class="fa-solid fa-coins"></i>
-                </span>
-              </td>
-            </tr>
-            <tr>
-              <td class="text-bold">Totaal</td>
-              <td colspan="4"></td>
-              <td>
-                <span v-if="totalWithholding != 0">
-                  {{ toEuro(totalSold) }} - {{ toEuro(totalWithholding) }} =
-                  <span class="text-bold">{{
-                    toEuro(totalSold - totalWithholding)
-                  }}</span></span
-                >
-                <span v-else class="text-bold">{{ toEuro(totalSold) }}</span>
-              </td>
-              <td class="datatable__actions">
-                <span class="divider"></span>
-                <span
-                  class="action"
-                  :class="{ disabled: allPaid }"
-                  @click="confirmPayAll()"
-                  ><i class="fa-solid fa-coins"></i>
-                </span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="datatable" :class="{ 'is-loading': currentPending || loading }">
+          <div class="datatable__loading">
+            <div class="loading__background"></div>
+            <div class="sp sp-wave"></div>
+          </div>
+          <table class="datatable__table">
+            <thead>
+              <th>Lijstnummer</th>
+              <th>Lidnummer</th>
+              <th>Bevestigd</th>
+              <th>Gevalideerd</th>
+              <th>Uitbetaald</th>
+              <th>Opbrengst</th>
+              <th></th>
+            </thead>
+            <tbody>
+              <tr v-for="item in current" :key="item.id">
+                <td>{{ emptyCheck(item.listNumber) }}</td>
+                <td>{{ emptyCheck(item.memberNumber) }}</td>
+                <td><YesNoIcon :value="item.isUserConfirmed" /></td>
+                <td><YesNoIcon :value="item.isEmployeeValidated" /></td>
+                <td><YesNoIcon :value="item.isPaidToUser" /></td>
+                <td>
+                  {{ toEuro(item.userProfit) }}&nbsp;<span v-if="!item.memberNumber"
+                    >(&nbsp;&dash;&nbsp;&euro;5 = {{ toEuro(item.userProfit - 5) }})</span
+                  >
+                </td>
+                <td class="datatable__actions">
+                  <span class="divider"></span>
+                  <span class="action">
+                    <NuxtLink :to="`/list-management/${item.id}`">
+                      <i class="fa-regular fa-eye fa-lg"></i>
+                    </NuxtLink>
+                  </span>
+                  <span
+                    class="action"
+                    :class="{ disabled: item.isPaidToUser }"
+                    @click="confirmPayList(item)"
+                    ><i class="fa-solid fa-coins"></i>
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td class="text-bold">Totaal</td>
+                <td colspan="4"></td>
+                <td>
+                  <span v-if="totalWithholding != 0">
+                    {{ toEuro(totalSold) }} - {{ toEuro(totalWithholding) }} =
+                    <span class="text-bold">{{
+                      toEuro(totalSold - totalWithholding)
+                    }}</span></span
+                  >
+                  <span v-else class="text-bold">{{ toEuro(totalSold) }}</span>
+                </td>
+                <td class="datatable__actions">
+                  <span class="divider"></span>
+                  <span
+                    class="action"
+                    :class="{ disabled: allPaid }"
+                    @click="confirmPayAll()"
+                    ><i class="fa-solid fa-coins"></i>
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
     <TheNotification class="mt-3" />
