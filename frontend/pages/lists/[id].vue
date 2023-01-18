@@ -95,6 +95,15 @@
               <span v-else>{{ list.listNumber }}</span>
             </div>
             <div class="information__item mb-2">
+              <span class="item__title">Editie</span>
+              <span v-if="listPending" class="placeholder col-4"></span>
+              <span v-else
+                >{{ list.edition && list.edition.name }}&nbsp;&dash;&nbsp;{{
+                  list.edition && list.edition.year
+                }}</span
+              >
+            </div>
+            <div class="information__item mb-2">
               <span class="item__title">Lidnummer</span>
               <span v-if="listPending" class="placeholder col-4"></span>
               <span v-else>{{ emptyCheck(list.memberNumber) }}</span>
@@ -233,6 +242,7 @@ const { data: listData, pending: listPending, refresh } = myLazyFetch(
     initialCache: false,
     params: {
       includeProducts: true,
+      includeEdition: true,
     },
   }
 );

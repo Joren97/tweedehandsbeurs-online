@@ -189,7 +189,13 @@ class ProductlistController extends ApiController
      */
     public function showForLoggedInUser(int $id)
     {
-        $productList = ProductList::findOrFail($id);
+        // Get the productlist
+        $productList = ProductList::where('id', $id)->first();
+
+        // If productlist does not exist, return error
+        if (!$productList) {
+            return $this->errorResponse('Productlist not found.', 404);
+        }
 
         // If Productlist does not belong to logged in user, return error
         if ($productList->user_id !== auth()->user()->id) {
@@ -206,6 +212,12 @@ class ProductlistController extends ApiController
 
         if ($includeProducts) {
             $productList = $productList->loadMissing('products');
+        }
+
+        $includeEdition = request()->query('includeEdition');
+
+        if ($includeEdition) {
+            $productList = $productList->loadMissing('edition');
         }
 
         return new ProductListResource($productList);
