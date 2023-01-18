@@ -67,8 +67,9 @@ class ProductlistController extends ApiController
         if ($request->query('history')) {
             // Get only productlists that are linked to the editions where the year is between the year of the current edition and 4 years ago 
             // and include the edition and products with price ine the response
+            // Excluse the current edition
             $productLists = $productLists->whereHas('edition', function ($query) {
-                $query->where('year', '>=', Edition::where('is_active', true)->first()->year - 4);
+                $query->where('year', '>=', Edition::where('is_active', true)->first()->year - 4)->where('id', '!=', Edition::where('is_active', true)->first()->id);
             })->with('edition')->with('products.price');
         }
 
