@@ -90,6 +90,7 @@
         </table>
       </div>
     </div>
+    <TheNotification class="mt-3" />
     <div class="row mt-3">
       <div class="col">
         <p class="subtitle">Geschiedenis</p>
@@ -155,6 +156,7 @@ const { data: userData, pending: userPending } = myLazyFetch(
   () => `/api/user/${useRoute().params.id}`,
   {
     key: "user",
+    initialCache: false,
   }
 );
 
@@ -166,6 +168,7 @@ const { data: historyData, pending: historyPending } = myLazyFetch(
       "userId[eq]": useRoute().params.id,
       history: true,
     },
+    initialCache: false,
   }
 );
 
@@ -179,6 +182,7 @@ const {
     "userId[eq]": useRoute().params.id,
     current: true,
   },
+  initialCache: false,
 });
 
 const user = computed(() => {
