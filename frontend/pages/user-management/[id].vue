@@ -95,24 +95,24 @@
         <p class="subtitle">Geschiedenis</p>
       </div>
     </div>
-    <div class="list__accordion">
-      <div class="collapsible-accordion col" v-for="item in editionHistory">
-        <div class="collapsible-item">
-          <input type="checkbox" :id="`item-${item.id}`" />
-          <label class="collapsible-item-label" :for="`item-${item.id}`"
-            >{{ item.name }}&nbsp;{{ item.year }}</label
-          >
-          <div class="collapsible-item-content">
-            <p v-for="list in item.productlists">
-              <!-- {{ list }} -->
-              <span>Lijst {{ list.listNumber }}</span>
-              <span> {{ toEuro(list.userProfit) }}</span>
-              <span
-                ><NuxtLink :to="`/list-management/${item.id}`">
-                  <i class="fa-regular fa-eye fa-lg"></i>
-                </NuxtLink>
-              </span>
-            </p>
+    <div class="row list__accordion">
+      <div class="accordion__item col-4" v-for="item in editionHistory">
+        <div class="collapsible-accordion col">
+          <div class="collapsible-item">
+            <input type="checkbox" :id="`item-${item.id}`" />
+            <label class="collapsible-item-label" :for="`item-${item.id}`"
+              >{{ item.name }}&nbsp;{{ item.year }}</label
+            >
+            <div class="collapsible-item-content">
+              <p v-for="list in item.productlists" class="list">
+                <span>Lijst {{ list.listNumber }}</span>
+                <span
+                  ><NuxtLink :to="`/list-management/${list.id}`">
+                    <i class="fa-regular fa-eye fa-lg"></i>
+                  </NuxtLink>
+                </span>
+              </p>
+            </div>
           </div>
         </div>
       </div>

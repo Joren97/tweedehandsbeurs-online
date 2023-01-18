@@ -56,12 +56,8 @@
       opacity: 0;
       z-index: -1;
     }
-    h1 {
-      margin: 10px;
-    }
     .collapsible {
       &-accordion {
-        margin: 10px;
         border-radius: 5px;
         overflow: hidden;
         box-shadow: 0 4px 4px -2px rgba(0, 0, 0, 0.5);
@@ -73,7 +69,7 @@
           padding: 1em;
           font-weight: bold;
           cursor: pointer;
-          background: purple;
+          background: $primary;
           color: #fff;
 
           &::after {
@@ -89,6 +85,19 @@
           padding: 0 1em;
           background: white;
           transition: all 0.35s;
+
+          p {
+            margin-bottom: 0;
+
+            &:not(:last-child) {
+              margin-bottom: 1rem;
+            }
+          }
+
+          .list {
+            display: flex;
+            justify-content: space-between;
+          }
         }
       }
     }
