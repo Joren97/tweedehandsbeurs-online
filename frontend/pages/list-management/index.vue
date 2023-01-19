@@ -177,12 +177,11 @@ const page = computed(() => {
 const { pending: listsPending, data: listsData } = myAsyncData(
   () =>
     `/api/productlist?page=${page.value}&includeUser=true&search=${search.value}${query.value}`,
-  {
-    initialCache: false,
-    key: "productlists",
-  },
+  {},
   {
     watch: [page, search, query],
+    initialCache: false,
+    key: "productlists",
   }
 );
 
