@@ -76,6 +76,7 @@ const { pending, data, refresh: refreshEditions } = myAsyncData(
   () => `/api/edition?page=${page.value}`,
   {
     key: "editions",
+    initialCache: false,
   },
   {
     watch: [page],
