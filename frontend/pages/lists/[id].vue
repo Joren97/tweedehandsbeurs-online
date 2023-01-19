@@ -26,62 +26,49 @@
     </div>
     <div class="row">
       <div class="col-8">
-        <table class="datatable">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Beschrijving</th>
-              <th>Vraagprijs</th>
-              <th>Verkoopprijs</th>
-              <th>
-                <span v-if="list && list.isUserConfirmed">Product is verkocht</span>
-              </th>
-            </tr>
-          </thead>
-          <tbody class="placeholder-glow" v-if="listPending">
-            <tr v-for="i in 5">
-              <td class="placeholder-glow">
-                <div class="placeholder w-100"></div>
-              </td>
-              <td class="placeholder-glow">
-                <div class="placeholder w-100"></div>
-              </td>
-              <td class="placeholder-glow">
-                <div class="placeholder w-100"></div>
-              </td>
-              <td class="placeholder-glow">
-                <div class="placeholder w-100"></div>
-              </td>
-              <td class="placeholder-glow">
-                <div class="placeholder w-100"></div>
-              </td>
-            </tr>
-          </tbody>
-          <tbody v-else>
-            <tr v-for="item in products" :key="item.id">
-              <td class="product__number">{{ item.productNumber }}</td>
-              <td>{{ item.description }}</td>
-              <td>
-                {{ item && item.price && toEuro(item.price.askingPrice) }}
-              </td>
-              <td>
-                {{ item && item.price && toEuro(item.price.sellingPrice) }}
-              </td>
-              <td v-if="list && list.isUserConfirmed">
-                <YesNoIcon :value="item.isSold" />
-              </td>
-              <td class="datatable__actions" v-if="list && !list.isUserConfirmed">
-                <span class="divider"></span>
-                <span class="action" @click="openEditProductModal(item.id)"
-                  ><i class="fa-solid fa-pencil fa-lg"></i
-                ></span>
-                <span class="action" @click="confirmDeleteProduct(item.id)"
-                  ><i class="fa-solid fa-trash fa-lg"></i
-                ></span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="datatable" :class="{ 'is-loading': listPending }">
+          <div class="datatable__loading">
+            <div class="loading__background"></div>
+            <div class="sp sp-wave"></div>
+          </div>
+          <table class="datatable__table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Beschrijving</th>
+                <th>Vraagprijs</th>
+                <th>Verkoopprijs</th>
+                <th>
+                  <span v-if="list && list.isUserConfirmed">Product is verkocht</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="item in products" :key="item.id">
+                <td class="product__number">{{ item.productNumber }}</td>
+                <td>{{ item.description }}</td>
+                <td>
+                  {{ item && item.price && toEuro(item.price.askingPrice) }}
+                </td>
+                <td>
+                  {{ item && item.price && toEuro(item.price.sellingPrice) }}
+                </td>
+                <td v-if="list && list.isUserConfirmed">
+                  <YesNoIcon :value="item.isSold" />
+                </td>
+                <td class="datatable__actions" v-if="list && !list.isUserConfirmed">
+                  <span class="divider"></span>
+                  <span class="action" @click="openEditProductModal(item.id)"
+                    ><i class="fa-solid fa-pencil fa-lg"></i
+                  ></span>
+                  <span class="action" @click="confirmDeleteProduct(item.id)"
+                    ><i class="fa-solid fa-trash fa-lg"></i
+                  ></span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
       <div class="col-4">
         <div class="list__information">
