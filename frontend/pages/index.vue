@@ -5,6 +5,7 @@
       Welkom bij Gezinsbond Geel. Fijn dat je meedoet met onze tweedehandsbeurs! Vooraleer
       je verder gaat in het systeem, gelieve de onderstaande stappen goed te lezen:
     </p>
+    <hr />
     <div class="subtitle">Stap 1: Lijst(en) aanmaken</div>
     <p>
       Per aangekochte lijst maak je een lijst aan in deze tool via de knop &apos;mijn
