@@ -11,13 +11,14 @@
           id="search"
           @input="keywordChange"
           placeholder="Zoeken"
+          :disabled="productsPending || editionsPending"
         />
       </div>
       <div class="col">
         <select
           class="form-select"
           v-model="selectedEdition"
-          :disabled="listsPending || editionsPending"
+          :disabled="productsPending || editionsPending"
         >
           <option :value="-1">Huidige editie</option>
           <option :value="0">Alle edities</option>
@@ -29,7 +30,7 @@
     </div>
     <div class="row mb-3">
       <div class="col">
-        <div class="datatable" :class="{ 'is-loading': pending }">
+        <div class="datatable" :class="{ 'is-loading': productsPending }">
           <div class="datatable__loading">
             <div class="loading__background"></div>
             <div class="sp sp-wave"></div>
@@ -97,7 +98,7 @@ const page = computed(() => {
   return parseInt(useRoute().query.page) || 1;
 });
 
-const { pending, data } = myAsyncData(
+const { pending: productsPending, data } = myAsyncData(
   () => `/api/product?page=${page.value}&description[like]=${search.value}${query.value}`,
   {},
   {
