@@ -12,6 +12,7 @@
             id="search"
             @input="keywordChange"
             placeholder="Zoeken"
+            :disabled="pending"
           />
         </div>
       </div>
