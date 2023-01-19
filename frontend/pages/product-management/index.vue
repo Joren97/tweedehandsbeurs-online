@@ -1,19 +1,30 @@
 <template>
   <section class="section__product-management">
     <div class="row">
-      <div class="col-9">
+      <div class="col-6">
         <div class="product-management__title">Productoverzicht</div>
       </div>
       <div class="col">
-        <div class="product-management__search">
-          <input
-            class="form-control"
-            name="search"
-            id="search"
-            @input="keywordChange"
-            placeholder="Zoeken"
-          />
-        </div>
+        <input
+          class="form-control"
+          name="search"
+          id="search"
+          @input="keywordChange"
+          placeholder="Zoeken"
+        />
+      </div>
+      <div class="col">
+        <select
+          class="form-select"
+          v-model="selectedEdition"
+          :disabled="listsPending || editionsPending"
+        >
+          <option :value="-1">Huidige editie</option>
+          <option :value="0">Alle edities</option>
+          <option v-for="edition in editions" :key="edition.id" :value="edition.id">
+            {{ edition.name }} - {{ edition.year }}
+          </option>
+        </select>
       </div>
     </div>
     <div class="row mb-3">
@@ -73,8 +84,11 @@ definePageMeta({
   },
 });
 
+const selectedEdition = ref(-1);
+
 const query = computed(() => {
-  return "";
+  let query = "&editionId=" + selectedEdition.value;
+  return query;
 });
 
 const search = ref("");
@@ -84,7 +98,7 @@ const page = computed(() => {
 });
 
 const { pending, data } = myAsyncData(
-  () => `/api/product?page=${page.value}&description[like]=${search.value}`,
+  () => `/api/product?page=${page.value}&description[like]=${search.value}${query.value}`,
   {},
   {
     watch: [page, query, search],
@@ -92,6 +106,21 @@ const { pending, data } = myAsyncData(
     key: "product-management",
   }
 );
+
+const {
+  pending: editionsPending,
+  data: editionData,
+  refresh: refreshEditions,
+} = myLazyFetch(() => `/api/edition`, {
+  key: "editions",
+  initialCache: false,
+});
+
+const editions = computed(() => {
+  if (!editionData) return [];
+  if (!editionData.value) return [];
+  return editionData.value.data;
+});
 
 const products = computed(() => {
   if (!data) return [];

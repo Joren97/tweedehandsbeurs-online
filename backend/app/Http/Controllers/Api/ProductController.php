@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Filters\ProductFilter;
+use App\Models\Edition;
 use App\Models\Product;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
@@ -25,6 +26,16 @@ class ProductController extends ApiController
         $filterItems = $filter->transform($request);
 
         $products = Product::where($filterItems);
+
+        if ($request->query('editionId')) {
+            if ($request->query('editionId') == -1) {
+                // Get all products that are linked to the active edition
+                $products = $products->whereRelation('productList', 'edition_id', '=', Edition::where('is_active', true)->first()->id);
+            } else {
+                // Get all products that are linked to the given edition
+                $products = $products->whereRelation('productList', 'edition_id', '=', $request->query('editionId'));
+            }
+        }
 
         if ($request->query('listNumber')) {
             $listNumber = $request->query('listNumber');
