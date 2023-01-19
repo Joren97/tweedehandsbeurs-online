@@ -18,48 +18,43 @@
     </div>
     <div class="row mb-3">
       <div class="col">
-        <table class="products__table datatable">
-          <thead>
-            <tr>
-              <th>Productnummer</th>
-              <th>Lijstnummer</th>
-              <th>Beschrijving</th>
-              <th>Vraagprijs</th>
-              <th>Verkoopprijs</th>
-              <th>Verkocht</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody v-if="pending" class="placeholder-glow">
-            <tr v-for="i in 15">
-              <td><span class="placeholder w-100"></span></td>
-              <td><span class="placeholder w-100"></span></td>
-              <td><span class="placeholder w-100"></span></td>
-              <td><span class="placeholder w-100"></span></td>
-              <td><span class="placeholder w-100"></span></td>
-              <td><span class="placeholder w-100"></span></td>
-              <td></td>
-            </tr>
-          </tbody>
-          <tbody v-else>
-            <tr v-for="item in products" :key="item.id">
-              <td>{{ item.productNumber }}</td>
-              <td>{{ item.productlist && item.productlist.listNumber }}</td>
-              <td>{{ item.description }}</td>
-              <td>{{ item.price && toEuro(item.price.askingPrice) }}</td>
-              <td>{{ item.price && toEuro(item.price.sellingPrice) }}</td>
-              <td><YesNoIcon :value="item.isSold" /></td>
-              <td class="datatable__actions">
-                <span class="divider"></span>
-                <span class="action" @click="openList(item)">
-                  <NuxtLink :to="`/list-management/${item.id}`">
-                    <i class="fa-regular fa-eye fa-lg"></i>
-                  </NuxtLink>
-                </span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="datatable" :class="{ 'is-loading': pending }">
+          <div class="datatable__loading">
+            <div class="loading__background"></div>
+            <div class="sp sp-wave"></div>
+          </div>
+          <table class="datatable__table">
+            <thead>
+              <tr>
+                <th>Productnummer</th>
+                <th>Lijstnummer</th>
+                <th>Beschrijving</th>
+                <th>Vraagprijs</th>
+                <th>Verkoopprijs</th>
+                <th>Verkocht</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="item in products" :key="item.id">
+                <td>{{ item.productNumber }}</td>
+                <td>{{ item.productlist && item.productlist.listNumber }}</td>
+                <td>{{ item.description }}</td>
+                <td>{{ item.price && toEuro(item.price.askingPrice) }}</td>
+                <td>{{ item.price && toEuro(item.price.sellingPrice) }}</td>
+                <td><YesNoIcon :value="item.isSold" /></td>
+                <td class="datatable__actions">
+                  <span class="divider"></span>
+                  <span class="action" @click="openList(item)">
+                    <NuxtLink :to="`/list-management/${item.id}`">
+                      <i class="fa-regular fa-eye fa-lg"></i>
+                    </NuxtLink>
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
     <div class="row">

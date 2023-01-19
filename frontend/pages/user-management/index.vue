@@ -2,7 +2,7 @@
   <section class="section__user-management">
     <div class="row">
       <div class="col-9">
-        <div class="user-management__title">Gebruikeroverzicht</div>
+        <div class="user-management__title">Gebruikers</div>
       </div>
       <div class="col">
         <div class="user-management__search">
@@ -18,47 +18,42 @@
     </div>
     <div class="row mb-3">
       <div class="col">
-        <table class="users__table datatable">
-          <thead>
-            <tr>
-              <th>Voornaam</th>
-              <th>Achternaam</th>
-              <th>Email</th>
-              <th>Lidnummer</th>
-              <th>Telefoon</th>
-              <th>Adres</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody v-if="pending" class="placeholder-glow">
-            <tr v-for="i in 15">
-              <td><span class="placeholder w-100"></span></td>
-              <td><span class="placeholder w-100"></span></td>
-              <td><span class="placeholder w-100"></span></td>
-              <td><span class="placeholder w-100"></span></td>
-              <td><span class="placeholder w-100"></span></td>
-              <td><span class="placeholder w-100"></span></td>
-              <td></td>
-            </tr>
-          </tbody>
-          <tbody v-else>
-            <tr v-for="user in users" :key="user.id">
-              <td>{{ emptyCheck(user.firstname) }}</td>
-              <td>{{ emptyCheck(user.lastname) }}</td>
-              <td>{{ emptyCheck(user.email) }}</td>
-              <td>{{ emptyCheck(user.memberNumber) }}</td>
-              <td>{{ user.phoneNumber }}</td>
-              <td>{{ formatAdress(user) }}</td>
-              <td class="datatable__actions">
-                <span class="divider"></span>
-                <span class="action"
-                  ><NuxtLink :to="`/user-management/${user.id}`">
-                    <i class="fa-regular fa-eye fa-lg"></i> </NuxtLink
-                ></span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="datatable" :class="{ 'is-loading': pending }">
+          <div class="datatable__loading">
+            <div class="loading__background"></div>
+            <div class="sp sp-wave"></div>
+          </div>
+          <table class="datatable__table">
+            <thead>
+              <tr>
+                <th>Voornaam</th>
+                <th>Achternaam</th>
+                <th>Email</th>
+                <th>Lidnummer</th>
+                <th>Telefoon</th>
+                <th>Adres</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="user in users" :key="user.id">
+                <td>{{ emptyCheck(user.firstname) }}</td>
+                <td>{{ emptyCheck(user.lastname) }}</td>
+                <td>{{ emptyCheck(user.email) }}</td>
+                <td>{{ emptyCheck(user.memberNumber) }}</td>
+                <td>{{ user.phoneNumber }}</td>
+                <td>{{ formatAdress(user) }}</td>
+                <td class="datatable__actions">
+                  <span class="divider"></span>
+                  <span class="action"
+                    ><NuxtLink :to="`/user-management/${user.id}`">
+                      <i class="fa-regular fa-eye fa-lg"></i> </NuxtLink
+                  ></span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
     <div class="row">
@@ -134,6 +129,6 @@ const keywordChange = (e) => {
 };
 
 useHead({
-  title: "Gebruikeroverzicht",
+  title: "Gebruikers",
 });
 </script>
