@@ -14,6 +14,32 @@ use Illuminate\Support\Facades\Mail;
 
 class SeedController extends ApiController
 {
+    public function seedPrices(Request $request)
+    {
+        $path = $request->file('csv')->getRealPath();
+        $records = array_map('str_getcsv', file($path));
+
+        if (!count($records) > 0) {
+            return 'Error...';
+        }
+
+        // Remove the header column
+        array_shift($records);
+
+        $prices = [];
+
+        // For each record
+        foreach ($records as $record) {
+            $price = Price::factory()->create([
+                'asking_price' => $record[0],
+                'selling_price' => $record[1],
+            ]);
+
+            // Add price to array
+            array_push($prices, $price);
+        }
+    }
+
     public function seed(Request $request)
     {
         $path = $request->file('csv')->getRealPath();

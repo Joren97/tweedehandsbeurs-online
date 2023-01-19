@@ -17,7 +17,7 @@ class EditionFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->randomElement(['Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni', 'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December']),
+            'name' => $this->faker->randomElement(['Maart', 'September']),
             'year' => $this->faker->numberBetween(2021, 2030),
         ];
     }

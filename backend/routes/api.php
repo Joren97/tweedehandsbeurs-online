@@ -59,6 +59,7 @@ Route::group(
     ['middleware' => ['auth:sanctum', 'ability:admin']],
     function () {
         Route::post('/seed', [SeedController::class, 'seed']);
+        Route::post('/seedPrices', [SeedController::class, 'seedPrices']);
         Route::post('/clear', [SeedController::class, 'clear']);
 
         Route::post('price', [PriceController::class, 'store']);

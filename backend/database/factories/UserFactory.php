@@ -22,13 +22,14 @@ class UserFactory extends Factory
             'lastname' => fake()->lastName(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
             'remember_token' => null,
-            'member_number' => null,
-            'phone_number' => null,
-            'address' => null,
-            'city' => null,
-            'postal_code' => null,
+            // member_number should be 30% empty
+            'member_number' => rand(1, 10) > 3 ? fake()->unique()->regexify('^\d{3}-\d{3}-\d{3}$') : null,
+            'phone_number' => fake()->phoneNumber(),
+            'address' => fake()->streetAddress(),
+            'city' => fake()->city(),
+            'postal_code' => fake()->postcode(),
             'role' => 'user',
         ];
     }
