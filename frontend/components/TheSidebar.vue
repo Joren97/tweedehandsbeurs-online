@@ -6,7 +6,7 @@
         <ul>
           <li>
             <NuxtLink to="/" :class="active('/')">
-              <i class="fas fa-fw fa-tachometer-alt"></i>Dashboard
+              <i class="fa-solid fa-circle-info"></i>Homepagina
             </NuxtLink>
           </li>
           <li class="navigation__title">Gebruiker</li>
