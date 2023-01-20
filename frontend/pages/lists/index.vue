@@ -38,7 +38,7 @@
                 list.memberNumber ?? "Geen lidnummer"
               }})
             </div>
-            <div class="item__actions" @click="confirmDeleteList(list.id)">
+            <div class="item__actions" @click="confirmDeleteList(list)">
               <button type="button"><i class="fa-solid fa-trash"></i></button>
             </div>
           </div>
@@ -71,8 +71,8 @@
     <Modal :visible="deleteListVisible" @close="deleteListVisible = false">
       <template v-slot:title>Lijst verwijderen</template>
       <template v-slot:content
-        >Ben je zeker dat je deze lijst en alle bijhorende producten wil
-        verwijderen?</template
+        >Ben je zeker dat je lijst {{ selectedList && selectedList.listNumber }} en alle
+        bijhorende producten wil verwijderen?</template
       >
       <template v-slot:footer>
         <button
@@ -183,28 +183,31 @@ const onNewListSubmit = async (values) => {
 
 /* Delete list */
 const deleteListVisible = ref(false);
-const selectedListId = ref(null);
+const selectedList = ref(null);
 const deleteList = async () => {
   loading.value = true;
-  const { pending, error } = await useApi(`/api/productlist/me/${selectedListId.value}`, {
-    method: "DELETE",
-    key: "delete",
-    initialCache: false,
-  });
+  const { pending, error } = await useApi(
+    `/api/productlist/me/${selectedList.value.id}`,
+    {
+      method: "DELETE",
+      key: "delete",
+      initialCache: false,
+    }
+  );
 
   if (error.value != null) {
     notificationStore.addNotification("Error", error.value.data.message);
   } else {
     notificationStore.addNotification("Success", "Lijst werd verwijderd");
-    selectedListId.value = null;
+    selectedList.value = null;
     listsRefresh();
   }
 
   deleteListVisible.value = false;
   loading.value = false;
 };
-const confirmDeleteList = (id) => {
-  selectedListId.value = id;
+const confirmDeleteList = (list) => {
+  selectedList.value = list;
   deleteListVisible.value = true;
 };
 </script>
