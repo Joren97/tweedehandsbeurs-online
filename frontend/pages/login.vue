@@ -4,41 +4,40 @@
       <div class="form__image">
         <img src="~/assets/img/clothes.jpg" />
       </div>
-      <form class="form__form" @submit.prevent="login">
+      <form class="form__form" @submit="login">
         <div class="form__title">
           <h1 class="">Welkom terug!</h1>
         </div>
         <div class="form-group">
-          <input
-            type="email"
-            class="form-control"
-            id="exampleInputEmail"
-            aria-describedby="emailHelp"
-            placeholder="Jouw email"
-            v-model="user.email"
-          />
-          <p v-if="fieldErrors.email">{{ fieldErrors.email }}</p>
+          <VTextInput name="email" placeholder="Jouw email" />
         </div>
         <div class="form-group">
-          <input
-            type="password"
-            class="form-control"
-            id="exampleInputPassword"
-            placeholder="Jouw wachtwoord"
-            v-model="user.password"
-          />
-          <p v-if="fieldErrors.password">{{ fieldErrors.password }}</p>
+          <VTextInput name="password" placeholder="Jouw wachtwoord" type="password" />
         </div>
-        <div class="form-group">
+        <Field
+          v-slot="{ field }"
+          name="remember"
+          type="checkbox"
+          :value="true"
+          as="div"
+          class="form-check mb-3"
+        >
           <input
+            class="form-check-input"
             type="checkbox"
-            class="form-checkbox"
-            id="customCheck"
-            v-model="user.remember"
+            name="remember"
+            v-bind="field"
+            :value="true"
           />
-          <label class="form-checkbox-label" for="customCheck">Onthoud mij</label>
-        </div>
-        <button class="btn btn-login" type="submit">Login</button>
+          <label for="remember" class="form-check-label">Onthoud mij</label>
+        </Field>
+        <LoadingButton
+          @click="login"
+          class="justify-content-center"
+          type="primary"
+          :loading="loading"
+          >Aanmelden</LoadingButton
+        >
         <div class="form__options">
           <div class="options__forgot">
             <NuxtLink class="small" to="/forgot-password">
@@ -54,25 +53,35 @@
   </section>
 </template>
 <script setup>
-const user = ref({
+import { Field, useForm } from "vee-validate";
+
+const initialValues = {
   email: "",
   password: "",
   remember: false,
+};
+
+const { handleSubmit, setErrors } = useForm({
+  initialValues,
 });
 
-const fieldErrors = ref({});
+const loading = ref(false);
 
-const login = async () => {
+const login = handleSubmit(async (values) => {
+  loading.value = true;
   console.log("login");
 
   const { data, error } = await useCustomFetch("/api/auth/login", {
     method: "POST",
-    body: user.value,
+    body: values,
     initialCache: false,
   });
 
+  loading.value = false;
+
   if (error.value != null) {
-    fieldErrors.value = error.value.data.errors;
+    console.log(error.value.data);
+    setErrors(error.value.data.errors);
     return;
   }
 
@@ -81,5 +90,5 @@ const login = async () => {
   const token = useCookie("apiToken", { maxAge });
   token.value = data.value.data.token;
   navigateTo("/");
-};
+});
 </script>

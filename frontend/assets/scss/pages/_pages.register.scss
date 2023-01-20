@@ -50,11 +50,11 @@
 
       a {
         font-size: 0.75rem;
-        color: #7e6662;
+        color: $primary;
         transition: color 0.25s ease-in-out;
 
         &:hover {
-          color: #685350;
+          color: $primary-dark;
         }
       }
 

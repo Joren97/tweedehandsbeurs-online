@@ -85,7 +85,7 @@ class AuthController extends ApiController
             // Check combination of email and password
             if (!Auth::attempt($request->only(['email', 'password']))) {
                 $error = [
-                    'email' => 'Wachtwoord is onjuist'
+                    'password' => 'Wachtwoord is onjuist'
                 ];
                 return $this->fieldErrorResponse($error);
             }

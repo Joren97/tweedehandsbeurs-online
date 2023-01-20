@@ -39,13 +39,14 @@
   &.btn-register,
   &.btn-login {
     width: 100%;
-    background-color: #7e6662;
-    border-radius: 2.5rem;
+    background-color: $primary;
     transition: background-color 0.25s ease-in-out;
     cursor: pointer;
+    justify-content: center;
 
     &:hover {
-      background-color: #685350;
+      background-color: $primary-dark;
+      color: white;
     }
   }
 
