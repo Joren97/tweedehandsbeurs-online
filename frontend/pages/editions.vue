@@ -74,12 +74,11 @@ const page = computed(() => {
 
 const { pending, data, refresh: refreshEditions } = myAsyncData(
   () => `/api/edition?page=${page.value}`,
-  {
-    key: "editions",
-    initialCache: false,
-  },
+  {},
   {
     watch: [page],
+    key: "editions",
+    initialCache: false,
   }
 );
 
