@@ -6,9 +6,16 @@
       je verder gaat in het systeem, gelieve de onderstaande stappen goed te lezen:
     </p>
     <hr />
-    <div class="subtitle">Stap 1: Lijst(en) aanmaken</div>
+    <div class="subtitle">Stap 1: Profiel aanvullen</div>
     <p>
-      Per aangekochte lijst maak je een lijst aan in deze tool via de knop &apos;mijn
+      Om alles goed te laten verlopen hebben wij van jou enkele gegevens nodig. Links
+      onder &apos;Mijn profiel&apos; kan je je adresgegevens aanvullen. Doe dit alvorens
+      je begint met het invullen van lijsten.
+    </p>
+
+    <div class="subtitle">Stap 2: Lijst(en) aanmaken</div>
+    <p>
+      Per aangekochte lijst maak je een lijst aan in deze tool via de knop &apos;Mijn
       lijsten&apos; (zie links). Voor het aanmaken van een lijst heb je het lijstnummer
       nodig. Dit nummer vind je op de voorpagina rechts bovenaan van je gekochte lijst.
     </p>
@@ -21,7 +28,7 @@
       lidnummer, maar je zal bij de afrekening 5 euro betalen voor administratiekosten.
       Ook niet-leden betalen 5 euro per lijst bij de afrekening.
     </p>
-    <div class="subtitle">Stap 2: Artikelen invullen</div>
+    <div class="subtitle">Stap 3: Artikelen invullen</div>
     <p>
       Per lijst vul je online je 20 artikelen in. Nadat je de lijst hebt ingevuld, kan je
       de lijst bevestigen.
@@ -35,7 +42,7 @@
       lijst. Gelieve dit mee te brengen op zaterdagochtend bij het binnenbrengen van je
       artikelen.
     </p>
-    <div class="subtitle">Stap 3: Vul je etiketten in</div>
+    <div class="subtitle">Stap 4: Vul je etiketten in</div>
     <p>
       Pas nadat je je lijsten bevestigd hebt, dan vul je je etiketten in. Op je gekochte
       lijst staat uitgelegd hoe je dat moet doen. Onze medewerkers controleren de
