@@ -38,7 +38,11 @@
                 list.memberNumber ?? "Geen lidnummer"
               }})
             </div>
-            <div class="item__actions" @click="confirmDeleteList(list)">
+            <div
+              class="item__actions"
+              @click="confirmDeleteList(list)"
+              v-if="deleteAllowed(item, list)"
+            >
               <button type="button"><i class="fa-solid fa-trash"></i></button>
             </div>
           </div>
@@ -182,9 +186,17 @@ const onNewListSubmit = async (values) => {
 };
 
 /* Delete list */
+const deleteAllowed = (edition, list) => {
+  if (!edition.isActive) return false;
+  if (list.isUserConfirmed) return false;
+  return true;
+};
+
 const deleteListVisible = ref(false);
 const selectedList = ref(null);
 const deleteList = async () => {
+  if (!selectedList.value) return;
+
   loading.value = true;
   const { pending, error } = await useApi(
     `/api/productlist/me/${selectedList.value.id}`,
