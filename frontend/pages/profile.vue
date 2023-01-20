@@ -17,12 +17,17 @@
               type="button"
               class="btn btn-outline-secondary me-2"
               @click="handleReset"
+              :disabled="pending || loading"
             >
               Annuleren
             </button>
           </div>
           <div>
-            <LoadingButton @click="updateProfile" :loading="loading" type="primary"
+            <LoadingButton
+              @click="updateProfile"
+              :loading="loading"
+              type="primary"
+              :disabled="pending"
               >Opslaan</LoadingButton
             >
           </div>
