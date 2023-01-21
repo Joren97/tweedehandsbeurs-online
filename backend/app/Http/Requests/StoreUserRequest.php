@@ -28,11 +28,11 @@ class StoreUserRequest extends FormRequest
             'lastname' => 'required',
             'email' => 'required|email|unique:users,email',
             'password' => 'required',
-            'confirm_password' => 'required|same:password',
-            'phone_number' => 'required',
-            'address' => 'required',
-            'city' => 'required',
-            'postal_code' => 'required',
+            'confirmPassword' => 'required|same:password',
+            'phoneNumber' => 'nullable|numeric',
+            'address' => 'nullable|string',
+            'city' => 'nullable|string',
+            'postalCode' => 'nullable|numeric',
         ];
     }
 }

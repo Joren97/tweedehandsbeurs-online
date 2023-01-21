@@ -35,7 +35,7 @@
           </div>
           <LoadingButton
             @click="register"
-            class="justify-content-center"
+            class="justify-content-center w-100"
             type="primary"
             :loading="loading"
             >Registreer account</LoadingButton
@@ -57,15 +57,56 @@
   </section>
 </template>
 <script setup>
-const user = ref({
+import { object, string, ref as yupRef } from "yup";
+import { useForm } from "vee-validate";
+
+const loading = ref(false);
+
+const initialValues = {
   firstname: "",
   lastname: "",
   email: "",
   password: "",
-  passwordConfirm: "",
+  confirmPassword: "",
+};
+
+const validationSchema = object({
+  firstname: string().required(),
+  lastname: string().required(),
+  email: string().required().email(),
+  password: string().required(),
+  confirmPassword: string()
+    .required()
+    .oneOf([yupRef("password"), null], "Wachtwoorden komen niet overeen"),
 });
 
-const register = async () => {
-  console.log(user.value);
-};
+const { handleSubmit, setErrors } = useForm({
+  initialValues,
+  validationSchema,
+});
+
+const register = handleSubmit(async (values) => {
+  loading.value = true;
+  console.log("login");
+
+  const { data, error } = await useCustomFetch("/api/auth/register", {
+    method: "POST",
+    body: values,
+    initialCache: false,
+  });
+
+  loading.value = false;
+
+  if (error.value != null) {
+    console.log(error.value.data);
+    setErrors(error.value.data.errors);
+    return;
+  }
+
+  let maxAge = null;
+  if (data.value.data.remember) maxAge = 604800;
+  const token = useCookie("apiToken", { maxAge });
+  token.value = data.value.data.token;
+  navigateTo("/");
+});
 </script>
