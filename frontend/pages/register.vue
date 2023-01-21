@@ -87,7 +87,6 @@ const { handleSubmit, setErrors } = useForm({
 
 const register = handleSubmit(async (values) => {
   loading.value = true;
-  console.log("login");
 
   const { data, error } = await useCustomFetch("/api/auth/register", {
     method: "POST",
@@ -98,7 +97,6 @@ const register = handleSubmit(async (values) => {
   loading.value = false;
 
   if (error.value != null) {
-    console.log(error.value.data);
     setErrors(error.value.data.errors);
     return;
   }
