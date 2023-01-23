@@ -39,6 +39,7 @@ class AuthController extends ApiController
                 'address' => $request->address,
                 'city' => $request->city,
                 'postal_code' => $request->postalCode,
+                'role' => 'user'
             ]
         );
         $user['token'] = $user->createToken('apiToken')->plainTextToken;
