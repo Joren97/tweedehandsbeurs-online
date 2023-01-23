@@ -38,6 +38,7 @@
           :loading="loading"
           >Aanmelden</LoadingButton
         >
+        <button type="submit" class="d-none">Submit</button>
         <div class="form__options">
           <div class="options__forgot">
             <NuxtLink class="small" to="/forgot-password">

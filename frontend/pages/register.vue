@@ -40,6 +40,7 @@
             :loading="loading"
             >Registreer account</LoadingButton
           >
+          <button type="submit" class="d-none">Submit</button>
         </form>
         <div class="form__options">
           <div class="options__forgot">
