@@ -4,7 +4,18 @@
     <div class="sidebar__navigation">
       <nav>
         <ul>
-          <li>
+          <template v-for="item in navItems">
+            <li v-if="item.link">
+              <NuxtLink :to="item.link" :class="active(item.link)">
+                <i :class="item.icon"></i>{{ item.text }}
+              </NuxtLink>
+            </li>
+            <li v-else-if="item.title" class="navigation__title">
+              {{ item.title }}
+            </li>
+          </template>
+
+          <!-- <li>
             <NuxtLink to="/" :class="active('/')">
               <i class="fa-solid fa-circle-info"></i>Homepagina
             </NuxtLink>
@@ -61,16 +72,99 @@
             <NuxtLink to="/admin-dashboard" :class="active('/admin-dashboard')"
               ><i class="fas fa-chart-line"></i> Beursoverzicht
             </NuxtLink>
-          </li>
+          </li> -->
         </ul>
       </nav>
     </div>
   </aside>
 </template>
 <script setup lang="ts">
+import { useAuthStore } from "~~/store/auth";
+const authStore = useAuthStore();
+
 const active = (path: string) => {
   const route = useRoute();
   if (path === "/") return route.path === "/" ? "router-link-active" : "";
   return route.path.includes(path) ? "router-link-active" : "";
 };
+
+const navItems = computed(() => {
+  const userItems = [
+    {
+      link: "/",
+      icon: "fa-solid fa-circle-info",
+      text: "Homepagina",
+    },
+    {
+      title: "Gebruiker",
+    },
+    {
+      link: "/lists",
+      icon: "far fa-list-alt",
+      text: "Mijn Lijsten",
+    },
+    {
+      link: "/profile",
+      icon: "far fa-user-circle",
+      text: "Profiel",
+    },
+    {
+      link: "/prices",
+      icon: "far fa-money-bill-alt",
+      text: "Prijslijst",
+    },
+  ];
+
+  const employeeItems = [
+    {
+      title: "Medewerker",
+    },
+    {
+      link: "/list-management",
+      icon: "fab fa-sistrix",
+      text: "Lijstoverzicht",
+    },
+    {
+      link: "/sell",
+      icon: "fas fa-gavel",
+      text: "Verkopen",
+    },
+    {
+      link: "/user-management",
+      icon: "far fa-address-book",
+      text: "Gebruikers",
+    },
+    {
+      link: "/product-management",
+      icon: "fa-solid fa-shirt",
+      text: "Producten",
+    },
+  ];
+
+  const adminItems = [
+    {
+      title: "Admin",
+    },
+    {
+      link: "/editions",
+      icon: "fas fa-cogs",
+      text: "Edities",
+    },
+    {
+      link: "/price-management",
+      icon: "fas fa-money-check-alt",
+      text: "Prijsoverzicht",
+    },
+    {
+      link: "/admin-dashboard",
+      icon: "fas fa-chart-line",
+      text: "Beursoverzicht",
+    },
+  ];
+
+  const items = [...userItems];
+  if (authStore.getRole === "employee") items.push(...employeeItems);
+  if (authStore.getRole === "admin") items.push(...adminItems);
+  return items;
+});
 </script>
