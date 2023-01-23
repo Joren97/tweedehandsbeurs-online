@@ -35,10 +35,10 @@ class AuthController extends ApiController
                 'lastname' => $request->lastname,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
-                'phone_number' => $request->phone_number,
+                'phone_number' => $request->phoneNumber,
                 'address' => $request->address,
                 'city' => $request->city,
-                'postal_code' => $request->postal_code,
+                'postal_code' => $request->postalCode,
             ]
         );
         $user['token'] = $user->createToken('apiToken')->plainTextToken;

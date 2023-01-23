@@ -9,46 +9,103 @@
         <div class="form__title">
           <h1>Maak een account!</h1>
         </div>
-        <div class="form-group row">
-          <div class="col-sm-6 mb-3 mb-sm-0">
-            <input type="text" class="form-control" id="exampleFirstName" placeholder="Voornaam" v-model="user.firstname" />
+        <form @submit="register">
+          <div class="form-group row">
+            <div class="col-sm-6 mb-3 mb-sm-0">
+              <VTextInput name="firstname" placeholder="Voornaam" />
+            </div>
+            <div class="col-sm-6">
+              <VTextInput name="lastname" placeholder="Familienaam" />
+            </div>
           </div>
-          <div class="col-sm-6">
-            <input type="text" class="form-control" id="exampleLastName" placeholder="Naam" v-model="user.lastname" />
+          <div class="form-group">
+            <VTextInput name="email" placeholder="Emailadres" />
           </div>
-        </div>
-        <div class="form-group">
-          <input type="email" class="form-control" id="exampleInputEmail" placeholder="Emailadres" v-model="user.email" />
-        </div>
-        <div class="form-group row">
-          <div class="col-sm-6 mb-3 mb-sm-0">
-            <input type="password" class="form-control" id="exampleInputPassword" placeholder="Wachtwoord" v-model="user.password" />
+          <div class="form-group row">
+            <div class="col-sm-6 mb-3 mb-sm-0">
+              <VTextInput name="password" placeholder="Wachtwoord" type="password" />
+            </div>
+            <div class="col-sm-6">
+              <VTextInput
+                name="confirmPassword"
+                placeholder="Bevestig wachtwoord"
+                type="password"
+              />
+            </div>
           </div>
-          <div class="col-sm-6">
-            <input type="password" class="form-control" id="exampleRepeatPassword" placeholder="Bevestig wachtwoord" v-model="user.passwordConfirm" />
-          </div>
-        </div>
-        <button class="btn btn-register" @click="register">Registreer account</button>
+          <LoadingButton
+            @click="register"
+            class="justify-content-center w-100"
+            type="primary"
+            :loading="loading"
+            >Registreer account</LoadingButton
+          >
+          <button type="submit" class="d-none">Submit</button>
+        </form>
         <div class="form__options">
           <div class="options__forgot">
-            <NuxtLink class="small" to="/forgot-password"> Wachtwoord vergeten? </NuxtLink>
+            <NuxtLink class="small" to="/forgot-password">
+              Wachtwoord vergeten?
+            </NuxtLink>
           </div>
-          <div class="options__login">Heb je al een account? <NuxtLink class="small" to="/login"> Meld je hier aan! </NuxtLink></div>
+          <div class="options__login">
+            Heb je al een account?
+            <NuxtLink class="small" to="/login"> Meld je hier aan! </NuxtLink>
+          </div>
         </div>
       </div>
     </div>
   </section>
 </template>
 <script setup>
-const user = ref({
-  firstname: '',
-  lastname: '',
-  email: '',
-  password: '',
-  passwordConfirm: '',
+import { object, string, ref as yupRef } from "yup";
+import { useForm } from "vee-validate";
+
+const loading = ref(false);
+
+const initialValues = {
+  firstname: "",
+  lastname: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
+};
+
+const validationSchema = object({
+  firstname: string().required(),
+  lastname: string().required(),
+  email: string().required().email(),
+  password: string().required(),
+  confirmPassword: string()
+    .required()
+    .oneOf([yupRef("password"), null], "Wachtwoorden komen niet overeen"),
 });
 
-const register = async () => {
-  console.log(user.value);
-};
+const { handleSubmit, setErrors } = useForm({
+  initialValues,
+  validationSchema,
+});
+
+const register = handleSubmit(async (values) => {
+  loading.value = true;
+
+  const { data, error } = await useCustomFetch("/api/auth/register", {
+    method: "POST",
+    body: values,
+    initialCache: false,
+  });
+
+  loading.value = false;
+
+  if (error.value != null) {
+    setErrors(error.value.data.errors);
+    return;
+  }
+
+  let maxAge = null;
+  if (data.value.data.remember) maxAge = 604800;
+  const token = useCookie("apiToken", { maxAge });
+  token.value = data.value.data.token;
+  navigateTo("/");
+});
 </script>
