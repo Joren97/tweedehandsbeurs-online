@@ -134,13 +134,20 @@ class AuthController extends ApiController
 
     public function forgotPassword(ForgotPasswordRequest $request)
     {
+        $user = User::firstWhere('email', $request->email);
+
+        // If no user found
+        if (!$user) {
+            return $this->successResponse([], "Indien je een account hebt, ontvang je een email met verdere instructies.");
+        }
+
         PasswordResets::where('email', $request->email)->delete();
 
         $tokenData = PasswordResets::create($request->data());
 
-        Mail::to($request->email)->send(new SendCodeResetPassword($tokenData->token));
+        Mail::to($request->email)->send(new SendCodeResetPassword($tokenData->token, env('APP_URL')));
 
-        return $this->successResponse([], "Email sent", 200);
+        return $this->successResponse([], "Indien je een account hebt, ontvang je een email met verdere instructies.");
     }
 
     public function validateForgotPasswordToken(ValidateTokenRequest $request)

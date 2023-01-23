@@ -12,10 +12,12 @@ class SendCodeResetPassword extends Mailable implements ShouldQueue
     use Queueable, SerializesModels;
 
     public $code;
+    public $appUrl;
 
-    public function __construct($code)
+    public function __construct($code, $appUrl)
     {
         $this->code = $code;
+        $this->appUrl = $appUrl;
     }
 
     public function build()
