@@ -4,20 +4,31 @@
       <div class="form__image">
         <img src="~/assets/img/clothes.jpg" />
       </div>
-      <form class="form__form" @submit="login">
+      <form class="form__form" @submit="reset">
         <div class="form__title">
-          <h1 class="">Wachtwoord vergeten?</h1>
+          <h1 class="">Nieuw wachtwoord instellen</h1>
         </div>
-        <p>Geen probleem. We sturen je instructies om je wachtwoord te veranderen.</p>
+        <p>Gelieve een nieuw wachtwoord te kiezen.</p>
         <div class="form-group">
-          <VTextInput name="email" placeholder="Jouw email" />
+          <VTextInput
+            name="password"
+            placeholder="Jouw nieuwe wachtwoord"
+            type="password"
+          />
+        </div>
+        <div class="form-group">
+          <VTextInput
+            name="confirmPassword"
+            placeholder="Bevestig je nieuwe wachtwoord"
+            type="password"
+          />
         </div>
         <LoadingButton
-          @click="login"
+          @click="reset"
           class="justify-content-center"
           type="primary"
           :loading="loading"
-          >Wachtwoord resetten</LoadingButton
+          >Nieuw wachtwoord bevestigen</LoadingButton
         >
 
         <TheNotification class="mt-3" />
@@ -38,23 +49,35 @@
 <script setup>
 import { useNotificationStore } from "~~/store/notification";
 import { useForm } from "vee-validate";
+import { object, string, ref as yupRef } from "yup";
 
 const notificationStore = useNotificationStore();
 
 const initialValues = {
-  email: "",
+  password: "",
+  confirmPassword: "",
+  token: useRoute().params.code,
 };
+
+const validationSchema = object({
+  password: string().required(),
+  confirmPassword: string()
+    .required()
+    .oneOf([yupRef("password"), null], "Wachtwoorden komen niet overeen"),
+});
 
 const { handleSubmit, setErrors } = useForm({
   initialValues,
+  validationSchema,
 });
 
 const loading = ref(false);
 
-const login = handleSubmit(async (values) => {
+const reset = handleSubmit(async (values) => {
+  console.log("reset", values);
   loading.value = true;
 
-  const { data, error } = await useCustomFetch("/api/auth/forgot-password/request", {
+  const { data, error } = await useCustomFetch("/api/auth/forgot-password/reset", {
     method: "POST",
     body: values,
     initialCache: false,
@@ -62,7 +85,8 @@ const login = handleSubmit(async (values) => {
 
   if (error.value != null) {
     console.log(error.value.data);
-    setErrors(error.value.data.errors);
+    notificationStore.addNotification("Error", error.value.data.message);
+    loading.value = false;
     return;
   }
 
