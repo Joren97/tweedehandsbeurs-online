@@ -22,6 +22,7 @@ class SendCodeResetPassword extends Mailable implements ShouldQueue
 
     public function build()
     {
-        return $this->markdown('emails.sendCodeResetPassword');
+        return $this->markdown('emails.sendCodeResetPassword')
+            ->subject("Wachtwoord resetten");
     }
 }

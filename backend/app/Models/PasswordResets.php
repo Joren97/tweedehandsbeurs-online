@@ -12,6 +12,7 @@ class PasswordResets extends Model
     public $timestamps = false;
 
     protected $primaryKey = 'email';
+    public $incrementing = false;
 
     protected $fillable = [
         'email',

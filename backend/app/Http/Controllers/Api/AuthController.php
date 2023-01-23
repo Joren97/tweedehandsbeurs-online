@@ -175,6 +175,6 @@ class AuthController extends ApiController
 
         $passwordReset->delete();
 
-        return $this->successResponse([], "Password reset", 200);
+        return $this->successResponse([], "Je wachtwoord werd aangepast.", 200);
     }
 }
