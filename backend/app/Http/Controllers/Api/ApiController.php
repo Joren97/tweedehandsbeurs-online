@@ -24,4 +24,12 @@ class ApiController extends Controller
     {
         return $this->role() == 'employee';
     }
+
+    public function appInfo()
+    {
+        return [
+            'app_name' => config('app.name'),
+            'app_version' => config('app.version'),
+        ];
+    }
 }
