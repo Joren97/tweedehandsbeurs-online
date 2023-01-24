@@ -74,7 +74,6 @@ const { handleSubmit, setErrors } = useForm({
 const loading = ref(false);
 
 const reset = handleSubmit(async (values) => {
-  console.log("reset", values);
   loading.value = true;
 
   const { data, error } = await useCustomFetch("/api/auth/forgot-password/reset", {
@@ -84,7 +83,6 @@ const reset = handleSubmit(async (values) => {
   });
 
   if (error.value != null) {
-    console.log(error.value.data);
     notificationStore.addNotification("Error", error.value.data.message);
     loading.value = false;
     return;

@@ -7,10 +7,8 @@ export const useCustomLazyFetch = (url: string, options?: UseFetchOptions<unknow
   return useLazyFetch(config.public.API_BASE_URL + url, {
     ...options,
     async onResponse({ request, response, options }) {
-      console.log("[fetch response]");
     },
     async onResponseError({ request, response, options }) {
-      console.log("[fetch response error]");
     },
 
     async onRequest({ request, options }) {
@@ -22,11 +20,8 @@ export const useCustomLazyFetch = (url: string, options?: UseFetchOptions<unknow
           Authorization: `Bearer ${token.value}`,
         };
       }
-
-      console.log("[fetch request]");
     },
     async onRequestError({ request, options, error }) {
-      console.log("[fetch request error]");
     },
   });
 };

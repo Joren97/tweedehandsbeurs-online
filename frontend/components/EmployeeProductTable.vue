@@ -139,8 +139,6 @@ const sell = async (product, sold) => {
 
   if (status == "Success") {
     emit("refresh");
-  } else {
-    console.log("Error");
   }
 };
 </script>

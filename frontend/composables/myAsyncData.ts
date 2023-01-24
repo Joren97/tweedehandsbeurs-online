@@ -17,8 +17,6 @@ export const myAsyncData = (url: Function, fetchOptions?: UseFetchOptions<unknow
                             Authorization: `Bearer ${token.value}`,
                         };
                     }
-
-                    console.log("[fetch request]");
                 }
             }
         ),

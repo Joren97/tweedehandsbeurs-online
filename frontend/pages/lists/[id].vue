@@ -412,7 +412,6 @@ const confirmList = async () => {
   notificationStore.addNotification("Success", "De lijst werd bevestigd");
 
   if (error.value != null) {
-    console.log(error.value);
     fieldErrors.value = error.value.data.errors;
     return;
   }

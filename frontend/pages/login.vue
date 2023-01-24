@@ -70,7 +70,6 @@ const loading = ref(false);
 
 const login = handleSubmit(async (values) => {
   loading.value = true;
-  console.log("login");
 
   const { data, error } = await useCustomFetch("/api/auth/login", {
     method: "POST",
@@ -81,7 +80,6 @@ const login = handleSubmit(async (values) => {
   loading.value = false;
 
   if (error.value != null) {
-    console.log(error.value.data);
     setErrors(error.value.data.errors);
     return;
   }

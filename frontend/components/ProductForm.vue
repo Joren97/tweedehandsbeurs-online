@@ -61,7 +61,6 @@ const props = defineProps({
 watch(
   () => props.initialData,
   (value) => {
-    console.log("initialData changed");
     if (value) {
       setValues(value);
     }

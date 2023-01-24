@@ -6,10 +6,8 @@ export const useCustomFetch = (url: string, options?: UseFetchOptions<unknown>) 
   return useFetch(config.public.API_BASE_URL + url, {
     ...options,
     async onResponse({ request, response, options }) {
-      console.log(response);
     },
     async onResponseError({ request, response, options }) {
-      console.log(response);
     },
 
     async onRequest({ request, options }) {
@@ -22,10 +20,8 @@ export const useCustomFetch = (url: string, options?: UseFetchOptions<unknown>) 
         };
       }
 
-      console.log('[fetch request]');
     },
     async onRequestError({ request, options, error }) {
-      console.log('[fetch request error]');
     },
   });
 };

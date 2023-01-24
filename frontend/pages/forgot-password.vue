@@ -61,7 +61,6 @@ const login = handleSubmit(async (values) => {
   });
 
   if (error.value != null) {
-    console.log(error.value.data);
     setErrors(error.value.data.errors);
     return;
   }

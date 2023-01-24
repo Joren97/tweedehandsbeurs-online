@@ -166,7 +166,6 @@ const closeNewListModal = () => {
 
 const onNewListSubmit = async (values) => {
   loading.value = true;
-  console.log(values);
   const { data: resData, error: errorData } = await useApi(`/api/productlist/me`, {
     method: "POST",
     body: values,
