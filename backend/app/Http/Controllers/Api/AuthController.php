@@ -146,7 +146,7 @@ class AuthController extends ApiController
 
         $tokenData = PasswordResets::create($request->data());
 
-        Mail::to($request->email)->send(new SendCodeResetPassword($tokenData->token, env('APP_URL')));
+        Mail::to($request->email)->send(new SendCodeResetPassword($tokenData->token, env('FRONTEND_URL')));
 
         return $this->successResponse([], "Indien je een account hebt, ontvang je een email met verdere instructies.");
     }
