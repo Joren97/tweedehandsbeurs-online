@@ -19,7 +19,7 @@ class HistoryResource extends JsonResource
             'name' => $this->name,
             'year' => $this->year,
             'isActive' => $this->is_active,
-            'productlists' => ProductlistResource::collection($this->productlists),
+            'productlists' => ProductListResource::collection($this->productlists),
         ];
     }
 }
