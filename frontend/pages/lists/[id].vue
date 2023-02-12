@@ -43,7 +43,12 @@
                 </th>
               </tr>
             </thead>
-            <tbody>
+            <tbody v-if="products.length < 1">
+              <tr>
+                <td colspan="5">Nog geen producten toegevoegd.</td>
+              </tr>
+            </tbody>
+            <tbody v-else>
               <tr v-for="item in products" :key="item.id">
                 <td class="product__number">{{ item.productNumber }}</td>
                 <td>{{ item.description }}</td>
