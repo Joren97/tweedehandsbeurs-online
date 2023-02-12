@@ -82,7 +82,11 @@
       <div class="row mb-3">
         <div class="col-3">Lidnummer</div>
         <div class="col">
-          <VTextInput name="memberNumber" placeholder="Lidnummer" />
+          <VTextInput
+            name="memberNumber"
+            placeholder="Lidnummer"
+            hint="Lidnummer in het formaat xxx-xxx-xxx"
+          />
         </div>
       </div>
       <div class="row">
