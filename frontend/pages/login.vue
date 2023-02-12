@@ -90,4 +90,8 @@ const login = handleSubmit(async (values) => {
   token.value = data.value.data.token;
   navigateTo("/");
 });
+
+useHead({
+  title: "Aanmelden",
+});
 </script>
