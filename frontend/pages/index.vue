@@ -1,6 +1,6 @@
 <template>
   <section class="section__homepage">
-    <div class="homepage__title">Homepagina</div>
+    <div class="homepage__title">Tweedehandsbeurs online</div>
     <p>
       Welkom bij Gezinsbond Geel. Fijn dat je meedoet met onze tweedehandsbeurs! Vooraleer
       je verder gaat in het systeem, gelieve de onderstaande stappen goed te lezen:
@@ -8,9 +8,9 @@
     <hr />
     <div class="subtitle">Stap 1: Profiel aanvullen</div>
     <p>
-      Om alles goed te laten verlopen hebben wij van jou enkele gegevens nodig. Links
-      onder &apos;Mijn profiel&apos; kan je je adresgegevens aanvullen. Doe dit alvorens
-      je begint met het invullen van lijsten.
+      Om alles goed te laten verlopen hebben wij van jou enkele gegevens nodig. Links op
+      je scherm in het menu bij &apos;Mijn profiel&apos; kan je je adresgegevens
+      aanvullen. Doe dit alvorens je begint met het invullen van lijsten.
     </p>
 
     <div class="subtitle">Stap 2: Lijst(en) aanmaken</div>
@@ -45,7 +45,7 @@
     <div class="subtitle">Stap 4: Vul je etiketten in</div>
     <p>
       Pas nadat je je lijsten bevestigd hebt, dan vul je je etiketten in. Op je gekochte
-      lijst staat uitgelegd hoe je dat moet doen. Onze medewerkers controleren de
+      lijst staat uitgelegd hoe je dat moet doen. Onze medewerkers controleren en bevestigen de
       etiketten aan de artikelen bij het binnenbrengen op zaterdagochtend.
     </p>
     <p>
@@ -66,5 +66,9 @@ definePageMeta({
   meta: {
     authLevel: "user",
   },
+});
+
+useHead({
+  title: "Tweedehandsbeurs online",
 });
 </script>

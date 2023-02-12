@@ -150,7 +150,10 @@
     </Modal>
     <Modal :visible="confirmListVisible" @close="confirmListVisible = false">
       <template v-slot:title>Lijst bevestigen</template>
-      <template v-slot:content>Ben je zeker dat je deze lijst wil bevestigen?</template>
+      <template v-slot:content
+        >Ben je zeker dat je deze lijst wil bevestigen? Nadat je de lijst hebt bevestigd,
+        kan je niets meer wijzigen.</template
+      >
       <template v-slot:footer>
         <button
           type="button"
@@ -409,7 +412,10 @@ const confirmList = async () => {
 
   loading.value = false;
   confirmListVisible.value = false;
-  notificationStore.addNotification("Success", "De lijst werd bevestigd");
+  notificationStore.addNotification(
+    "Success",
+    "De lijst werd bevestigd. Je ontvangt zometeen een emailbevestiging. Je kan nu je etikken voor deze lijst invullen."
+  );
 
   if (error.value != null) {
     fieldErrors.value = error.value.data.errors;
