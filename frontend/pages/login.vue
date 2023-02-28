@@ -54,7 +54,10 @@
   </section>
 </template>
 <script setup>
+import { useAuthStore } from "~~/store/auth";
 import { Field, useForm } from "vee-validate";
+
+const authStore = useAuthStore();
 
 const initialValues = {
   email: "",
@@ -84,10 +87,14 @@ const login = handleSubmit(async (values) => {
     return;
   }
 
+  // Set token
   let maxAge = null;
+  const user = data.value.data;
   if (data.value.data.remember) maxAge = 604800;
   const token = useCookie("apiToken", { maxAge });
-  token.value = data.value.data.token;
+  token.value = user.token;
+  // Set the userinfo in the store
+  authStore.user = user;
   navigateTo("/");
 });
 
