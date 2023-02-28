@@ -163,7 +163,8 @@ const navItems = computed(() => {
   ];
 
   const items = [...userItems];
-  if (authStore.getRole === "employee") items.push(...employeeItems);
+  if (authStore.getRole === "employee" || authStore.getRole === "admin")
+    items.push(...employeeItems);
   if (authStore.getRole === "admin") items.push(...adminItems);
   return items;
 });
