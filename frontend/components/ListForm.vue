@@ -39,7 +39,7 @@ const validationSchema = object({
   }),
   memberNumber: string()
     .matches(/^\d{3}-\d{3}-\d{3}$/, {
-      message: "Ongeldig lidnummer.",
+      message: "Ongeldig lidnummer. Het formaat is xxx-xxx-xxx.",
       excludeEmptyString: true,
     })
     .nullable()

@@ -54,7 +54,7 @@
     </div>
 
     <Modal :visible="addListVisible" @close="closeNewListModal()">
-      <template v-slot:title>Nieuw lijst toevoegen</template>
+      <template v-slot:title>Nieuwe lijst toevoegen</template>
       <template v-slot:content>
         <ListForm
           ref="newListForm"
