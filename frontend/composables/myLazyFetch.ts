@@ -15,7 +15,19 @@ export const myLazyFetch = (url: Function, fetchOptions?: UseFetchOptions<unknow
                 };
             }
 
-            console.log("[fetch request]");
+            options.headers = {
+                ...options.headers,
+                "Accept": "application/json",
+            }
+        },
+        async onRequestError({ request, options, error }) {
+        },
+        async onResponse({ request, response, options }) {
+            if (response.status === 401) {
+                const token = useCookie('apiToken');
+                token.value = null;
+                navigateTo('/login')
+            }
         }
     })
 };

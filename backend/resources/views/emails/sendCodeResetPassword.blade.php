@@ -1,10 +1,17 @@
-@component('mail::message')
-<h1>We have received your request to reset your account password</h1>
-<p>You can use the following code to recover your account:</p>
+<!DOCTYPE html>
+<html>
 
-@component('mail::panel')
-{{ $code }}
-@endcomponent
+<head>
+    <title>Tweedehandsbeurs online - Wachtwoord resetten</title>
+</head>
 
-<p>The allowed duration of the code is one hour from the time the message was sent</p>
-@endcomponent
+<body>
+    <p>Beste gebruiker</p>
+    <p>We hebben een verzoek ontvangen om uw wachtwoord te resetten.<br>
+    Via volgende link kan u uw wachtwoord resetten.<br>
+    Deze link is geldig gedurende 1 uur &eacute;&eacute;n uur vanaf het tijdstip waarop dit bericht werd verzonden.</p>
+    <p> <a href="{{$appUrl}}/reset-password/{{$code}}">Klik hier om je wachtwoord te resetten</a> </p>
+    <p>Met vriendelijke groeten<br/>Gezinsbond Geel</p>
+</body>
+
+</html>

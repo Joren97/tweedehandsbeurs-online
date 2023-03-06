@@ -22,7 +22,6 @@ const type = computed(() => {
 watch(
   () => notificationStore.message,
   (newVal) => {
-    console.log("New value in the store", newVal);
     setTimeout(() => {
       notificationStore.message = "";
     }, 3000);

@@ -6,10 +6,13 @@ export const useCustomFetch = (url: string, options?: UseFetchOptions<unknown>) 
   return useFetch(config.public.API_BASE_URL + url, {
     ...options,
     async onResponse({ request, response, options }) {
-      console.log(response);
+      if (response.status === 401) {
+        const token = useCookie('apiToken');
+        token.value = null;
+        navigateTo('/login')
+      }
     },
     async onResponseError({ request, response, options }) {
-      console.log(response);
     },
 
     async onRequest({ request, options }) {
@@ -22,10 +25,13 @@ export const useCustomFetch = (url: string, options?: UseFetchOptions<unknown>) 
         };
       }
 
-      console.log('[fetch request]');
+      options.headers = {
+        ...options.headers,
+        "Accept": "application/json",
+      }
+
     },
     async onRequestError({ request, options, error }) {
-      console.log('[fetch request error]');
     },
   });
 };

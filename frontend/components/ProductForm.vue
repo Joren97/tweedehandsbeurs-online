@@ -28,11 +28,9 @@
           id="selling-price"
           v-model="values.priceId"
           disabled
-          class="form-select"
+          class="form-control"
         >
-          <option value="">
-            &dash;&dash;&nbsp;Selecteer een vraagprijs&nbsp;&dash;&dash;
-          </option>
+          <option value=""></option>
           <option v-for="item in prices" :value="item.id">
             {{ toEuro(item.sellingPrice) }}
           </option>
@@ -61,7 +59,6 @@ const props = defineProps({
 watch(
   () => props.initialData,
   (value) => {
-    console.log("initialData changed");
     if (value) {
       setValues(value);
     }

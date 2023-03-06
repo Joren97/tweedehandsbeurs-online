@@ -35,10 +35,11 @@ class AuthController extends ApiController
                 'lastname' => $request->lastname,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
-                'phone_number' => $request->phone_number,
+                'phone_number' => $request->phoneNumber,
                 'address' => $request->address,
                 'city' => $request->city,
-                'postal_code' => $request->postal_code,
+                'postal_code' => $request->postalCode,
+                'role' => 'user'
             ]
         );
         $user['token'] = $user->createToken('apiToken')->plainTextToken;
@@ -129,18 +130,25 @@ class AuthController extends ApiController
         $user->city = $request->city;
         $user->postal_code = $request->postalCode;
         $user->save();
-        return $this->successResponse(new UserResource($user), "User info updated", 200);
+        return $this->successResponse(new UserResource($user), "Profiel werd aangepast.", 200);
     }
 
     public function forgotPassword(ForgotPasswordRequest $request)
     {
+        $user = User::firstWhere('email', $request->email);
+
+        // If no user found
+        if (!$user) {
+            return $this->successResponse([], "Indien je een account hebt, ontvang je een email met verdere instructies.");
+        }
+
         PasswordResets::where('email', $request->email)->delete();
 
         $tokenData = PasswordResets::create($request->data());
 
-        Mail::to($request->email)->send(new SendCodeResetPassword($tokenData->token));
+        Mail::to($request->email)->send(new SendCodeResetPassword($tokenData->token, env('FRONTEND_URL')));
 
-        return $this->successResponse([], "Email sent", 200);
+        return $this->successResponse([], "Indien je een account hebt, ontvang je een email met verdere instructies.");
     }
 
     public function validateForgotPasswordToken(ValidateTokenRequest $request)
@@ -168,6 +176,6 @@ class AuthController extends ApiController
 
         $passwordReset->delete();
 
-        return $this->successResponse([], "Password reset", 200);
+        return $this->successResponse([], "Je wachtwoord werd aangepast.", 200);
     }
 }

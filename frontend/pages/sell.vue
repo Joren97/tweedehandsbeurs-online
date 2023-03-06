@@ -166,7 +166,6 @@ const next = (e) => {
   if (fieldName === "productNumber") {
     listNumberField.value.focus();
   } else if (fieldName === "listNumber") {
-    console.log("submit");
     searchProduct();
   }
 };

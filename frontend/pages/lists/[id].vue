@@ -44,7 +44,12 @@
                 </th>
               </tr>
             </thead>
-            <tbody>
+            <tbody v-if="products.length < 1">
+              <tr>
+                <td colspan="5">Nog geen producten toegevoegd.</td>
+              </tr>
+            </tbody>
+            <tbody v-else>
               <tr v-for="item in products" :key="item.id">
                 <td class="product__number">{{ item.productNumber }}</td>
                 <td>{{ item.description }}</td>
@@ -151,7 +156,10 @@
     </Modal>
     <Modal :visible="confirmListVisible" @close="confirmListVisible = false">
       <template v-slot:title>Lijst bevestigen</template>
-      <template v-slot:content>Ben je zeker dat je deze lijst wil bevestigen?</template>
+      <template v-slot:content
+        >Ben je zeker dat je deze lijst wil bevestigen? Nadat je de lijst hebt bevestigd,
+        kan je niets meer wijzigen.</template
+      >
       <template v-slot:footer>
         <button
           type="button"
@@ -410,10 +418,12 @@ const confirmList = async () => {
 
   loading.value = false;
   confirmListVisible.value = false;
-  notificationStore.addNotification("Success", "De lijst werd bevestigd");
+  notificationStore.addNotification(
+    "Success",
+    "De lijst werd bevestigd. Je ontvangt zometeen een emailbevestiging. Je kan nu je etikken voor deze lijst invullen."
+  );
 
   if (error.value != null) {
-    console.log(error.value);
     fieldErrors.value = error.value.data.errors;
     return;
   }

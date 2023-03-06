@@ -82,7 +82,11 @@
       <div class="row mb-3">
         <div class="col-3">Lidnummer</div>
         <div class="col">
-          <VTextInput name="memberNumber" placeholder="Lidnummer" />
+          <VTextInput
+            name="memberNumber"
+            placeholder="Lidnummer"
+            hint="Lidnummer in het formaat xxx-xxx-xxx"
+          />
         </div>
       </div>
       <div class="row">
@@ -128,7 +132,7 @@ const validationSchema = object({
   lastname: string().required().label("Familienaam"),
   memberNumber: string()
     .matches(/^\d{3}-\d{3}-\d{3}$/, {
-      message: "Ongeldig lidnummer.",
+      message: "Ongeldig lidnummer. Het formaat is xxx-xxx-xxx.",
       excludeEmptyString: true,
     })
     .nullable()

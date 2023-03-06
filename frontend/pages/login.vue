@@ -38,6 +38,7 @@
           :loading="loading"
           >Aanmelden</LoadingButton
         >
+        <button type="submit" class="d-none">Submit</button>
         <div class="form__options">
           <div class="options__forgot">
             <NuxtLink class="small" to="/forgot-password">
@@ -53,7 +54,10 @@
   </section>
 </template>
 <script setup>
+import { useAuthStore } from "~~/store/auth";
 import { Field, useForm } from "vee-validate";
+
+const authStore = useAuthStore();
 
 const initialValues = {
   email: "",
@@ -69,7 +73,6 @@ const loading = ref(false);
 
 const login = handleSubmit(async (values) => {
   loading.value = true;
-  console.log("login");
 
   const { data, error } = await useCustomFetch("/api/auth/login", {
     method: "POST",
@@ -80,15 +83,22 @@ const login = handleSubmit(async (values) => {
   loading.value = false;
 
   if (error.value != null) {
-    console.log(error.value.data);
     setErrors(error.value.data.errors);
     return;
   }
 
+  // Set token
   let maxAge = null;
+  const user = data.value.data;
   if (data.value.data.remember) maxAge = 604800;
   const token = useCookie("apiToken", { maxAge });
-  token.value = data.value.data.token;
+  token.value = user.token;
+  // Set the userinfo in the store
+  authStore.user = user;
   navigateTo("/");
+});
+
+useHead({
+  title: "Aanmelden",
 });
 </script>

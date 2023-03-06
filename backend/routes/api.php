@@ -16,7 +16,8 @@ Route::post('/auth/login', [AuthController::class, 'login']);
 Route::post('/auth/forgot-password/request', [AuthController::class, 'forgotPassword']);
 Route::post('/auth/forgot-password/validate', [AuthController::class, 'validateForgotPasswordToken']);
 Route::post('/auth/forgot-password/reset', [AuthController::class, 'resetPassword']);
-Route::get('/mail', [SeedController::class, 'testMail']);
+
+Route::get('/app-info', [SeedController::class, 'appInfo']);
 
 // User routes
 Route::group(

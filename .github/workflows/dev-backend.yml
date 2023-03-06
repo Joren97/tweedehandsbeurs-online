@@ -44,6 +44,7 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: apidev/src/
           local-dir: ./backend/
+          timeout: 1200000
           exclude: |
             **/tests/**
             **/public/**

@@ -311,8 +311,6 @@ const closeConfirmPay = () => {
 };
 
 const paySelectedLists = async () => {
-  console.log("paySelectedLists");
-  console.log(selectedLists.value);
   loading.value = true;
 
   const listIds = selectedLists.value.map((item) => item.id);

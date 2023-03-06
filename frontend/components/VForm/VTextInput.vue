@@ -13,6 +13,7 @@
       :type="type"
     />
     <VErrorMessage :name="name" as="div" class="invalid-feedback" />
+    <div class="form-text" v-if="hint">{{ hint }}</div>
   </VField>
 </template>
 
@@ -37,6 +38,10 @@ const props = defineProps({
   disabled: {
     type: Boolean,
     default: false,
+  },
+  hint: {
+    type: String,
+    default: null,
   },
 });
 </script>

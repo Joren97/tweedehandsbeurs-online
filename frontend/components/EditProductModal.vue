@@ -133,7 +133,6 @@ const updateProduct = async () => {
   );
 
   if (error.value != null) {
-    console.log(error.value);
     fieldErrors.value = error.value.data.errors;
     return;
   }

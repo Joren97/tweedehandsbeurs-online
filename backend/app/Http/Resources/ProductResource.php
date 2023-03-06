@@ -22,7 +22,7 @@ class ProductResource extends JsonResource
             'productNumber' => $this->product_number,
             'isSold' => $this->is_sold == 1,
             'price' => PriceResource::make($this->price),
-            'productlist' => ProductlistResource::make($this->productlist),
+            'productlist' => ProductListResource::make($this->productlist),
         ];
     }
 }
