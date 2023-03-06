@@ -125,7 +125,9 @@
                   <td class="datatable__actions">
                     <span class="divider"></span>
                     <span class="action">
-                      <i class="fa-solid fa-eye"></i>
+                      <NuxtLink :to="`/list-management/${item.id}`">
+                        <i class="fa-regular fa-eye fa-lg"></i>
+                      </NuxtLink>
                     </span>
                   </td>
                 </tr>
