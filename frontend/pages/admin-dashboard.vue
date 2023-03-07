@@ -10,32 +10,36 @@
           title="Winst"
           icon="fa-solid fa-sack-dollar"
           text-icon="fa-solid fa-euro-sign"
-          text="1.254,00"
+          :text="dashboard.profit.amount"
+          :percentage="dashboard.profit.previousDiffPercentage"
         />
       </div>
       <div class="col-3">
         <StatCard
           title="Lijsten"
-          text="12"
           icon="fa-regular fa-rectangle-list"
           color="danger"
+          :text="dashboard.lists.amount"
+          :percentage="dashboard.lists.previousDiffPercentage"
         />
       </div>
       <div class="col-3">
         <StatCard
           title="Artikelen"
-          text="12000"
           icon="fa-solid fa-shirt"
           color="warning"
+          :text="dashboard.products.amount"
+          :percentage="dashboard.products.previousDiffPercentage"
         />
       </div>
       <div class="col-3">
         <StatCard
           title="Verkocht"
-          text="30"
           text-icon="fa-solid fa-percent"
           icon="fa-solid fa-gavel"
           color="info"
+          :text="dashboard.percentageSold.amount"
+          :percentage="dashboard.percentageSold.previousDiffPercentage"
         />
       </div>
     </div>
@@ -51,5 +55,26 @@ definePageMeta({
 });
 useHead({
   title: "Beursoverzicht",
+});
+
+const {
+  pending: dashboardPending,
+  data: dashboardData,
+  refresh: dashboardRefresh,
+} = myLazyFetch(() => `/api/admin-dashboard`, { key: "dashboard", initialCache: false });
+
+const dashboard = computed(() => {
+  const empty = {
+    profit: { amount: 0, previousDiffPercentage: 0 },
+    lists: { amount: 0, previousDiffPercentage: 0 },
+    products: { amount: 0, previousDiffPercentage: 0 },
+    percentageSold: { amount: 0, previousDiffPercentage: 0 },
+  };
+
+  if (!dashboardData) return empty;
+  if (!dashboardData.value) return empty;
+  if (!dashboardData.value.data) return empty;
+
+  return dashboardData.value.data;
 });
 </script>

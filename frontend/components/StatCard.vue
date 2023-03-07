@@ -4,10 +4,14 @@
       <p class="text-uppercase mb-1 text-muted">{{ title }}</p>
       <h2><i :class="textIcon"></i> {{ text }}</h2>
       <div>
-        <span class="text-success text-bold me-1"
-          ><i class="fa fa-arrow-up"></i> +5%</span
+        <span
+          class="text-bold me-1"
+          :class="percentage >= 0 ? 'text-success' : 'text-danger'"
         >
-        <span class="text-muted">vs last 28 days</span>
+          <i class="fa" :class="percentage >= 0 ? 'fa-arrow-up' : 'fa-arrow-down'"></i>
+          {{ percentage }}%</span
+        >
+        <span class="text-muted"> tegen laatste editie</span>
       </div>
     </div>
     <div class="stat-card__icon" :class="`stat-card__icon--${color}`">
@@ -43,6 +47,11 @@ defineProps({
     type: String,
     required: false,
     default: "primary",
+  },
+  percentage: {
+    type: Number,
+    required: false,
+    default: 0,
   },
 });
 </script>
