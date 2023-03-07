@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\PriceController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProductlistController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 /* |-------------------------------------------------------------------------- | API Routes |-------------------------------------------------------------------------- | | Here is where you can register API routes for your application. These | routes are loaded by the RouteServiceProvider within a group which | is assigned the "api" middleware group. Enjoy building your API! | */
@@ -70,5 +71,7 @@ Route::group(
         Route::post('edition', [EditionController::class, 'store']);
         Route::put('edition/{edition}', [EditionController::class, 'update']);
         Route::delete('edition/{edition}', [EditionController::class, 'destroy']);
+
+        Route::get('admin-dashboard', [DashboardController::class, 'index']);
     }
 );
