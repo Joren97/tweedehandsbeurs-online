@@ -18,4 +18,9 @@ class Edition extends Model
     protected $casts = [
         'is_active' => 'boolean',
     ];
+
+    public function productlists()
+    {
+        return $this->hasMany(Productlist::class);
+    }
 }
