@@ -347,6 +347,28 @@ class ProductlistController extends ApiController
     }
 
     /**
+     * Update the specified resource in storage for the logged in user.
+     *
+     * @param  \App\Http\Requests\UpdateProductListRequest  $request
+     * @param  integer  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function validateList($id)
+    {
+        $list = ProductList::findOrFail($id);
+
+        // If the list is not yet confirmed, return error
+        if (!$list->is_user_confirmed) {
+            return $this->errorResponse('Lijst werd nog niet bevestigd.', 400);
+        }
+
+        $list->is_employee_validated = true;
+        $list->save();
+
+        return new ProductListResource($list);
+    }
+
+    /**
      * Update the specified resource in storage.
      *
      * @param  \App\Http\Requests\UpdateProductListRequest  $request
