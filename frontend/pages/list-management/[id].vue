@@ -10,7 +10,9 @@
       <div class="col">
         <div class="list__buttons">
           <button
-            :disabled="listPending || (list && list.isUserConfirmed)"
+            :disabled="
+              listPending || (list && list.isUserConfirmed) || products.length >= 20
+            "
             class="btn btn-primary"
             href="#add-product-modal"
             @click="newProductVisible = true"
@@ -22,19 +24,14 @@
             @click="confirmListVisible = true"
             :disabled="listPending || (list && list.isUserConfirmed)"
           >
-            Lijst bevestigen
+            <span v-if="list && list.isUserConfirmed">Lijst is reeds bevestigd</span>
+            <span v-else>Lijst bevestigen</span>
           </button>
         </div>
       </div>
     </div>
     <div class="row">
       <div class="col-8">
-        <!-- <EmployeeProductTable
-          :prices="prices"
-          :products="products"
-          @refresh="refreshProducts"
-          :loading="productsPending || pricesPending"
-        /> -->
         <table class="datatable">
           <thead>
             <tr>
@@ -160,11 +157,97 @@
             </div>
           </div>
         </div>
+
+        <TheNotification class="mt-3" />
       </div>
     </div>
+    <Modal :visible="newProductVisible" @close="closeNewProductModal()">
+      <template v-slot:title>Nieuw product toevoegen</template>
+      <template v-slot:content>
+        <ProductForm
+          ref="newProductForm"
+          @submit="onNewProductSubmit"
+          :price-data="prices"
+        />
+      </template>
+      <template v-slot:footer>
+        <button
+          type="button"
+          class="btn btn-secondary mx-2"
+          @click="closeNewProductModal()"
+        >
+          Sluiten
+        </button>
+        <LoadingButton @click="submitNewProduct" :loading="loading" type="primary"
+          >Product toevoegen</LoadingButton
+        >
+      </template>
+    </Modal>
+    <Modal :visible="confirmListVisible" @close="confirmListVisible = false">
+      <template v-slot:title>Lijst bevestigen</template>
+      <template v-slot:content
+        >Ben je zeker dat je deze lijst wil bevestigen? Nadat je de lijst hebt bevestigd,
+        kan je niets meer wijzigen.</template
+      >
+      <template v-slot:footer>
+        <button
+          type="button"
+          class="btn btn-secondary mx-2"
+          @click="confirmListVisible = false"
+        >
+          Annuleren
+        </button>
+
+        <LoadingButton type="primary" @click="confirmList" :loading="loading"
+          >Lijst bevestigen</LoadingButton
+        >
+      </template>
+    </Modal>
+    <Modal :visible="deleteProductVisible" @close="deleteProductVisible = false">
+      <template v-slot:title>Product verwijderen</template>
+      <template v-slot:content>Ben je zeker dat je dit product wil verwijderen?</template>
+      <template v-slot:footer>
+        <button
+          type="button"
+          class="btn btn-secondary mx-2"
+          @click="deleteProductVisible = false"
+        >
+          Annuleren
+        </button>
+
+        <LoadingButton type="primary" @click="deleteProduct" :loading="loading"
+          >Product verwijderen</LoadingButton
+        >
+      </template>
+    </Modal>
+    <Modal :visible="editProductVisible" @close="closeEditProductModal()">
+      <template v-slot:title>Product bewerken</template>
+      <template v-slot:content>
+        <ProductForm
+          ref="editProductForm"
+          @submit="onEditProductSubmit"
+          :price-data="prices"
+          :initial-data="productToEdit"
+        />
+      </template>
+      <template v-slot:footer>
+        <button
+          type="button"
+          class="btn btn-secondary mx-2"
+          @click="closeEditProductModal()"
+        >
+          Sluiten
+        </button>
+        <LoadingButton @click="submitEditProduct" :loading="loading" type="primary"
+          >Wijzigingen opslaan</LoadingButton
+        >
+      </template>
+    </Modal>
   </section>
 </template>
 <script setup>
+import { useNotificationStore } from "~~/store/notification";
+
 definePageMeta({
   layout: "dashboard",
   middleware: ["auth"],
@@ -172,6 +255,17 @@ definePageMeta({
     authLevel: "employee",
   },
 });
+
+const deleteProductVisible = ref(false);
+const editProductVisible = ref(false);
+const newProductVisible = ref(false);
+const confirmListVisible = ref(false);
+const loading = ref(false);
+const productToEdit = ref(null);
+const newProductForm = ref();
+const notificationStore = useNotificationStore();
+
+clearNuxtData();
 
 const { pending: listPending, data, refresh } = myFetch(
   `/api/productlist/${useRoute().params.id}`,
@@ -195,20 +289,11 @@ const {
   },
 });
 
-const { pending: pricesPending, data: pricesData, refresh: refreshPrices } = myFetch(
-  `/api/price`,
-  {
-    key: "prices",
-    params: {
-      perPage: 100,
-    },
-  }
-);
-
-const prices = computed(() => {
-  if (!pricesData) return [];
-  if (!pricesData.value) return [];
-  return pricesData.value.data;
+const { data: prices, pending: pricesPending } = myLazyFetch(() => `/api/price`, {
+  key: "prices",
+  params: {
+    perPage: 100,
+  },
 });
 
 const list = computed(() => {
@@ -221,14 +306,6 @@ const user = computed(() => {
   if (!list.value) return {};
   if (!list.value.user) return {};
   return list.value.user;
-});
-
-const fullAddress = computed(() => {
-  if (!user.value) return "";
-  if (user.value.address && user.value.postalCode && user.value.city) {
-    return `${user.value.address}, ${user.value.postalCode} ${user.value.city}`;
-  }
-  return "";
 });
 
 const products = computed(() => {
@@ -249,4 +326,72 @@ watch(products, () => {
     totalSold.value = total;
   }
 });
+
+const submitEditProduct = async () => {
+  await editProductForm.value.submit();
+};
+
+const onEditProductSubmit = async (values) => {
+  console.log("🚀 ~ file: [id].vue:346 ~ onEditProductSubmit ~ values:", values);
+};
+
+const onNewProductSubmit = async (values) => {
+  loading.value = true;
+  const body = {
+    ...values,
+    productlistId: useRoute().params.id,
+  };
+
+  const { data, error } = await useApi(`/api/product`, {
+    method: "POST",
+    body,
+    initialCache: false,
+  });
+
+  if (error && error.value) {
+    notificationStore.addNotification("Error", error.value.data.message);
+  } else {
+    notificationStore.addNotification("Success", "Product werd toegevoegd");
+    refreshProducts();
+  }
+
+  newProductVisible.value = false;
+  newProductForm.value.handleReset();
+  loading.value = false;
+};
+
+const submitNewProduct = async () => {
+  await newProductForm.value.submit();
+};
+
+const confirmList = async () => {
+  loading.value = true;
+
+  const { pending, error } = await useApi(
+    `/api/productlist/confirm/${useRoute().params.id}`,
+    {
+      method: "PUT",
+      key: "confirm",
+      initialCache: false,
+    }
+  );
+
+  loading.value = false;
+  confirmListVisible.value = false;
+  notificationStore.addNotification("Success", "De lijst werd bevestigd.");
+
+  if (error.value != null) {
+    fieldErrors.value = error.value.data.errors;
+    return;
+  }
+
+  refresh();
+};
+
+const deleteProduct = () => {};
+
+const closeNewProductModal = () => {
+  newProductVisible.value = false;
+  newProductForm.value.handleReset();
+};
 </script>
