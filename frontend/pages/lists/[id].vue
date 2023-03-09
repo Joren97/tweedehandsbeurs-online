@@ -19,8 +19,8 @@
             @click="confirmListVisible = true"
             :disabled="listPending || (list && list.isUserConfirmed)"
           >
-            <span>Lijst bevestigen</span>
-            <span v-if="list">Lijst is reeds bevestigd</span>
+            <span v-if="list && list.isUserConfirmed">Lijst is reeds bevestigd</span>
+            <span v-else>Lijst bevestigen</span>
           </button>
         </div>
       </div>
