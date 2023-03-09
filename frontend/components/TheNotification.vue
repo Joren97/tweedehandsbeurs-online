@@ -6,6 +6,7 @@
       class="btn-close"
       data-bs-dismiss="alert"
       aria-label="Close"
+      @click="clear"
     ></button>
   </div>
 </template>
@@ -18,6 +19,10 @@ const type = computed(() => {
   if (notificationStore.status == "Success") return "alert-success";
   if (notificationStore.status == "Error") return "alert-danger";
 });
+
+const clear = () => {
+  notificationStore.message = "";
+};
 
 watch(
   () => notificationStore.message,
