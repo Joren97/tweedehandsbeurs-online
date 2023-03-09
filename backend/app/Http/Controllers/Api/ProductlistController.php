@@ -14,6 +14,7 @@ use App\Http\Requests\ConfirmProductlistRequest;
 use App\Http\Resources\ProductListCollection;
 use App\Http\Resources\ProductListResource;
 use App\Models\Edition;
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
@@ -280,6 +281,48 @@ class ProductlistController extends ApiController
 
         // To email address
         $to = auth()->user()->email;
+
+        if (env('APP_DEBUG')) {
+            $to = env('MAIL_TO_ADDRESS');
+        }
+
+        // Send an email to the user
+        $data["number"] = $list->list_number;
+
+        MailController::sendMail(
+            'emails.confirmList',
+            $data,
+            $to,
+            'Lijst ' . $list->list_number . ' werd zojuist bevestigd',
+            $pdf,
+            'lijst-' . $list->list_number . '.pdf'
+        );
+
+        $list->is_user_confirmed = true;
+        $list->save();
+
+        return new ProductListResource($list);
+    }
+
+    /**
+     * Update the specified resource in storage for the logged in user.
+     *
+     * @param  \App\Http\Requests\UpdateProductListRequest  $request
+     * @param  integer  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function confirmList($id)
+    {
+        $list = ProductList::findOrFail($id);
+
+        // Get PDF of productlist
+        $pdf = PDFController::generateProductlistPdf($id);
+
+        // Get the user of the productlist
+        $user = User::findOrFail($list->user_id);
+
+        // To email address
+        $to = $user->email;
 
         if (env('APP_DEBUG')) {
             $to = env('MAIL_TO_ADDRESS');
