@@ -24,8 +24,16 @@
             @click="confirmListVisible = true"
             :disabled="listPending || (list && list.isUserConfirmed)"
           >
-            <span v-if="list && list.isUserConfirmed">Lijst is reeds bevestigd</span>
+            <span v-if="list && list.isUserConfirmed">Lijst is bevestigd</span>
             <span v-else>Lijst bevestigen</span>
+          </button>
+          <button
+            class="btn btn-primary ms-2"
+            @click="validateListVisible = true"
+            :disabled="listPending || (list && list.isEmployeeValidated)"
+          >
+            <span v-if="list && list.isEmployeeValidated">Lijst is gevalideerd</span>
+            <span v-else>Lijst valideren</span>
           </button>
         </div>
       </div>
@@ -185,10 +193,7 @@
     </Modal>
     <Modal :visible="confirmListVisible" @close="confirmListVisible = false">
       <template v-slot:title>Lijst bevestigen</template>
-      <template v-slot:content
-        >Ben je zeker dat je deze lijst wil bevestigen? Nadat je de lijst hebt bevestigd,
-        kan je niets meer wijzigen.</template
-      >
+      <template v-slot:content>Ben je zeker dat je deze lijst wil bevestigen?</template>
       <template v-slot:footer>
         <button
           type="button"
@@ -200,6 +205,26 @@
 
         <LoadingButton type="primary" @click="confirmList" :loading="loading"
           >Lijst bevestigen</LoadingButton
+        >
+      </template>
+    </Modal>
+    <Modal :visible="validateListVisible" @close="validateListVisible = false">
+      <template v-slot:title>Lijst valideren</template>
+      <template v-slot:content
+        >Ben je zeker dat je deze lijst wil valideren? Nadat je de lijst hebt gevalideerd,
+        kan je niets meer wijzigen.</template
+      >
+      <template v-slot:footer>
+        <button
+          type="button"
+          class="btn btn-secondary mx-2"
+          @click="validateListVisible = false"
+        >
+          Annuleren
+        </button>
+
+        <LoadingButton type="primary" @click="validateList" :loading="loading"
+          >Lijst valideren</LoadingButton
         >
       </template>
     </Modal>
@@ -260,6 +285,7 @@ const deleteProductVisible = ref(false);
 const editProductVisible = ref(false);
 const newProductVisible = ref(false);
 const confirmListVisible = ref(false);
+const validateListVisible = ref(false);
 const loading = ref(false);
 const productToEdit = ref(null);
 const newProductForm = ref();
@@ -386,6 +412,29 @@ const confirmList = async () => {
   }
 
   refresh();
+};
+
+const validateList = async () => {
+  loading.value = true;
+
+  const { pending, error } = await useApi(
+    `/api/productlist/validate/${useRoute().params.id}`,
+    {
+      method: "PUT",
+      key: "validate",
+      initialCache: false,
+    }
+  );
+
+  loading.value = false;
+  validateListVisible.value = false;
+
+  if (error && error.value) {
+    notificationStore.addNotification("Error", error.value.data.message);
+  } else {
+    notificationStore.addNotification("Success", "Lijst werd gevalideerd.");
+    refresh();
+  }
 };
 
 const deleteProduct = () => {};
