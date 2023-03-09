@@ -66,12 +66,12 @@ class ProductController extends ApiController
 
         // If the productlist is is confirmed by the user, return a 403
         if ($productlist->is_user_confirmed) {
-            return $this->errorResponse('Deze lijst is reeds bevestigd.', 403);
+            return $this->errorResponse('Deze lijst is reeds bevestigd.', 400);
         }
 
         // If the productlist contains 20 products, return a 403
         if ($productlist->products()->count() >= 20) {
-            return $this->errorResponse('Deze lijst bevat reeds 20 producten.', 403);
+            return $this->errorResponse('Deze lijst bevat reeds 20 producten.', 400);
         }
 
         if ($productlist->products()->count() === 0) {
