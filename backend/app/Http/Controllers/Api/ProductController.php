@@ -203,7 +203,16 @@ class ProductController extends ApiController
      */
     public function destroy(Product $product)
     {
+        $product = Product::findOrFail($product->id);
 
+        // If no product is found, return a 400
+        if (!$product) {
+            return $this->errorResponse('Product werd niet gevonden.', 400);
+        }
+
+        $product->delete();
+
+        return $this->successResponse(null, 'Product verwijderd.', 200);
     }
 
     /**

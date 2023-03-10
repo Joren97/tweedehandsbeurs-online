@@ -87,8 +87,12 @@
               </td>
               <td class="datatable__actions">
                 <span class="divider"></span>
-                <span class="action"><i class="fa-solid fa-pencil fa-lg"></i></span>
-                <span class="action"><i class="fa-solid fa-trash fa-lg"></i></span>
+                <span class="action" @click="openEditProductModal(item.id)"
+                  ><i class="fa-solid fa-pencil fa-lg"></i
+                ></span>
+                <span class="action" @click="confirmDeleteProduct(item.id)"
+                  ><i class="fa-solid fa-trash fa-lg"></i
+                ></span>
               </td>
             </tr>
           </tbody>
@@ -289,7 +293,9 @@ const validateListVisible = ref(false);
 const loading = ref(false);
 const productToEdit = ref(null);
 const newProductForm = ref();
+const editProductForm = ref();
 const notificationStore = useNotificationStore();
+const selectedProductId = ref(null);
 
 clearNuxtData();
 
@@ -358,7 +364,30 @@ const submitEditProduct = async () => {
 };
 
 const onEditProductSubmit = async (values) => {
-  console.log("🚀 ~ file: [id].vue:346 ~ onEditProductSubmit ~ values:", values);
+  loading.value = true;
+  const body = {
+    ...values,
+    productlistId: useRoute().params.id,
+  };
+
+  const { data, error } = await useApi(`/api/product/${productToEdit.value.id}`, {
+    method: "PUT",
+    body,
+    initialCache: false,
+  });
+
+  editProductVisible.value = false;
+  editProductForm.value.handleReset();
+  loading.value = false;
+
+  await nextTick();
+
+  if (error && error.value) {
+    notificationStore.addNotification("Error", error.value.data.message);
+  } else {
+    notificationStore.addNotification("Success", "Product werd bewerkt");
+    refreshProducts();
+  }
 };
 
 const onNewProductSubmit = async (values) => {
@@ -437,10 +466,43 @@ const validateList = async () => {
   }
 };
 
-const deleteProduct = () => {};
+const deleteProduct = async () => {
+  loading.value = true;
+  const { pending, error } = await useApi(`/api/product/${selectedProductId.value}`, {
+    method: "DELETE",
+    key: "delete",
+    initialCache: false,
+  });
+
+  if (error.value != null) {
+    notificationStore.addNotification("Error", error.value.data.message);
+  } else {
+    notificationStore.addNotification("Success", "Product werd verwijderd");
+  }
+
+  deleteProductVisible.value = false;
+  loading.value = false;
+  selectedProductId.value = null;
+  refreshProducts();
+};
 
 const closeNewProductModal = () => {
   newProductVisible.value = false;
   newProductForm.value.handleReset();
+};
+
+const openEditProductModal = (productId) => {
+  productToEdit.value = products.value.find((p) => p.id === productId);
+  editProductVisible.value = true;
+};
+
+const closeEditProductModal = () => {
+  editProductVisible.value = false;
+  productToEdit.value = null;
+};
+
+const confirmDeleteProduct = (productId) => {
+  selectedProductId.value = productId;
+  deleteProductVisible.value = true;
 };
 </script>
