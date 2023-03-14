@@ -11,14 +11,7 @@
         <div class="row align-items-center mb-3">
           <div class="col">
             <div class="filters__search">
-              <input
-                class="form-control"
-                name="search"
-                id="search"
-                @input="keywordChange"
-                placeholder="Zoeken"
-                :disabled="listsPending || editionsPending"
-              />
+              <SearchInput />
             </div>
           </div>
 
@@ -154,7 +147,6 @@ definePageMeta({
   },
 });
 
-const search = ref("");
 const isUserConfirmed = ref("any");
 const isEmployeeValidated = ref("any");
 const isPaidToUser = ref("any");
@@ -178,6 +170,10 @@ const query = computed(() => {
 
 const page = computed(() => {
   return parseInt(useRoute().query.page) || 1;
+});
+
+const search = computed(() => {
+  return useRoute().query.search || "";
 });
 
 const { pending: listsPending, data: listsData } = myAsyncData(
@@ -217,13 +213,4 @@ const lists = computed(() => {
   if (!listsData.value) return [];
   return listsData.value.data;
 });
-
-const debounce = ref(null);
-
-const keywordChange = (e) => {
-  clearTimeout(debounce.value);
-  debounce.value = setTimeout(() => {
-    search.value = e.target.value;
-  }, 500);
-};
 </script>

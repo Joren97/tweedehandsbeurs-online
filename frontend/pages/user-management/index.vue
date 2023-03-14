@@ -6,14 +6,7 @@
       </div>
       <div class="col">
         <div class="user-management__search">
-          <input
-            class="form-control"
-            name="search"
-            id="search"
-            @input="keywordChange"
-            placeholder="Zoeken"
-            :disabled="pending"
-          />
+          <SearchInput />
         </div>
       </div>
     </div>
@@ -77,7 +70,9 @@ const query = computed(() => {
   return "";
 });
 
-const search = ref("");
+const search = computed(() => {
+  return useRoute().query.search || "";
+});
 
 const page = computed(() => {
   return parseInt(useRoute().query.page) || 1;
@@ -119,15 +114,6 @@ const pagination = computed(() => {
   if (!data.value) return {};
   return data.value.meta;
 });
-
-const debounce = ref(null);
-
-const keywordChange = (e) => {
-  clearTimeout(debounce.value);
-  debounce.value = setTimeout(() => {
-    search.value = e.target.value;
-  }, 500);
-};
 
 useHead({
   title: "Gebruikers",

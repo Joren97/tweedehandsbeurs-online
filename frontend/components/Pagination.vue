@@ -59,10 +59,13 @@ const router = useRouter();
 const emit = defineEmits(["previous-page", "next-page"]);
 
 const previousPage = () => {
+  const currentQuery = router.currentRoute.value.query;
+
   if (page.value == 1) return;
 
   router.push({
     query: {
+      ...currentQuery,
       page: page.value - 1,
     },
   });
@@ -70,10 +73,13 @@ const previousPage = () => {
 };
 
 const nextPage = () => {
+  const currentQuery = router.currentRoute.value.query;
+
   if (page.value == lastPage.value) return;
 
   router.push({
     query: {
+      ...currentQuery,
       page: page.value + 1,
     },
   });
