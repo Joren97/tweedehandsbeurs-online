@@ -2,7 +2,7 @@
   <section class="section__register">
     <div class="register__form">
       <div class="form__image">
-        <img src="~/assets/img/clothes.jpg" />
+        <img src="~/assets/img/tweedehandsbeurs.jpg" />
       </div>
 
       <div class="form__form">

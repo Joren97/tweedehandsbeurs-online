@@ -2,7 +2,7 @@
   <section class="section__login">
     <div class="login__form">
       <div class="form__image">
-        <img src="~/assets/img/clothes.jpg" />
+        <img src="~/assets/img/tweedehandsbeurs.jpg" />
       </div>
       <form class="form__form" @submit="reset">
         <div class="form__title">
