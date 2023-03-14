@@ -107,7 +107,9 @@
                 <tr v-for="item in lists">
                   <td>{{ item.listNumber }}</td>
                   <td>
-                    <NuxtLink :to="`/user-management/${item.user.id}`"
+                    <NuxtLink
+                      v-if="item && item.user"
+                      :to="`/user-management/${item.user.id}`"
                       >{{ item.user && item.user.firstname }}
                       {{ item.user && item.user.lastname }}</NuxtLink
                     >
