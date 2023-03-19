@@ -78,12 +78,14 @@
             <div class="information__item mb-2">
               <span class="item__title">Verkoopprijs</span>
               <span v-if="!product">&dash;</span>
-              <span v-else>{{ product && toEuro(product.price.sellingPrice) }}</span>
+              <span v-else class="text-bold">{{
+                product && toEuro(product.price.sellingPrice)
+              }}</span>
             </div>
             <div class="information__item mb-2">
               <span class="item__title">Productnummer</span>
               <span v-if="!product">&dash;</span>
-              <span v-else class="text-bold">{{ product && product.productNumber }}</span>
+              <span v-else>{{ product && product.productNumber }}</span>
             </div>
             <div class="information__item mb-2">
               <span class="item__title">Lijstnummer</span>
