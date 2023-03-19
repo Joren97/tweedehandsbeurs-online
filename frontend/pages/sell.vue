@@ -164,9 +164,9 @@ const next = (e) => {
 
   if (errors.value[fieldName]) return;
 
-  if (fieldName === "productNumber") {
-    listNumberField.value.focus();
-  } else if (fieldName === "listNumber") {
+  if (fieldName === "listNumber") {
+    productNumberField.value.focus();
+  } else if (fieldName === "productNumber") {
     searchProduct();
   }
 };
