@@ -203,9 +203,9 @@ const searchProduct = handleSubmit(async (values, actions) => {
 
   actions.resetForm();
 
-  if (status === "Error") productNumberField.value.focus();
-  else if (data.length === 0) productNumberField.value.focus();
-  else if (data[0].isSold) productNumberField.value.focus();
+  if (status === "Error") listNumberField.value.focus();
+  else if (data.length === 0) listNumberField.value.focus();
+  else if (data[0].isSold) listNumberField.value.focus();
 });
 
 const sellProduct = async (p) => {
@@ -222,7 +222,7 @@ const sellProduct = async (p) => {
 
   if (status === "Success") {
     notificationStore.addNotification(status, message);
-    productNumberField.value.focus();
+    listNumberField.value.focus();
     product.value = data;
   }
 };
