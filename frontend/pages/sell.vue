@@ -4,26 +4,8 @@
       <template v-slot:title>Verkopen</template>
     </LayoutPageHeading>
     <div class="row">
-      <div class="col-4">
+      <div class="col-6">
         <form>
-          <div class="row mb-3">
-            <label for="productNumber" class="form-label">Productnummer</label>
-            <VField name="productNumber" as="div" v-slot="{ field, meta }">
-              <input
-                v-bind="field"
-                type="text"
-                name="productNumber"
-                @keyup.enter="next"
-                ref="productNumberField"
-                class="form-control"
-                :class="{
-                  'is-valid': meta.valid && meta.touched,
-                  'is-invalid': !meta.valid && meta.touched,
-                }"
-              />
-              <div class="invalid-feedback">{{ errors.productNumber }}</div>
-            </VField>
-          </div>
           <div class="row mb-3">
             <label for="listNumber" class="form-label">Lijstnummer</label>
             <VField name="listNumber" as="div" v-slot="{ field, meta }">
@@ -42,6 +24,25 @@
               <div class="invalid-feedback">{{ errors.listNumber }}</div>
             </VField>
           </div>
+
+          <div class="row mb-3">
+            <label for="productNumber" class="form-label">Productnummer</label>
+            <VField name="productNumber" as="div" v-slot="{ field, meta }">
+              <input
+                v-bind="field"
+                type="text"
+                name="productNumber"
+                @keyup.enter="next"
+                ref="productNumberField"
+                class="form-control"
+                :class="{
+                  'is-valid': meta.valid && meta.touched,
+                  'is-invalid': !meta.valid && meta.touched,
+                }"
+              />
+              <div class="invalid-feedback">{{ errors.productNumber }}</div>
+            </VField>
+          </div>
           <button
             type="button"
             class="btn btn-loading btn-primary"
@@ -58,7 +59,7 @@
           </button>
         </form>
       </div>
-      <div class="col-8">
+      <div class="col-6">
         <div class="product__information">
           <div class="information__title">
             <span>Productinfo</span>
@@ -77,7 +78,9 @@
             <div class="information__item mb-2">
               <span class="item__title">Verkoopprijs</span>
               <span v-if="!product">&dash;</span>
-              <span v-else>{{ product && toEuro(product.price.sellingPrice) }}</span>
+              <span v-else class="text-bold">{{
+                product && toEuro(product.price.sellingPrice)
+              }}</span>
             </div>
             <div class="information__item mb-2">
               <span class="item__title">Productnummer</span>
@@ -163,9 +166,9 @@ const next = (e) => {
 
   if (errors.value[fieldName]) return;
 
-  if (fieldName === "productNumber") {
-    listNumberField.value.focus();
-  } else if (fieldName === "listNumber") {
+  if (fieldName === "listNumber") {
+    productNumberField.value.focus();
+  } else if (fieldName === "productNumber") {
     searchProduct();
   }
 };
@@ -200,9 +203,9 @@ const searchProduct = handleSubmit(async (values, actions) => {
 
   actions.resetForm();
 
-  if (status === "Error") productNumberField.value.focus();
-  else if (data.length === 0) productNumberField.value.focus();
-  else if (data[0].isSold) productNumberField.value.focus();
+  if (status === "Error") listNumberField.value.focus();
+  else if (data.length === 0) listNumberField.value.focus();
+  else if (data[0].isSold) listNumberField.value.focus();
 });
 
 const sellProduct = async (p) => {
@@ -219,7 +222,7 @@ const sellProduct = async (p) => {
 
   if (status === "Success") {
     notificationStore.addNotification(status, message);
-    productNumberField.value.focus();
+    listNumberField.value.focus();
     product.value = data;
   }
 };
