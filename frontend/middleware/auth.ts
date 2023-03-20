@@ -12,7 +12,23 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     }
 
     // Check if user object is set, else fetch it
-    if (!authStore.user || authStore.user == null) {
+    try {
+        if (!authStore.user || authStore.user == null) {
+            const { data: userData, pending, error, refresh } = await myLazyFetch(
+                () => "/api/auth/userinfo",
+                {
+                    initialCache: false,
+                }
+            );
+
+            // @ts-ignore
+            authStore.user = userData.value.data;
+        }
+    } catch (error) {
+
+    }
+
+    if (authStore.user == null) {
         return navigateTo('/login');
     }
 
