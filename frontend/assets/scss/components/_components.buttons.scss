@@ -23,6 +23,15 @@
     }
   }
 
+  &.btn-success {
+    color: white !important;
+    background-color: $success;
+
+    &:hover {
+      background-color: $success-dark;
+    }
+  }
+
   &.btn-outline-secondary {
     background-color: transparent;
     border-color: $secondary;

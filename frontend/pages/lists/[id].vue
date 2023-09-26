@@ -8,7 +8,7 @@
         <div class="lists-detail__buttons">
           <button
             :disabled="listPending || (list && list.isUserConfirmed)"
-            class="btn btn-primary"
+            class="btn btn-success"
             href="#add-product-modal"
             @click="newProductVisible = true"
           >
