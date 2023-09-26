@@ -119,7 +119,7 @@ class ProductlistController extends ApiController
             $productLists = $productLists->with('user');
         }
 
-        return new ProductListCollection($productLists->paginate()->appends($request->query()));
+        return new ProductListCollection($productLists->paginate(100)->appends($request->query()));
     }
 
     /**
