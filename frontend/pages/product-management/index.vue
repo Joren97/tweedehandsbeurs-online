@@ -51,7 +51,7 @@
                 <td class="datatable__actions">
                   <span class="divider"></span>
                   <span class="action" @click="openList(item)">
-                    <NuxtLink :to="`/list-management/${item.id}`">
+                    <NuxtLink :to="`/list-management/${item.productlist.id}`">
                       <i class="fa-regular fa-eye fa-lg"></i>
                     </NuxtLink>
                   </span>
